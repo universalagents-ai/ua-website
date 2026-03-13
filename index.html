@@ -6,14 +6,72 @@
   <title>Universal Agents</title>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/CustomEase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
 
   <style>
     @font-face {
       font-family: 'Amiamie';
+      src: url('assets/fonts/Amiamie-Light.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Amiamie';
+      src: url('assets/fonts/Amiamie-LightItalic.otf') format('opentype');
+      font-weight: 300;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Amiamie';
+      src: url('assets/fonts/Amiamie-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Amiamie';
+      src: url('assets/fonts/Amiamie-Italic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Amiamie';
       src: url('assets/fonts/Amiamie-Black.otf') format('opentype');
       font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Amiamie';
+      src: url('assets/fonts/Amiamie-BlackItalic.otf') format('opentype');
+      font-weight: 900;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'GeistMono';
+      src: url('assets/fonts/GeistMono-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'GeistMono';
+      src: url('assets/fonts/GeistMono-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
       font-display: swap;
     }
 
@@ -36,6 +94,13 @@
       --grid-columns: 12;
       --grid-gap: 1.5em;
       --grid-padding: 1.5em;
+
+      /* Type Scale — em values, scaled automatically by Osmo --size-font */
+      --text-display: 3em;
+      --text-heading: 2.5em;
+      --text-title: 1.25em;
+      --text-body: 0.875em;
+      --text-label: 0.75em;
     }
 
     /* Tablet */
@@ -83,10 +148,21 @@
     body {
       margin: 0;
       background: var(--ua-mint);
-      font-size: var(--size-font);
+      font-family: 'GeistMono', monospace;
+      font-size: calc(var(--size-font) * 0.9);
+      font-weight: 400;
+      line-height: 1.6;
+      color: #fff;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+
+    /* Type scale utility classes — use these instead of raw font-size */
+    .text-display { font-size: var(--text-display); }
+    .text-heading { font-size: var(--text-heading); }
+    .text-title   { font-size: var(--text-title); }
+    .text-body    { font-size: var(--text-body); }
+    .text-label   { font-size: var(--text-label); }
 
     [data-load-reset] { opacity: 0; }
 
@@ -114,22 +190,28 @@
     /* ------------------------- Page Content ------------------------- */
 
     .page {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100dvh;
       background: var(--ua-black);
       color: #fff;
     }
 
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      position: relative;
+      overflow: clip;
+    }
+
     .hero__heading {
+      z-index: 1;
+      position: relative;
       text-align: center;
       letter-spacing: 0.05em;
       margin: 0;
-      font-family: 'Amiamie', sans-serif;
-      font-size: 1.25em;
-      font-weight: 900;
-      line-height: 1.4;
+      font-size: var(--text-display);
+      font-weight: 400;
+      line-height: 1;
     }
 
     /* Word reveal animation */
@@ -137,10 +219,131 @@
       display: inline-block;
       overflow: hidden;
       vertical-align: top;
+      padding-bottom: 0.1em;
     }
 
     .word-reveal__inner {
       display: inline-block;
+      padding-bottom: 0.1em;
+    }
+
+    /* ------------------------- Mission Section ------------------------- */
+
+    .mission {
+      background: var(--ua-mint);
+      color: var(--ua-black);
+      padding: 8em 0;
+    }
+
+    .mission__label {
+      font-size: var(--text-label);
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin: 0 0 2em;
+    }
+
+    .mission__statement {
+      font-size: var(--text-display);
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 0;
+      max-width: 20ch;
+    }
+
+    /* ------------------------- Test Section ------------------------- */
+
+    .test-section {
+      padding: 8em 0;
+    }
+
+    .test-section__heading {
+      font-size: var(--text-heading);
+      font-weight: 900;
+      line-height: 1.2;
+      margin: 0 0 2em;
+      text-align: center;
+    }
+
+    .test-section__row {
+      display: flex;
+      gap: var(--grid-gap);
+      margin-bottom: var(--grid-gap);
+    }
+
+    .test-section__card {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.75em;
+      padding: 3em 2em;
+      text-align: center;
+    }
+
+    .test-section__card-title {
+      font-size: var(--text-title);
+      font-weight: 900;
+      margin: 0 0 0.5em;
+    }
+
+    .test-section__card-text {
+      font-size: var(--text-body);
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.6);
+      margin: 0;
+    }
+
+    .test-section__image-row {
+      display: flex;
+      gap: var(--grid-gap);
+    }
+
+    .test-section__image-mask {
+      flex: 1;
+      aspect-ratio: 16 / 9;
+      border-radius: 0.75em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .test-section__image-inner {
+      width: 100%;
+      height: 120%;
+      position: absolute;
+      background: linear-gradient(135deg, var(--ua-mint) 0%, #25B1FF 50%, #FF69BA 100%);
+    }
+
+    .test-section__label {
+      position: absolute;
+      bottom: 1.5em;
+      left: 1.5em;
+      z-index: 1;
+      font-size: var(--text-label);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    @media screen and (max-width: 767px) {
+      .test-section__row,
+      .test-section__image-row {
+        flex-direction: column;
+      }
+    }
+
+    /* ------------------------- Logomark ------------------------- */
+
+    .logomark {
+      position: fixed;
+      top: var(--grid-padding);
+      left: var(--grid-padding);
+      z-index: 50;
+      width: 2.5em;
+      color: #fff;
+    }
+
+    .logomark svg {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
     /* ------------------------- Loader Overlay ------------------------- */
@@ -228,13 +431,20 @@
       white-space: nowrap;
       margin-bottom: -.25em;
       padding-bottom: .25em;
-      font-family: monospace;
-      font-size: 0.875em;
+      font-size: var(--text-body);
       position: absolute;
     }
   </style>
 </head>
 <body>
+
+  <!-- Logomark -->
+  <a href="/" class="logomark" data-load-reset>
+    <svg viewBox="0 0 375 212" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M139.559 206.539V171.457L125.292 196.903C109.101 208.47 94.0662 211.938 73.6319 211.938C31.2262 211.938 6.5552 188.036 1.92469 159.897C0.381189 149.486 0 140.237 0 123.659V1.83467H42.0183V115.173C42.0183 121.728 42.4057 132.907 43.5618 143.312C46.6425 165.671 61.2964 180.319 87.511 180.319C117.194 180.319 139.553 157.572 139.553 98.2067V1.83467H181.571V206.539H139.553H139.559Z" fill="currentColor"/>
+      <path d="M251.01 206.267V192.513H223.508V178.765H209.754V151.263H196V55.0037H209.754V27.5018H223.508V13.754H251.01V0.00624914H306.014V13.754H319.761V27.5018H333.515V0H374.765V206.261H333.515V178.759H319.761V192.507H306.014V206.261H251.01V206.267ZM306.014 165.011V151.257H319.761V137.509H333.515V68.7577H319.761V55.0099H306.014V41.2621H251.01V55.0099H237.256V151.263H251.01V165.017H306.014V165.011Z" fill="currentColor"/>
+    </svg>
+  </a>
 
   <!-- Shared SVG definitions -->
   <svg style="display: none;">
@@ -259,9 +469,58 @@
 
   <!-- Page content -->
   <main data-load-reset class="page">
-    <div class="container">
-      <h1 data-word-reveal class="hero__heading">Are you agent ready?</h1>
-    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <h1 data-word-reveal data-parallax="trigger" data-parallax-start="0" data-parallax-end="30" data-parallax-scroll-start="top top" class="hero__heading">Are you agent ready?</h1>
+      </div>
+    </section>
+
+    <!-- Mission -->
+    <section class="mission">
+      <div class="container">
+        <p class="mission__label">Our Mission</p>
+        <h2 class="mission__statement">Is to help every business turn into an agent.</h2>
+      </div>
+    </section>
+
+    <!-- Test Section — parallax verification -->
+    <section class="test-section">
+      <div class="container">
+        <h2 data-parallax="trigger" data-parallax-start="40" data-parallax-end="0" data-parallax-scroll-end="center center" class="test-section__heading">Parallax test zone</h2>
+
+        <!-- Cards with staggered parallax -->
+        <div class="test-section__row">
+          <div data-parallax="trigger" data-parallax-start="30" data-parallax-end="-10" data-parallax-disable="mobileLandscape" class="test-section__card">
+            <p class="test-section__card-title">Start: 30%</p>
+            <p class="test-section__card-text">Vertical parallax, disabled on mobile landscape and below</p>
+          </div>
+          <div data-parallax="trigger" data-parallax-start="50" data-parallax-end="-10" data-parallax-disable="mobileLandscape" class="test-section__card">
+            <p class="test-section__card-title">Start: 50%</p>
+            <p class="test-section__card-text">Higher start = more dramatic offset before settling</p>
+          </div>
+          <div data-parallax="trigger" data-parallax-start="70" data-parallax-end="-10" data-parallax-disable="mobileLandscape" class="test-section__card">
+            <p class="test-section__card-title">Start: 70%</p>
+            <p class="test-section__card-text">Most dramatic — long travel distance</p>
+          </div>
+        </div>
+
+        <!-- Image masks with background parallax -->
+        <div class="test-section__image-row">
+          <div class="test-section__image-mask" data-parallax="trigger" data-parallax-start="0" data-parallax-end="40" data-parallax-scroll-start="top bottom">
+            <div data-parallax="target" class="test-section__image-inner"></div>
+            <span class="test-section__label">scrub: true (default)</span>
+          </div>
+          <div class="test-section__image-mask" data-parallax="trigger" data-parallax-scrub="2" data-parallax-start="0" data-parallax-end="40" data-parallax-scroll-start="top bottom">
+            <div data-parallax="target" class="test-section__image-inner"></div>
+            <span class="test-section__label">scrub: 2s (laggy)</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- Loader -->
@@ -289,7 +548,7 @@
 
   <script>
     function initLoader(onReveal) {
-      gsap.registerPlugin(CustomEase, SplitText);
+      gsap.registerPlugin(CustomEase, SplitText, ScrollTrigger);
       CustomEase.create("loader", "0.65, 0.01, 0.05, 0.99");
 
       const wrap = document.querySelector("[data-load-wrap]");
@@ -301,6 +560,7 @@
       const logo = wrap.querySelector("[data-load-logo]");
       const textEls = Array.from(wrap.querySelectorAll("[data-load-text]"));
       const page = document.querySelector("main[data-load-reset]");
+      const logomark = document.querySelector(".logomark[data-load-reset]");
 
       const tl = gsap.timeline({ defaults: { ease: "loader", duration: 3 } })
         .set(wrap, { display: "block" })
@@ -360,18 +620,103 @@
       const inners = heading.querySelectorAll('.word-reveal__inner');
       gsap.set(inners, { yPercent: 120 });
 
+      const logomark = document.querySelector('.logomark');
+      if (logomark) gsap.set(logomark, { autoAlpha: 0, yPercent: 80, rotation: 8 });
+
       return () => {
         const tl = gsap.timeline();
         tl.to(inners[0], { yPercent: 0, duration: 0.7, ease: 'power4.out' }, 0)      // Are
           .to(inners[1], { yPercent: 0, duration: 0.7, ease: 'power4.out' }, 0.12)    // you
           .to(inners[2], { yPercent: 0, duration: 0.55, ease: 'power4.out' }, 0.24)   // agent
           .to(inners[3], { yPercent: 0, duration: 0.9, ease: 'power3.out' }, 0.5);    // ready? — slight beat
+
+        // Logomark — 0.4s after "ready?" lands (~1.8s), longer duration to land the moment
+        if (logomark) {
+          tl.to(logomark, {
+            autoAlpha: 1,
+            yPercent: 0,
+            rotation: 0,
+            duration: 1.4,
+            ease: 'power3.out'
+          }, 1.8);
+        }
       };
     }
+
+    /* ------------------------- Global Parallax System [Osmo] ------------------------- */
+
+    function initGlobalParallax() {
+      const mm = gsap.matchMedia();
+
+      mm.add(
+        {
+          isMobile: "(max-width:479px)",
+          isMobileLandscape: "(max-width:767px)",
+          isTablet: "(max-width:991px)",
+          isDesktop: "(min-width:992px)"
+        },
+        (context) => {
+          const { isMobile, isMobileLandscape, isTablet } = context.conditions;
+
+          const ctx = gsap.context(() => {
+            document.querySelectorAll('[data-parallax="trigger"]').forEach((trigger) => {
+              const disable = trigger.getAttribute("data-parallax-disable");
+              if (
+                (disable === "mobile" && isMobile) ||
+                (disable === "mobileLandscape" && isMobileLandscape) ||
+                (disable === "tablet" && isTablet)
+              ) {
+                return;
+              }
+
+              const target = trigger.querySelector('[data-parallax="target"]') || trigger;
+
+              const direction = trigger.getAttribute("data-parallax-direction") || "vertical";
+              const prop = direction === "horizontal" ? "xPercent" : "yPercent";
+
+              const scrubAttr = trigger.getAttribute("data-parallax-scrub");
+              const scrub = scrubAttr ? parseFloat(scrubAttr) : true;
+
+              const startAttr = trigger.getAttribute("data-parallax-start");
+              const startVal = startAttr !== null ? parseFloat(startAttr) : 20;
+
+              const endAttr = trigger.getAttribute("data-parallax-end");
+              const endVal = endAttr !== null ? parseFloat(endAttr) : -20;
+
+              const scrollStartRaw = trigger.getAttribute("data-parallax-scroll-start") || "top bottom";
+              const scrollStart = `clamp(${scrollStartRaw})`;
+
+              const scrollEndRaw = trigger.getAttribute("data-parallax-scroll-end") || "bottom top";
+              const scrollEnd = `clamp(${scrollEndRaw})`;
+
+              gsap.fromTo(
+                target,
+                { [prop]: startVal },
+                {
+                  [prop]: endVal,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger,
+                    start: scrollStart,
+                    end: scrollEnd,
+                    scrub,
+                  },
+                }
+              );
+            });
+          });
+
+          return () => ctx.revert();
+        }
+      );
+    }
+
+    /* ------------------------- Init ------------------------- */
 
     document.addEventListener("DOMContentLoaded", () => {
       const playReveal = setupWordReveal();
       initLoader(playReveal);
+      initGlobalParallax();
     });
   </script>
 
