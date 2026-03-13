@@ -3,12 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Universal Agents helps every business become agent-ready with AI-powered solutions.">
+  <meta name="theme-color" content="#0a0a0a">
   <title>Universal Agents</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/CustomEase.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
+  <!-- Font preloading — critical above-the-fold fonts only -->
+  <link rel="preload" href="assets/fonts/Amiamie-Black.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="assets/fonts/Amiamie-Regular.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="assets/fonts/GeistMono-Regular.ttf" as="font" type="font/truetype" crossorigin>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/CustomEase.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
 
   <style>
     @font-face {
@@ -79,8 +87,31 @@
 
     /* Desktop */
     :root {
+      /* Brand palette */
       --ua-mint: #3FFF8C;
+      --ua-pink: #FF69BA;
+      --ua-blue: #25B1FF;
       --ua-black: #0a0a0a;
+      --ua-dark-gray: #333333;
+      --ua-gray: #787878;
+      --ua-white: #ffffff;
+      --ua-mint-dim: rgba(63, 255, 140, 0.15);
+      --ua-pink-dim: rgba(255, 105, 186, 0.15);
+      --ua-blue-dim: rgba(37, 177, 255, 0.15);
+
+      /* Easing tokens */
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+      /* Duration tokens */
+      --duration-fast: 0.2s;
+      --duration-normal: 0.4s;
+      --duration-slow: 0.6s;
+      --duration-reveal: 0.6s;
+
+      /* Reveal defaults */
+      --reveal-distance: 20px;
 
       /* Fluid scaling */
       --size-unit: 16;
@@ -101,6 +132,13 @@
       --text-title: 1.25em;
       --text-body: 0.875em;
       --text-label: 0.75em;
+
+      /* Font stacks */
+      --font-display: 'Amiamie', sans-serif;
+      --font-body: 'GeistMono', monospace;
+
+      /* Section spacing */
+      --section-padding: 8em;
     }
 
     /* Tablet */
@@ -112,6 +150,9 @@
         --grid-columns: 6;
         --grid-gap: 1.25em;
         --grid-padding: 1.25em;
+        --text-display: 2.5em;
+        --text-heading: 2em;
+        --section-padding: 6em;
       }
     }
 
@@ -124,6 +165,10 @@
         --grid-columns: 4;
         --grid-gap: 1em;
         --grid-padding: 1em;
+        --text-display: 2.25em;
+        --text-heading: 1.75em;
+        --text-title: 1.125em;
+        --section-padding: 5em;
       }
     }
 
@@ -136,7 +181,43 @@
         --grid-columns: 4;
         --grid-gap: 0.75em;
         --grid-padding: 0.75em;
+        --text-display: 2em;
+        --text-heading: 1.5em;
+        --text-title: 1em;
+        --section-padding: 4em;
       }
+    }
+
+    /* ------------------------- Reduced Motion ------------------------- */
+
+    @media (prefers-reduced-motion: reduce) {
+      :root {
+        --duration-fast: 0s;
+        --duration-normal: 0s;
+        --duration-slow: 0s;
+        --duration-reveal: 0s;
+        --reveal-distance: 0px;
+      }
+
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ------------------------- Scroll Reveal Base ------------------------- */
+
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(var(--reveal-distance));
+      will-change: opacity, transform;
+    }
+
+    [data-reveal].is--revealed {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* ------------------------- Reset & Base ------------------------- */
@@ -145,24 +226,58 @@
       box-sizing: border-box;
     }
 
+    html {
+      font-size: var(--size-font);
+    }
+
     body {
       margin: 0;
       background: var(--ua-mint);
-      font-family: 'GeistMono', monospace;
-      font-size: calc(var(--size-font) * 0.9);
+      font-family: var(--font-body);
+      font-size: 1em;
       font-weight: 400;
       line-height: 1.6;
-      color: #fff;
+      color: var(--ua-white);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
     /* Type scale utility classes — use these instead of raw font-size */
-    .text-display { font-size: var(--text-display); }
-    .text-heading { font-size: var(--text-heading); }
+    .text-display { font-size: var(--text-display); font-family: var(--font-display); }
+    .text-heading { font-size: var(--text-heading); font-family: var(--font-display); }
     .text-title   { font-size: var(--text-title); }
     .text-body    { font-size: var(--text-body); }
     .text-label   { font-size: var(--text-label); }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 200;
+      padding: 0.5em 1em;
+      background: var(--ua-mint);
+      color: var(--ua-black);
+      font-size: var(--text-body);
+      transform: translateY(-100%);
+      transition: transform var(--duration-fast);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
 
     [data-load-reset] { opacity: 0; }
 
@@ -187,11 +302,18 @@
       height: 100%;
     }
 
+    /* Grid utility — for multi-column layouts within containers */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(var(--grid-columns), 1fr);
+      gap: var(--grid-gap);
+    }
+
     /* ------------------------- Page Content ------------------------- */
 
     .page {
       background: var(--ua-black);
-      color: #fff;
+      color: var(--ua-white);
     }
 
     .hero {
@@ -207,8 +329,8 @@
       z-index: 1;
       position: relative;
       text-align: center;
-      letter-spacing: 0.05em;
       margin: 0;
+      font-family: var(--font-display);
       font-size: var(--text-display);
       font-weight: 400;
       line-height: 1;
@@ -232,7 +354,10 @@
     .mission {
       background: var(--ua-mint);
       color: var(--ua-black);
-      padding: 8em 0;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      padding: 4em 0;
     }
 
     .mission__label {
@@ -244,6 +369,7 @@
     }
 
     .mission__statement {
+      font-family: var(--font-display);
       font-size: var(--text-display);
       font-weight: 900;
       line-height: 1.1;
@@ -254,10 +380,11 @@
     /* ------------------------- Test Section ------------------------- */
 
     .test-section {
-      padding: 8em 0;
+      padding: var(--section-padding) 0;
     }
 
     .test-section__heading {
+      font-family: var(--font-display);
       font-size: var(--text-heading);
       font-weight: 900;
       line-height: 1.2;
@@ -281,6 +408,7 @@
     }
 
     .test-section__card-title {
+      font-family: var(--font-display);
       font-size: var(--text-title);
       font-weight: 900;
       margin: 0 0 0.5em;
@@ -289,7 +417,7 @@
     .test-section__card-text {
       font-size: var(--text-body);
       line-height: 1.6;
-      color: rgba(255, 255, 255, 0.6);
+      color: var(--ua-gray);
       margin: 0;
     }
 
@@ -310,7 +438,7 @@
       width: 100%;
       height: 120%;
       position: absolute;
-      background: linear-gradient(135deg, var(--ua-mint) 0%, #25B1FF 50%, #FF69BA 100%);
+      background: linear-gradient(135deg, var(--ua-mint) 0%, var(--ua-blue) 50%, var(--ua-pink) 100%);
     }
 
     .test-section__label {
@@ -319,7 +447,7 @@
       left: 1.5em;
       z-index: 1;
       font-size: var(--text-label);
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--ua-gray);
     }
 
     @media screen and (max-width: 767px) {
@@ -337,7 +465,12 @@
       left: var(--grid-padding);
       z-index: 50;
       width: 2.5em;
-      color: #fff;
+      color: var(--ua-white);
+      transition: color var(--duration-normal) var(--ease-out-quart);
+    }
+
+    .logomark.is--dark {
+      color: var(--ua-black);
     }
 
     .logomark svg {
@@ -350,7 +483,7 @@
 
     .loader {
       z-index: 100;
-      color: #fff;
+      color: var(--ua-white);
       width: 100%;
       height: 100dvh;
       position: fixed;
@@ -438,8 +571,10 @@
 </head>
 <body>
 
+  <a href="#main" class="skip-link">Skip to content</a>
+
   <!-- Logomark -->
-  <a href="/" class="logomark" data-load-reset>
+  <a href="/" class="logomark" data-load-reset aria-label="Universal Agents — home">
     <svg viewBox="0 0 375 212" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M139.559 206.539V171.457L125.292 196.903C109.101 208.47 94.0662 211.938 73.6319 211.938C31.2262 211.938 6.5552 188.036 1.92469 159.897C0.381189 149.486 0 140.237 0 123.659V1.83467H42.0183V115.173C42.0183 121.728 42.4057 132.907 43.5618 143.312C46.6425 165.671 61.2964 180.319 87.511 180.319C117.194 180.319 139.553 157.572 139.553 98.2067V1.83467H181.571V206.539H139.553H139.559Z" fill="currentColor"/>
       <path d="M251.01 206.267V192.513H223.508V178.765H209.754V151.263H196V55.0037H209.754V27.5018H223.508V13.754H251.01V0.00624914H306.014V13.754H319.761V27.5018H333.515V0H374.765V206.261H333.515V178.759H319.761V192.507H306.014V206.261H251.01V206.267ZM306.014 165.011V151.257H319.761V137.509H333.515V68.7577H319.761V55.0099H306.014V41.2621H251.01V55.0099H237.256V151.263H251.01V165.017H306.014V165.011Z" fill="currentColor"/>
@@ -468,7 +603,7 @@
   </svg>
 
   <!-- Page content -->
-  <main data-load-reset class="page">
+  <main id="main" data-load-reset class="page">
 
     <!-- Hero -->
     <section class="hero">
@@ -478,17 +613,17 @@
     </section>
 
     <!-- Mission -->
-    <section class="mission">
+    <section class="mission" data-theme="light">
       <div class="container">
-        <p class="mission__label">Our Mission</p>
-        <h2 class="mission__statement">Is to help every business turn into an agent.</h2>
+        <p data-reveal class="mission__label">Our Mission</p>
+        <h2 data-reveal data-reveal-delay="0.1" class="mission__statement">Is to help every business turn into an agent.</h2>
       </div>
     </section>
 
     <!-- Test Section — parallax verification -->
     <section class="test-section">
       <div class="container">
-        <h2 data-parallax="trigger" data-parallax-start="40" data-parallax-end="0" data-parallax-scroll-end="center center" class="test-section__heading">Parallax test zone</h2>
+        <h2 data-reveal data-parallax="trigger" data-parallax-start="40" data-parallax-end="0" data-parallax-scroll-end="center center" class="test-section__heading">Parallax test zone</h2>
 
         <!-- Cards with staggered parallax -->
         <div class="test-section__row">
@@ -643,6 +778,100 @@
       };
     }
 
+    /* ------------------------- Logomark Theme Detection ------------------------- */
+
+    function initLogomarkTheme() {
+      const logomark = document.querySelector('.logomark');
+      if (!logomark) return;
+
+      document.querySelectorAll('[data-theme="light"]').forEach((section) => {
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          onEnter: () => logomark.classList.add('is--dark'),
+          onLeave: () => logomark.classList.remove('is--dark'),
+          onEnterBack: () => logomark.classList.add('is--dark'),
+          onLeaveBack: () => logomark.classList.remove('is--dark'),
+        });
+      });
+    }
+
+    /* ------------------------- Lenis Smooth Scroll ------------------------- */
+
+    function initLenis() {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return null;
+
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        touchMultiplier: 2,
+      });
+
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+
+      return lenis;
+    }
+
+    /* ------------------------- Scroll Reveal System ------------------------- */
+
+    function initScrollReveal() {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      document.querySelectorAll('[data-reveal]').forEach((el) => {
+        if (prefersReduced) {
+          el.classList.add('is--revealed');
+          return;
+        }
+
+        const delay = parseFloat(el.getAttribute('data-reveal-delay') || '0');
+        const stagger = el.getAttribute('data-reveal-stagger');
+
+        if (stagger) {
+          const children = el.querySelectorAll(stagger);
+          if (children.length) {
+            gsap.set(el, { opacity: 1, transform: 'none' });
+            gsap.fromTo(children,
+              { opacity: 0, yPercent: 10 },
+              {
+                opacity: 1,
+                yPercent: 0,
+                duration: 0.6,
+                ease: 'power3.out',
+                stagger: 0.08,
+                scrollTrigger: {
+                  trigger: el,
+                  start: 'clamp(top 85%)',
+                  once: true,
+                },
+                delay,
+              }
+            );
+            return;
+          }
+        }
+
+        gsap.fromTo(el,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'clamp(top 85%)',
+              once: true,
+            },
+            delay,
+          }
+        );
+      });
+    }
+
     /* ------------------------- Global Parallax System [Osmo] ------------------------- */
 
     function initGlobalParallax() {
@@ -716,7 +945,10 @@
     document.addEventListener("DOMContentLoaded", () => {
       const playReveal = setupWordReveal();
       initLoader(playReveal);
+      initLenis();
       initGlobalParallax();
+      initScrollReveal();
+      initLogomarkTheme();
     });
   </script>
 
