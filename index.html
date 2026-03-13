@@ -17,20 +17,102 @@
       font-display: swap;
     }
 
+    /* ------------------------- Scaling System by Osmo [https://osmo.supply/] ------------------------- */
+
+    /* Desktop */
     :root {
       --ua-mint: #3FFF8C;
       --ua-black: #0a0a0a;
+
+      /* Fluid scaling */
+      --size-unit: 16;
+      --size-container-ideal: 1440;
+      --size-container-min: 992px;
+      --size-container-max: 1920px;
+      --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
+      --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
+
+      /* Grid */
+      --grid-columns: 12;
+      --grid-gap: 1.5em;
+      --grid-padding: 1.5em;
     }
 
-    /* Reset & base */
+    /* Tablet */
+    @media screen and (max-width: 991px) {
+      :root {
+        --size-container-ideal: 834;
+        --size-container-min: 768px;
+        --size-container-max: 991px;
+        --grid-columns: 6;
+        --grid-gap: 1.25em;
+        --grid-padding: 1.25em;
+      }
+    }
+
+    /* Mobile Landscape */
+    @media screen and (max-width: 767px) {
+      :root {
+        --size-container-ideal: 550;
+        --size-container-min: 480px;
+        --size-container-max: 767px;
+        --grid-columns: 4;
+        --grid-gap: 1em;
+        --grid-padding: 1em;
+      }
+    }
+
+    /* Mobile Portrait */
+    @media screen and (max-width: 479px) {
+      :root {
+        --size-container-ideal: 390;
+        --size-container-min: 320px;
+        --size-container-max: 479px;
+        --grid-columns: 4;
+        --grid-gap: 0.75em;
+        --grid-padding: 0.75em;
+      }
+    }
+
+    /* ------------------------- Reset & Base ------------------------- */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       background: var(--ua-mint);
+      font-size: var(--size-font);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     [data-load-reset] { opacity: 0; }
 
-    /* Page content */
+    /* ------------------------- Container System ------------------------- */
+
+    .container {
+      width: 100%;
+      max-width: var(--size-container);
+      margin-inline: auto;
+      padding-inline: var(--grid-padding);
+    }
+
+    .container.is--medium {
+      max-width: calc(var(--size-container) * 0.85);
+    }
+
+    .container.is--small {
+      max-width: calc(var(--size-container) * 0.7);
+    }
+
+    .container.is--full-height {
+      height: 100%;
+    }
+
+    /* ------------------------- Page Content ------------------------- */
+
     .page {
       display: flex;
       align-items: center;
@@ -45,7 +127,7 @@
       letter-spacing: 0.05em;
       margin: 0;
       font-family: 'Amiamie', sans-serif;
-      font-size: 1.25rem;
+      font-size: 1.25em;
       font-weight: 900;
       line-height: 1.4;
     }
@@ -61,7 +143,8 @@
       display: inline-block;
     }
 
-    /* Loader overlay */
+    /* ------------------------- Loader Overlay ------------------------- */
+
     .loader {
       z-index: 100;
       color: #fff;
@@ -93,20 +176,23 @@
 
     .loader__content {
       z-index: 2;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .loader__content-inner {
       flex-flow: column;
       justify-content: center;
       align-items: center;
-      width: 100%;
-      height: 100%;
       display: flex;
-      position: relative;
     }
 
     .loader__logo-wrap {
       justify-content: center;
       align-items: center;
-      width: 20em;
-      height: 3em;
+      width: calc(100% / 2 - var(--grid-gap) / 2);
+      aspect-ratio: 1143 / 165;
       display: flex;
       position: relative;
     }
@@ -143,6 +229,7 @@
       margin-bottom: -.25em;
       padding-bottom: .25em;
       font-family: monospace;
+      font-size: 0.875em;
       position: absolute;
     }
   </style>
@@ -172,7 +259,9 @@
 
   <!-- Page content -->
   <main data-load-reset class="page">
-    <h1 data-word-reveal class="hero__heading">Are you agent ready?</h1>
+    <div class="container">
+      <h1 data-word-reveal class="hero__heading">Are you agent ready?</h1>
+    </div>
   </main>
 
   <!-- Loader -->
@@ -181,17 +270,19 @@
       <div data-load-bar class="loader__bar"></div>
     </div>
     <div data-load-content class="loader__content">
-      <div class="loader__logo-wrap">
-        <div class="loader__logo-item is--base">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1143 165" fill="none" class="loader__logo-img"><use href="#wordmark"/></svg>
+      <div class="container is--full-height loader__content-inner">
+        <div class="loader__logo-wrap">
+          <div class="loader__logo-item is--base">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1143 165" fill="none" class="loader__logo-img"><use href="#wordmark"/></svg>
+          </div>
+          <div data-load-logo class="loader__logo-item is--top">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1143 165" fill="none" class="loader__logo-img"><use href="#wordmark"/></svg>
+          </div>
         </div>
-        <div data-load-logo class="loader__logo-item is--top">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1143 165" fill="none" class="loader__logo-img"><use href="#wordmark"/></svg>
+        <div class="loader__text-wrap">
+          <span data-load-text data-load-reset class="loader__text-el">Hold tight</span>
+          <span data-load-text data-load-reset class="loader__text-el">Hi there!</span>
         </div>
-      </div>
-      <div class="loader__text-wrap">
-        <span data-load-text data-load-reset class="loader__text-el">Hold tight</span>
-        <span data-load-text data-load-reset class="loader__text-el">Hi there!</span>
       </div>
     </div>
   </div>
