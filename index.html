@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Universal Agents helps every business become agent-ready with AI-powered solutions.">
   <meta name="theme-color" content="#0a0a0a">
+  <meta name="color-scheme" content="dark">
   <title>Universal Agents</title>
 
   <!-- Font preloading — critical above-the-fold fonts only -->
-  <link rel="preload" href="assets/fonts/Amiamie-Black.otf" as="font" type="font/otf" crossorigin>
-  <link rel="preload" href="assets/fonts/Amiamie-Regular.otf" as="font" type="font/otf" crossorigin>
   <link rel="preload" href="assets/fonts/GeistMono-Regular.ttf" as="font" type="font/truetype" crossorigin>
+  <link rel="preload" href="assets/fonts/GeistMono-Bold.ttf" as="font" type="font/truetype" crossorigin>
 
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
@@ -19,54 +19,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
 
   <style>
-    @font-face {
-      font-family: 'Amiamie';
-      src: url('assets/fonts/Amiamie-Light.otf') format('opentype');
-      font-weight: 300;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Amiamie';
-      src: url('assets/fonts/Amiamie-LightItalic.otf') format('opentype');
-      font-weight: 300;
-      font-style: italic;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Amiamie';
-      src: url('assets/fonts/Amiamie-Regular.otf') format('opentype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Amiamie';
-      src: url('assets/fonts/Amiamie-Italic.otf') format('opentype');
-      font-weight: 400;
-      font-style: italic;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Amiamie';
-      src: url('assets/fonts/Amiamie-Black.otf') format('opentype');
-      font-weight: 900;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Amiamie';
-      src: url('assets/fonts/Amiamie-BlackItalic.otf') format('opentype');
-      font-weight: 900;
-      font-style: italic;
-      font-display: swap;
-    }
-
     @font-face {
       font-family: 'GeistMono';
       src: url('assets/fonts/GeistMono-Regular.ttf') format('truetype');
@@ -134,7 +86,7 @@
       --text-label: 0.75em;
 
       /* Font stacks */
-      --font-display: 'Amiamie', sans-serif;
+      --font-display: 'GeistMono', monospace;
       --font-body: 'GeistMono', monospace;
 
       /* Section spacing */
@@ -181,8 +133,8 @@
         --grid-columns: 4;
         --grid-gap: 0.75em;
         --grid-padding: 0.75em;
-        --text-display: 2em;
-        --text-heading: 1.5em;
+        --text-display: 1.45em;
+        --text-heading: 1.25em;
         --text-title: 1em;
         --section-padding: 4em;
       }
@@ -228,6 +180,7 @@
 
     html {
       font-size: var(--size-font);
+      color-scheme: dark;
     }
 
     body {
@@ -243,8 +196,8 @@
     }
 
     /* Type scale utility classes — use these instead of raw font-size */
-    .text-display { font-size: var(--text-display); font-family: var(--font-display); }
-    .text-heading { font-size: var(--text-heading); font-family: var(--font-display); }
+    .text-display { font-size: var(--text-display); }
+    .text-heading { font-size: var(--text-heading); }
     .text-title   { font-size: var(--text-title); }
     .text-body    { font-size: var(--text-body); }
     .text-label   { font-size: var(--text-label); }
@@ -330,7 +283,6 @@
       position: relative;
       text-align: center;
       margin: 0;
-      font-family: var(--font-display);
       font-size: var(--text-display);
       font-weight: 400;
       line-height: 1;
@@ -369,7 +321,6 @@
     }
 
     .mission__statement {
-      font-family: var(--font-display);
       font-size: var(--text-display);
       font-weight: 900;
       line-height: 1.1;
@@ -384,7 +335,6 @@
     }
 
     .test-section__heading {
-      font-family: var(--font-display);
       font-size: var(--text-heading);
       font-weight: 900;
       line-height: 1.2;
@@ -408,7 +358,6 @@
     }
 
     .test-section__card-title {
-      font-family: var(--font-display);
       font-size: var(--text-title);
       font-weight: 900;
       margin: 0 0 0.5em;
@@ -464,7 +413,7 @@
       top: var(--grid-padding);
       left: var(--grid-padding);
       z-index: 50;
-      width: 2.5em;
+      width: clamp(36px, 2.5em, 2.5em);
       color: var(--ua-white);
       transition: color var(--duration-normal) var(--ease-out-quart);
     }
@@ -527,7 +476,7 @@
     .loader__logo-wrap {
       justify-content: center;
       align-items: center;
-      width: calc(100% / 2 - var(--grid-gap) / 2);
+      width: clamp(280px, 80%, 50%);
       aspect-ratio: 1143 / 165;
       display: flex;
       position: relative;
@@ -781,18 +730,14 @@
     /* ------------------------- Logomark Theme Detection ------------------------- */
 
     function initLogomarkTheme() {
-      const logomark = document.querySelector('.logomark');
-      if (!logomark) return;
+      if (!document.querySelector('.logomark')) return;
 
       document.querySelectorAll('[data-theme="light"]').forEach((section) => {
         ScrollTrigger.create({
           trigger: section,
           start: 'top top',
           end: 'bottom top',
-          onEnter: () => logomark.classList.add('is--dark'),
-          onLeave: () => logomark.classList.remove('is--dark'),
-          onEnterBack: () => logomark.classList.add('is--dark'),
-          onLeaveBack: () => logomark.classList.remove('is--dark'),
+          toggleClass: { targets: '.logomark', className: 'is--dark' },
         });
       });
     }
