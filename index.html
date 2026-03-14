@@ -538,7 +538,7 @@
   <a href="#main" class="skip-link">Skip to content</a>
 
   <!-- Scroll Progress Bar -->
-  <div class="progress-bar" data-load-reset></div>
+  <div class="progress-bar"></div>
 
   <!-- Logomark -->
   <a href="/" class="logomark" data-load-reset aria-label="Universal Agents — home">
@@ -663,6 +663,7 @@
       const textEls = Array.from(wrap.querySelectorAll("[data-load-text]"));
       const page = document.querySelector("main[data-load-reset]");
       const logomark = document.querySelector(".logomark[data-load-reset]");
+      const progressBar = document.querySelector(".progress-bar");
 
       const tl = gsap.timeline({ defaults: { ease: "loader", duration: 3 } })
         .set(wrap, { display: "block" })
@@ -678,6 +679,7 @@
       if (page) {
         tl.fromTo(page, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
         tl.call(onReveal, null, "reveal+=0.5");
+        if (progressBar) tl.to(progressBar, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
       }
 
       // Loader text cycling (SplitText char animation)
