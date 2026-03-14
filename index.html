@@ -406,6 +406,143 @@
       }
     }
 
+    /* ------------------------- Footer Parallax ------------------------- */
+
+    .footer-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer {
+      letter-spacing: -0.02em;
+      flex-flow: column;
+      justify-content: space-between;
+      min-height: 100dvh;
+      padding: var(--grid-padding);
+      display: flex;
+      position: relative;
+    }
+
+    .footer__links-row {
+      display: flex;
+      gap: var(--grid-gap);
+      padding-top: 4em;
+    }
+
+    .footer__col {
+      display: flex;
+      flex-flow: column;
+      gap: 1.5em;
+      width: calc(33.3333% - var(--grid-gap));
+    }
+
+    .footer__eyebrow {
+      font-size: var(--text-label);
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ua-gray);
+      margin: 0;
+    }
+
+    .footer__links {
+      display: flex;
+      flex-flow: column;
+      gap: 0.25em;
+      align-items: flex-start;
+    }
+
+    .footer__a {
+      color: var(--ua-white);
+      font-size: var(--text-heading);
+      font-weight: 400;
+      line-height: 1.1;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .footer__a::before {
+      content: "";
+      position: absolute;
+      bottom: -0.0625em;
+      left: 0;
+      width: 100%;
+      height: 0.08em;
+      background-color: var(--ua-mint);
+      transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+      transform-origin: right;
+      transform: scaleX(0) rotate(0.001deg);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .footer__a:hover::before {
+        transform-origin: left;
+        transform: scaleX(1) rotate(0.001deg);
+      }
+    }
+
+    .footer__logo-row {
+      display: flex;
+      flex-flow: column;
+      gap: 1em;
+    }
+
+    .footer__wordmark {
+      width: 100%;
+      color: var(--ua-white);
+    }
+
+    .footer__wordmark svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .footer__bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1em;
+    }
+
+    .footer__copyright {
+      font-size: var(--text-label);
+      color: var(--ua-gray);
+      margin: 0;
+    }
+
+    .footer-wrap__dark {
+      opacity: 0;
+      pointer-events: none;
+      background-color: var(--ua-black);
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    @media screen and (max-width: 991px) {
+      .footer__links-row {
+        flex-flow: column;
+        gap: 3em;
+      }
+
+      .footer__col {
+        width: 100%;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      .footer__a {
+        font-size: var(--text-title);
+      }
+
+      .footer__links-row {
+        gap: 2em;
+      }
+    }
+
     /* ------------------------- Scroll Progress Bar ------------------------- */
 
     .progress-bar {
@@ -624,6 +761,45 @@
     </section>
 
   </main>
+
+  <!-- Footer with Parallax -->
+  <div data-footer-parallax class="footer-wrap">
+    <footer data-footer-parallax-inner class="footer">
+      <div class="footer__links-row">
+        <div class="footer__col">
+          <p class="footer__eyebrow">( Pages )</p>
+          <div class="footer__links">
+            <a href="#" class="footer__a">Home</a>
+            <a href="#" class="footer__a">Services</a>
+            <a href="#" class="footer__a">About</a>
+          </div>
+        </div>
+        <div class="footer__col">
+          <p class="footer__eyebrow">( Socials )</p>
+          <div class="footer__links">
+            <a href="#" class="footer__a">LinkedIn</a>
+            <a href="#" class="footer__a">X / Twitter</a>
+          </div>
+        </div>
+        <div class="footer__col">
+          <p class="footer__eyebrow">( Contact )</p>
+          <div class="footer__links">
+            <a href="mailto:hello@universalagents.ai" class="footer__a">hello@universalagents.ai</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__logo-row">
+        <div class="footer__bottom">
+          <p class="footer__eyebrow">Every business, agent ready</p>
+          <p class="footer__copyright">&copy; 2026 Universal Agents</p>
+        </div>
+        <div class="footer__wordmark">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1143 165" fill="none"><use href="#wordmark"/></svg>
+        </div>
+      </div>
+    </footer>
+    <div data-footer-parallax-dark class="footer-wrap__dark"></div>
+  </div>
 
   <!-- Loader -->
   <div data-load-wrap class="loader">
@@ -905,6 +1081,32 @@
       );
     }
 
+    /* ------------------------- Footer Parallax ------------------------- */
+
+    function initFooterParallax() {
+      document.querySelectorAll('[data-footer-parallax]').forEach(el => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: 'clamp(top bottom)',
+            end: 'clamp(top top)',
+            scrub: true,
+          }
+        });
+
+        const inner = el.querySelector('[data-footer-parallax-inner]');
+        const dark = el.querySelector('[data-footer-parallax-dark]');
+
+        if (inner) {
+          tl.from(inner, { yPercent: -25, ease: 'linear' });
+        }
+
+        if (dark) {
+          tl.from(dark, { opacity: 0.5, ease: 'linear' }, '<');
+        }
+      });
+    }
+
     /* ------------------------- Scroll Progress Bar ------------------------- */
 
     function initScrollProgressBar() {
@@ -932,6 +1134,7 @@
       initGlobalParallax();
       initScrollReveal();
       initLogomarkTheme();
+      initFooterParallax();
       initScrollProgressBar();
     });
   </script>
