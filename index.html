@@ -406,7 +406,7 @@
       }
     }
 
-    /* ------------------------- FAQ Section (Expanding Pills) ------------------------- */
+    /* ------------------------- FAQ Section ------------------------- */
 
     .faq {
       padding: var(--section-padding) 0;
@@ -427,185 +427,74 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 1.25em;
       width: 100%;
-      height: 40em;
-      position: relative;
+      min-height: 30em;
+      display: flex;
       overflow: clip;
     }
 
-    .faq__layout {
-      justify-content: flex-start;
-      align-items: stretch;
-      width: 100%;
-      height: 100%;
+    .faq__questions {
+      width: 40%;
       display: flex;
-      position: relative;
-    }
-
-    .faq__col {
-      width: 50%;
-      position: relative;
-    }
-
-    .faq__col.is--context {
-      border-left: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .faq__info-collection {
       flex-flow: column;
       justify-content: center;
-      align-items: flex-start;
-      width: 100%;
-      height: 100%;
-      padding: 1.25em;
-      display: flex;
-    }
-
-    .faq__info-list {
-      gap: 0.75em;
-      max-width: var(--faq-item-expanded);
-      flex-flow: column;
-      flex: none;
-      justify-content: center;
-      align-items: flex-start;
-      width: 100%;
-      margin: 0;
-      padding: 0;
+      padding: 2em 1.5em;
+      gap: 0.5em;
       list-style: none;
-      display: flex;
-    }
-
-    .faq__info-item {
-      padding: 0;
-      position: relative;
-    }
-
-    .faq__item-bg {
-      z-index: 0;
-      background-color: rgba(255, 255, 255, 0.06);
-      border-radius: 2em;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      inset: 0%;
-    }
-
-    .faq__item-button {
-      z-index: 1;
-      gap: 0.625em;
-      background-color: transparent;
-      border: none;
-      color: inherit;
-      font-family: inherit;
-      cursor: pointer;
-      flex-flow: row;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 0.75em 1.25em;
-      display: flex;
-      position: relative;
-    }
-
-    .faq__item-label {
-      letter-spacing: -0.015em;
-      white-space: nowrap;
-      flex: none;
-      font-size: var(--text-title);
-      font-weight: 500;
-    }
-
-    .faq__item-icon {
-      aspect-ratio: 1;
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 100em;
-      flex: none;
-      justify-content: center;
-      align-items: center;
-      width: 1.25em;
-      display: flex;
-      position: relative;
-    }
-
-    .faq__item-icon-bar {
-      background-color: var(--ua-white);
-      flex: none;
-      width: 1px;
-      height: 50%;
-      position: absolute;
-    }
-
-    .faq__item-icon-bar.is--horizontal {
-      width: 50%;
-      height: 1px;
-    }
-
-    .faq__item-content {
-      z-index: 2;
-      pointer-events: none;
-      position: absolute;
-      inset: 0%;
-    }
-
-    .faq__item-mask {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .faq__item-inner {
-      max-width: var(--faq-item-expanded);
-      flex-flow: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      width: max-content;
-      padding: 1.5em 1.5em 2em;
-      display: flex;
-    }
-
-    .faq__item-body {
       margin: 0;
+    }
+
+    .faq__question {
+      background: transparent;
+      border: none;
+      color: var(--ua-gray);
+      font-family: inherit;
       font-size: var(--text-title);
       font-weight: 500;
+      text-align: left;
+      padding: 0.75em 1.25em;
+      border-radius: 2em;
+      cursor: pointer;
+      transition: color 300ms, background-color 300ms;
     }
 
-    .faq__item-body-span {
-      opacity: 0.5;
+    .faq__question:hover {
+      color: var(--ua-white);
     }
 
-    /* Context panels (right column) */
-    .faq__context-collection {
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .faq__question.is--active {
+      color: var(--ua-white);
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .faq__answers {
+      width: 60%;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
       position: relative;
     }
 
-    .faq__context-list {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .faq__context-item {
-      opacity: 0;
-      width: 100%;
-      height: 100%;
+    .faq__answer {
       position: absolute;
-      inset: 0%;
+      inset: 0;
       display: flex;
       flex-flow: column;
       justify-content: center;
       padding: 3em;
+      opacity: 0;
+      transition: opacity 350ms ease-in-out;
     }
 
-    .faq__context-title {
+    .faq__answer.is--active {
+      opacity: 1;
+    }
+
+    .faq__answer-title {
       font-size: var(--text-title);
       font-weight: 700;
       color: var(--ua-mint);
       margin: 0 0 1em;
     }
 
-    .faq__context-body {
+    .faq__answer-body {
       font-size: var(--text-body);
       line-height: 1.8;
       color: var(--ua-white);
@@ -613,161 +502,52 @@
       opacity: 0.7;
     }
 
-    .faq__context-cover {
-      z-index: 1;
-      width: 100%;
-      height: 100%;
+    .faq__placeholder {
       position: absolute;
-      inset: 0%;
+      inset: 0;
       display: flex;
-      flex-flow: column;
       justify-content: center;
       align-items: center;
-      gap: 1em;
       padding: 3em;
-      text-align: center;
+      transition: opacity 350ms ease-in-out;
     }
 
-    .faq__context-cover-text {
+    .faq__placeholder-text {
       font-size: var(--text-body);
       color: var(--ua-gray);
       margin: 0;
     }
 
-    .faq__close {
-      z-index: 2;
-      position: absolute;
-      top: 1em;
-      right: 1em;
-    }
-
-    .faq__close-button {
-      aspect-ratio: 1;
-      backdrop-filter: blur(10px);
-      background-color: rgba(255, 255, 255, 0.08);
-      border: none;
-      border-radius: 10em;
-      justify-content: center;
-      align-items: center;
-      width: 2em;
-      display: flex;
-      position: relative;
-      cursor: pointer;
-      color: inherit;
-    }
-
-    /* Expanded width */
-    .faq__wrap {
-      --faq-item-expanded: 25em;
-    }
-
-    /* State transitions */
-    .faq__wrap [data-faq-button] {
-      opacity: 1;
-      transition: opacity 400ms ease-in-out 300ms;
-    }
-
-    .faq__wrap [data-faq-inner] {
+    .faq__placeholder.is--hidden {
       opacity: 0;
-      transition: opacity 300ms ease-in-out 0ms;
-    }
-
-    .faq__wrap [data-faq-context] {
-      opacity: 0;
-      transition: opacity 350ms ease-in-out;
-    }
-
-    .faq__wrap [data-faq-cover] {
-      opacity: 1;
-      transition: opacity 350ms ease-in-out;
-    }
-
-    /* Active pill */
-    .faq__wrap [data-faq-item][data-active="true"] [data-faq-button] {
-      opacity: 0;
-      transition: opacity 50ms ease-in-out 0ms;
-    }
-
-    .faq__wrap [data-faq-item][data-active="true"] [data-faq-inner] {
-      opacity: 1;
-    }
-
-    /* Active context */
-    .faq__wrap [data-faq-context][data-active="true"] {
-      opacity: 1;
-    }
-
-    .faq__wrap [data-faq-cover][data-active="false"] {
-      opacity: 0;
-    }
-
-    /* Close button */
-    .faq__wrap [data-faq-close] {
-      transform: scale(0) rotate(135deg);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 500ms cubic-bezier(0.7, 0, 0.3, 1);
-    }
-
-    .faq__wrap[data-faq-active="true"] [data-faq-close] {
-      transform: scale(1) rotate(45deg);
-      opacity: 1;
-      pointer-events: auto;
     }
 
     @media screen and (max-width: 991px) {
       .faq__wrap {
-        border: none;
-        border-radius: 0;
-        height: auto;
-        background-color: transparent;
-        --faq-item-expanded: calc(50% - 0.5em);
-      }
-
-      .faq__layout {
         flex-flow: column;
+        min-height: auto;
       }
 
-      .faq__col {
+      .faq__questions {
         width: 100%;
+        flex-flow: row;
+        flex-wrap: wrap;
+        padding: 1.5em;
       }
 
-      .faq__col.is--context {
+      .faq__answers {
+        width: 100%;
         border-left: none;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
-        min-height: 20em;
-      }
-
-      .faq__info-collection {
-        padding: 2em 0;
-      }
-
-      .faq__info-list {
-        flex-flow: wrap;
-        max-width: none;
-      }
-
-      .faq__info-item {
-        width: var(--faq-item-expanded);
-      }
-
-      .faq__item-button {
-        justify-content: space-between;
-        width: 100%;
-      }
-
-      .faq__item-inner {
-        max-width: 100%;
+        min-height: 16em;
+        position: relative;
       }
     }
 
     @media screen and (max-width: 767px) {
-      .faq__wrap {
-        --faq-item-expanded: 100%;
-      }
-
-      .faq__item-label {
+      .faq__question {
         font-size: var(--text-body);
+        width: 100%;
       }
     }
 
@@ -1130,144 +910,38 @@
     <section class="faq">
       <div class="container">
         <p data-reveal class="faq__heading">( Frequently Asked )</p>
-        <div data-faq-active="false" data-faq-init class="faq__wrap">
-          <div class="faq__layout">
-            <div class="faq__col">
-              <div class="faq__info-collection">
-                <ul class="faq__info-list">
-                  <li data-faq-item data-active="false" class="faq__info-item">
-                    <div class="faq__item-bg"></div>
-                    <button data-faq-button type="button" aria-expanded="false" class="faq__item-button">
-                      <span class="faq__item-label">What does "agent ready" mean?</span>
-                      <span class="faq__item-icon">
-                        <span class="faq__item-icon-bar"></span>
-                        <span class="faq__item-icon-bar is--horizontal"></span>
-                      </span>
-                    </button>
-                    <div aria-hidden="true" data-faq-content class="faq__item-content">
-                      <div class="faq__item-mask">
-                        <div data-faq-inner class="faq__item-inner">
-                          <p class="faq__item-body">What does "agent ready" mean?<br><br>
-                            <span class="faq__item-body-span">It means your business can deploy, manage, and scale AI agents that work alongside your team — not as toys, but as real operators.</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li data-faq-item data-active="false" class="faq__info-item">
-                    <div class="faq__item-bg"></div>
-                    <button data-faq-button type="button" aria-expanded="false" class="faq__item-button">
-                      <span class="faq__item-label">How do agents work with my team?</span>
-                      <span class="faq__item-icon">
-                        <span class="faq__item-icon-bar"></span>
-                        <span class="faq__item-icon-bar is--horizontal"></span>
-                      </span>
-                    </button>
-                    <div aria-hidden="true" data-faq-content class="faq__item-content">
-                      <div class="faq__item-mask">
-                        <div data-faq-inner class="faq__item-inner">
-                          <p class="faq__item-body">How do agents work with my team?<br><br>
-                            <span class="faq__item-body-span">Agents handle the repetitive, data-heavy work while your people focus on strategy and creativity. They integrate into existing workflows, not replace them.</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li data-faq-item data-active="false" class="faq__info-item">
-                    <div class="faq__item-bg"></div>
-                    <button data-faq-button type="button" aria-expanded="false" class="faq__item-button">
-                      <span class="faq__item-label">What industries do you work with?</span>
-                      <span class="faq__item-icon">
-                        <span class="faq__item-icon-bar"></span>
-                        <span class="faq__item-icon-bar is--horizontal"></span>
-                      </span>
-                    </button>
-                    <div aria-hidden="true" data-faq-content class="faq__item-content">
-                      <div class="faq__item-mask">
-                        <div data-faq-inner class="faq__item-inner">
-                          <p class="faq__item-body">What industries do you work with?<br><br>
-                            <span class="faq__item-body-span">Media, marketing, professional services, and any team that runs on knowledge work. If your team juggles data, reports, and creative output — we can help.</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li data-faq-item data-active="false" class="faq__info-item">
-                    <div class="faq__item-bg"></div>
-                    <button data-faq-button type="button" aria-expanded="false" class="faq__item-button">
-                      <span class="faq__item-label">How long does it take to get started?</span>
-                      <span class="faq__item-icon">
-                        <span class="faq__item-icon-bar"></span>
-                        <span class="faq__item-icon-bar is--horizontal"></span>
-                      </span>
-                    </button>
-                    <div aria-hidden="true" data-faq-content class="faq__item-content">
-                      <div class="faq__item-mask">
-                        <div data-faq-inner class="faq__item-inner">
-                          <p class="faq__item-body">How long does it take to get started?<br><br>
-                            <span class="faq__item-body-span">Most engagements start with a 2-week discovery sprint. You'll have working agents in your workflow within the first month.</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li data-faq-item data-active="false" class="faq__info-item">
-                    <div class="faq__item-bg"></div>
-                    <button data-faq-button type="button" aria-expanded="false" class="faq__item-button">
-                      <span class="faq__item-label">What makes UA different?</span>
-                      <span class="faq__item-icon">
-                        <span class="faq__item-icon-bar"></span>
-                        <span class="faq__item-icon-bar is--horizontal"></span>
-                      </span>
-                    </button>
-                    <div aria-hidden="true" data-faq-content class="faq__item-content">
-                      <div class="faq__item-mask">
-                        <div data-faq-inner class="faq__item-inner">
-                          <p class="faq__item-body">What makes UA different?<br><br>
-                            <span class="faq__item-body-span">We don't sell software. We build agent systems that are native to how your team actually works — designed with you, not for you.</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+        <div data-faq-init class="faq__wrap">
+          <ul class="faq__questions">
+            <li><button data-faq-q="0" type="button" class="faq__question">What does "agent ready" mean?</button></li>
+            <li><button data-faq-q="1" type="button" class="faq__question">How do agents work with my team?</button></li>
+            <li><button data-faq-q="2" type="button" class="faq__question">What industries do you work with?</button></li>
+            <li><button data-faq-q="3" type="button" class="faq__question">How long does it take?</button></li>
+            <li><button data-faq-q="4" type="button" class="faq__question">What makes UA different?</button></li>
+          </ul>
+          <div class="faq__answers">
+            <div class="faq__placeholder">
+              <p class="faq__placeholder-text">Select a question to learn more</p>
             </div>
-            <div class="faq__col is--context">
-              <div class="faq__context-collection">
-                <div class="faq__context-list">
-                  <div aria-hidden="true" data-faq-context class="faq__context-item">
-                    <p class="faq__context-title">Agent readiness is a spectrum</p>
-                    <p class="faq__context-body">Most businesses use AI for simple tasks — chatbots, summaries, search. Agent readiness means going further: autonomous workflows, multi-step reasoning, and agents that can make decisions with guardrails. We assess where you are and build a path to where you want to be.</p>
-                  </div>
-                  <div aria-hidden="true" data-faq-context class="faq__context-item">
-                    <p class="faq__context-title">Augmentation, not replacement</p>
-                    <p class="faq__context-body">Think of agents like specialist teammates who never sleep. A media strategist might have an agent that monitors campaign performance 24/7 and drafts optimization recommendations. A creative director might have one that researches competitor campaigns and surfaces insights. Your team stays in control — agents just multiply their output.</p>
-                  </div>
-                  <div aria-hidden="true" data-faq-context class="faq__context-item">
-                    <p class="faq__context-title">Built for knowledge work</p>
-                    <p class="faq__context-body">Our sweet spot is teams that produce reports, analysis, creative briefs, and strategic recommendations. Agencies, consultancies, media companies, and in-house marketing teams. If your team's output is thinking — not widgets — agents can dramatically change your capacity.</p>
-                  </div>
-                  <div aria-hidden="true" data-faq-context class="faq__context-item">
-                    <p class="faq__context-title">Fast to value, built to last</p>
-                    <p class="faq__context-body">Week 1-2: Discovery — we map your workflows and identify high-impact agent opportunities. Week 3-4: Build — working agent prototypes in your actual tools. Month 2+: Scale — refine, expand, and hand over ownership. You're never locked in. Everything we build, you own.</p>
-                  </div>
-                  <div aria-hidden="true" data-faq-context class="faq__context-item">
-                    <p class="faq__context-title">Agents designed with you</p>
-                    <p class="faq__context-body">Most AI consultancies hand you a platform and wish you luck. We sit with your team, understand the nuance of how you work, and build agent systems that feel like a natural extension of your process. The best agent is one your team actually uses — and that requires design thinking, not just engineering.</p>
-                  </div>
-                </div>
-              </div>
-              <div data-faq-cover class="faq__context-cover">
-                <p class="faq__context-cover-text">Select a question to learn more</p>
-              </div>
+            <div data-faq-a="0" class="faq__answer">
+              <p class="faq__answer-title">Agent readiness is a spectrum</p>
+              <p class="faq__answer-body">Most businesses use AI for simple tasks — chatbots, summaries, search. Agent readiness means going further: autonomous workflows, multi-step reasoning, and agents that can make decisions with guardrails. We assess where you are and build a path to where you want to be.</p>
             </div>
-          </div>
-          <div class="faq__close">
-            <button data-faq-close type="button" aria-hidden="true" class="faq__close-button">
-              <span class="faq__item-icon-bar"></span>
-              <span class="faq__item-icon-bar is--horizontal"></span>
-            </button>
+            <div data-faq-a="1" class="faq__answer">
+              <p class="faq__answer-title">Augmentation, not replacement</p>
+              <p class="faq__answer-body">Think of agents like specialist teammates who never sleep. A media strategist might have an agent that monitors campaign performance 24/7 and drafts optimization recommendations. Your team stays in control — agents just multiply their output.</p>
+            </div>
+            <div data-faq-a="2" class="faq__answer">
+              <p class="faq__answer-title">Built for knowledge work</p>
+              <p class="faq__answer-body">Our sweet spot is teams that produce reports, analysis, creative briefs, and strategic recommendations. Agencies, consultancies, media companies, and in-house marketing teams. If your team's output is thinking — not widgets — agents can dramatically change your capacity.</p>
+            </div>
+            <div data-faq-a="3" class="faq__answer">
+              <p class="faq__answer-title">Fast to value, built to last</p>
+              <p class="faq__answer-body">Week 1-2: Discovery — we map your workflows and identify high-impact agent opportunities. Week 3-4: Build — working agent prototypes in your actual tools. Month 2+: Scale — refine, expand, and hand over ownership. You're never locked in. Everything we build, you own.</p>
+            </div>
+            <div data-faq-a="4" class="faq__answer">
+              <p class="faq__answer-title">Agents designed with you</p>
+              <p class="faq__answer-body">Most AI consultancies hand you a platform and wish you luck. We sit with your team, understand the nuance of how you work, and build agent systems that feel like a natural extension of your process. The best agent is one your team actually uses — and that requires design thinking, not just engineering.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -1594,172 +1268,29 @@
       );
     }
 
-    /* ------------------------- FAQ Expanding Pills ------------------------- */
+    /* ------------------------- FAQ ------------------------- */
 
     function initFaqPills() {
-      const wraps = document.querySelectorAll('[data-faq-init]');
-      if (!wraps.length) return;
+      const wrap = document.querySelector('[data-faq-init]');
+      if (!wrap) return;
 
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const buttons = wrap.querySelectorAll('[data-faq-q]');
+      const answers = wrap.querySelectorAll('[data-faq-a]');
+      const placeholder = wrap.querySelector('.faq__placeholder');
 
-      wraps.forEach((wrap) => {
-        const items = Array.from(wrap.querySelectorAll('[data-faq-item]'));
-        const contexts = Array.from(wrap.querySelectorAll('[data-faq-context]'));
-        const cover = wrap.querySelector('[data-faq-cover]');
-        const closeBtn = wrap.querySelector('[data-faq-close]');
-        if (!items.length) return;
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = btn.getAttribute('data-faq-q');
 
-        const ease = 'back.out(2)';
-        const duration = 0.5;
+          buttons.forEach(b => b.classList.remove('is--active'));
+          btn.classList.add('is--active');
 
-        const getExpandedWidth = () =>
-          getComputedStyle(wrap).getPropertyValue('--faq-item-expanded').trim() || '';
+          answers.forEach(a => a.classList.remove('is--active'));
+          const answer = wrap.querySelector(`[data-faq-a="${idx}"]`);
+          if (answer) answer.classList.add('is--active');
 
-        const getActiveIndex = () => {
-          const active = items.find(it => it.getAttribute('data-active') === 'true');
-          return active ? Number(active.getAttribute('data-faq-idx')) : null;
-        };
-
-        const setWrapActive = (isActive) => {
-          wrap.setAttribute('data-faq-active', isActive ? 'true' : 'false');
-          if (closeBtn) closeBtn.setAttribute('aria-hidden', isActive ? 'false' : 'true');
-          if (cover) {
-            cover.setAttribute('data-active', isActive ? 'false' : 'true');
-            cover.setAttribute('aria-hidden', isActive ? 'true' : 'false');
-          }
-        };
-
-        const setContextActive = (indexOrNull) => {
-          contexts.forEach((c, i) => {
-            const isActive = indexOrNull !== null && i === indexOrNull;
-            c.setAttribute('data-active', isActive ? 'true' : 'false');
-            c.setAttribute('aria-hidden', isActive ? 'false' : 'true');
-          });
-        };
-
-        const measureButtonH = (item) => {
-          const btn = item.querySelector('[data-faq-button]');
-          return btn ? Math.ceil(btn.getBoundingClientRect().height) : 0;
-        };
-
-        const measureInnerH = (item, expandedW) => {
-          const inner = item.querySelector('[data-faq-inner]');
-          if (!inner) return 0;
-          const mask = item.querySelector('.faq__item-mask');
-          const prevOverflow = mask ? mask.style.overflow : null;
-          if (mask) mask.style.overflow = 'visible';
-          const prevMaxW = inner.style.maxWidth;
-          if (expandedW) inner.style.maxWidth = expandedW;
-          const h = Math.ceil(inner.getBoundingClientRect().height);
-          if (expandedW) inner.style.maxWidth = prevMaxW || '';
-          if (mask) mask.style.overflow = prevOverflow || '';
-          return h;
-        };
-
-        const collapsedWidths = new Map();
-
-        const captureCollapsedWidths = () => {
-          items.forEach(item => {
-            const prev = item.style.width;
-            item.style.width = '';
-            collapsedWidths.set(item, Math.ceil(item.getBoundingClientRect().width));
-            item.style.width = prev;
-          });
-        };
-
-        const animateBox = (el, vars) => {
-          gsap.killTweensOf(el);
-          if (prefersReducedMotion) {
-            if (vars.height != null) el.style.height = vars.height + 'px';
-            if (vars.width != null) el.style.width = typeof vars.width === 'number' ? vars.width + 'px' : vars.width;
-            return;
-          }
-          gsap.to(el, { ...vars, duration, ease, overwrite: true });
-        };
-
-        const openItem = (item) => {
-          const expandedW = getExpandedWidth();
-          const innerH = measureInnerH(item, expandedW);
-          const buttonH = measureButtonH(item);
-          const openH = Math.max(buttonH, innerH);
-
-          item.setAttribute('data-active', 'true');
-          const btn = item.querySelector('[data-faq-button]');
-          const content = item.querySelector('[data-faq-content]');
-          if (btn) btn.setAttribute('aria-expanded', 'true');
-          if (content) content.setAttribute('aria-hidden', 'false');
-          setWrapActive(true);
-
-          const targetW = expandedW || (collapsedWidths.get(item) || Math.ceil(item.getBoundingClientRect().width)) + 'px';
-          animateBox(item, { height: openH, width: targetW });
-        };
-
-        const closeItem = (item) => {
-          const buttonH = measureButtonH(item);
-          item.setAttribute('data-active', 'false');
-          const btn = item.querySelector('[data-faq-button]');
-          const content = item.querySelector('[data-faq-content]');
-          if (btn) btn.setAttribute('aria-expanded', 'false');
-          if (content) content.setAttribute('aria-hidden', 'true');
-
-          const targetW = collapsedWidths.get(item) || Math.ceil(item.getBoundingClientRect().width);
-          animateBox(item, { height: buttonH, width: targetW });
-        };
-
-        const switchTo = (nextIndex) => {
-          const current = getActiveIndex();
-          if (current === nextIndex) return;
-          if (current !== null) closeItem(items[current]);
-          openItem(items[nextIndex]);
-          setContextActive(nextIndex);
-        };
-
-        const closeAll = () => {
-          const current = getActiveIndex();
-          if (current === null) return;
-          closeItem(items[current]);
-          setContextActive(null);
-          setWrapActive(false);
-        };
-
-        // Init
-        items.forEach((item, i) => {
-          item.setAttribute('data-faq-idx', String(i));
-          item.style.height = measureButtonH(item) + 'px';
+          if (placeholder) placeholder.classList.add('is--hidden');
         });
-
-        setWrapActive(false);
-        setContextActive(null);
-        captureCollapsedWidths();
-
-        // Events
-        items.forEach((item, i) => {
-          const btn = item.querySelector('[data-faq-button]');
-          if (btn) btn.addEventListener('click', () => switchTo(i));
-        });
-
-        if (closeBtn) closeBtn.addEventListener('click', closeAll);
-        wrap.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
-
-        // Resize handling
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-          clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(() => {
-            const current = getActiveIndex();
-            items.forEach(item => { if (item.getAttribute('data-active') !== 'true') item.style.width = ''; });
-            captureCollapsedWidths();
-            if (current !== null) {
-              const item = items[current];
-              const expandedW = getExpandedWidth();
-              const innerH = measureInnerH(item, expandedW);
-              const buttonH = measureButtonH(item);
-              gsap.set(item, { height: Math.max(buttonH, innerH), width: expandedW || '' });
-            } else {
-              items.forEach(item => { item.style.height = measureButtonH(item) + 'px'; });
-            }
-          }, 200);
-        }, { passive: true });
       });
     }
 
