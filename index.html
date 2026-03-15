@@ -291,19 +291,6 @@
       letter-spacing: -0.02em;
     }
 
-    /* Word reveal animation */
-    .word-reveal__word {
-      display: inline-block;
-      overflow: hidden;
-      vertical-align: top;
-      padding-bottom: 0.1em;
-    }
-
-    .word-reveal__inner {
-      display: inline-block;
-      padding-bottom: 0.1em;
-    }
-
     /* ------------------------- Mission Section ------------------------- */
 
     .mission {
@@ -893,7 +880,7 @@
     <!-- Hero -->
     <section class="hero">
       <div class="container">
-        <h1 data-word-reveal data-parallax="trigger" data-parallax-start="0" data-parallax-end="30" data-parallax-scroll-start="top top" class="hero__heading">Are you agent ready?</h1>
+        <h1 data-load-skeleton="dark" data-parallax="trigger" data-parallax-start="0" data-parallax-end="30" data-parallax-scroll-start="top top" class="hero__heading">Are you agent <span style="color: var(--ua-mint)">ready?</span></h1>
       </div>
     </section>
 
@@ -1085,49 +1072,20 @@
       if (resetTargets.length) tl.set(resetTargets, { autoAlpha: 1 }, 0);
     }
 
-    function setupWordReveal() {
-      const heading = document.querySelector('[data-word-reveal]');
-      if (!heading) return () => {};
-
-      const text = heading.textContent.trim();
-      const words = text.split(/\s+/);
-
-      heading.textContent = '';
-      words.forEach((word, i) => {
-        if (i > 0) heading.appendChild(document.createTextNode(' '));
-        const outer = document.createElement('span');
-        outer.className = 'word-reveal__word';
-        const inner = document.createElement('span');
-        inner.className = 'word-reveal__inner';
-        inner.textContent = word;
-        if (word === 'ready?') inner.style.color = 'var(--ua-mint)';
-        outer.appendChild(inner);
-        heading.appendChild(outer);
-      });
-
-      const inners = heading.querySelectorAll('.word-reveal__inner');
-      gsap.set(inners, { yPercent: 120 });
-
+    function setupLogomarkReveal() {
       const logomark = document.querySelector('.logomark');
-      if (logomark) gsap.set(logomark, { autoAlpha: 0, yPercent: 80, rotation: 8 });
+      if (!logomark) return () => {};
+
+      gsap.set(logomark, { autoAlpha: 0, yPercent: 80, rotation: 8 });
 
       return () => {
-        const tl = gsap.timeline();
-        tl.to(inners[0], { yPercent: 0, duration: 0.7, ease: 'power4.out' }, 0)      // Are
-          .to(inners[1], { yPercent: 0, duration: 0.7, ease: 'power4.out' }, 0.12)    // you
-          .to(inners[2], { yPercent: 0, duration: 0.55, ease: 'power4.out' }, 0.24)   // agent
-          .to(inners[3], { yPercent: 0, duration: 0.9, ease: 'power3.out' }, 0.5);    // ready? — slight beat
-
-        // Logomark — 0.4s after "ready?" lands (~1.8s), longer duration to land the moment
-        if (logomark) {
-          tl.to(logomark, {
-            autoAlpha: 1,
-            yPercent: 0,
-            rotation: 0,
-            duration: 1.4,
-            ease: 'power3.out'
-          }, 1.8);
-        }
+        gsap.to(logomark, {
+          autoAlpha: 1,
+          yPercent: 0,
+          rotation: 0,
+          duration: 1.4,
+          ease: 'power3.out'
+        });
       };
     }
 
@@ -1558,8 +1516,8 @@
     /* ------------------------- Init ------------------------- */
 
     document.addEventListener("DOMContentLoaded", () => {
-      const playReveal = setupWordReveal();
-      document.fonts.ready.then(() => initLoader(playReveal));
+      const revealLogomark = setupLogomarkReveal();
+      document.fonts.ready.then(() => initLoader(revealLogomark));
       initLenis();
       initGlobalParallax();
       initScrollReveal();
