@@ -9,8 +9,8 @@
   <title>Universal Agents</title>
 
   <!-- Font preloading — critical above-the-fold fonts only -->
-  <link rel="preload" href="assets/fonts/GeistMono-Regular.ttf" as="font" type="font/truetype" crossorigin>
-  <link rel="preload" href="assets/fonts/GeistMono-Bold.ttf" as="font" type="font/truetype" crossorigin>
+  <link rel="preload" href="assets/fonts/GeistMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/GeistMono-Bold.ttf" as="font" type="font/ttf" crossorigin>
 
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
@@ -1559,7 +1559,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       const playReveal = setupWordReveal();
-      initLoader(playReveal);
+      document.fonts.ready.then(() => initLoader(playReveal));
       initLenis();
       initGlobalParallax();
       initScrollReveal();
