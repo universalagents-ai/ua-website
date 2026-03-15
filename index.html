@@ -420,34 +420,6 @@
       background-color: var(--color-skeleton-base);
     }
 
-    /* Shimmer sweep */
-    @keyframes shimmer-sweep {
-      from { background-position: 100% center; }
-      to { background-position: 0% center; }
-    }
-
-    .text-shimmer {
-      --shimmer-base: #ffffff;
-      --shimmer-highlight: var(--ua-mint);
-      background: linear-gradient(
-        90deg,
-        var(--shimmer-base) 0%,
-        var(--shimmer-base) calc(50% - 30px),
-        var(--shimmer-highlight) 50%,
-        var(--shimmer-base) calc(50% + 30px),
-        var(--shimmer-base) 100%
-      );
-      background-size: 250% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer-sweep 1.5s ease-in-out 2;
-    }
-
-    .text-shimmer span {
-      -webkit-text-fill-color: var(--ua-mint);
-    }
-
     [data-load-skeleton="mint"] {
       --color-skeleton-base: rgba(0, 0, 0, 0.1);
       --color-skeleton-pulse: rgba(0, 0, 0, 0.18);
@@ -1380,18 +1352,30 @@
       // Phase 2 (auto only): stream words in one by one
       if (isAuto && allWords.length) {
         const streamStart = masterTl.duration();
+
+        // Find which words are inside the mint span
+        const mintSpan = instance.querySelector('span[style*="ua-mint"]');
+
         allWords.forEach((word, i) => {
+          const isMint = mintSpan && mintSpan.contains(word);
           masterTl.to(word, {
             autoAlpha: 1,
+            color: isMint ? 'var(--ua-mint)' : 'var(--ua-white)',
             duration: 0.08,
             ease: 'none',
           }, streamStart + i * 0.06);
         });
 
-        // Phase 3: shimmer sweep after all words visible
-        masterTl.call(() => {
-          instance.classList.add('text-shimmer');
-        }, null, '>+=0.2');
+        // Phase 3: shimmer — sweep color from dim→bright across all words
+        const shimmerStart = masterTl.duration() + 0.3;
+        allWords.forEach((word, i) => {
+          const isMint = mintSpan && mintSpan.contains(word);
+          const dimColor = isMint ? '#1a9950' : 'var(--ua-gray)';
+          const fullColor = isMint ? 'var(--ua-mint)' : 'var(--ua-white)';
+
+          masterTl.to(word, { color: dimColor, duration: 0.01 }, shimmerStart + i * 0.04);
+          masterTl.to(word, { color: fullColor, duration: 0.3, ease: 'power2.out' }, shimmerStart + i * 0.04 + 0.05);
+        });
       }
 
       return masterTl;
