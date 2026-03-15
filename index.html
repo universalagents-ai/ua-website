@@ -1356,7 +1356,7 @@
 
       // Phase 2 (auto only): stream words in one by one
       if (isAuto && allWords.length) {
-        const streamStart = masterTl.duration() + 0.05;
+        const streamStart = masterTl.duration();
 
         // Find which words are inside the mint span
         const mintSpan = instance.querySelector('span[style*="ua-mint"]');
