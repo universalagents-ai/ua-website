@@ -1054,12 +1054,12 @@
       if (page) {
         tl.fromTo(page, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
         tl.call(onReveal, null, "reveal+=0.5");
+        // Fire hero skeleton immediately with the wipe
         tl.call(() => {
-          // Play any skeleton loaders marked as auto (hero)
           document.querySelectorAll('[data-skeleton-auto]').forEach(el => {
             if (el._skeletonTl) el._skeletonTl.play();
           });
-        }, null, "reveal+=0.6");
+        }, null, "reveal");
         if (progressBar) tl.to(progressBar, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
       }
 
@@ -1324,19 +1324,24 @@
       const pulseColor = gsap.getProperty(instance, '--color-skeleton-pulse');
 
       // Phase 1: skeleton pulse and fade
+      const pulseRepeat = isAuto ? 1 : 2;
+      const pulseDuration = isAuto ? 0.2 : 0.3;
+      const fadeDuration = isAuto ? 0.25 : 0.5;
+
       overlays.forEach((overlay, i) => {
         const textEl = overlay.previousElementSibling;
         const offset = i * 0.05;
 
         masterTl.to(overlay, {
           backgroundColor: pulseColor,
-          duration: 0.3,
+          duration: pulseDuration,
           ease: 'power1.inOut',
-          repeat: 2,
+          repeat: pulseRepeat,
           yoyo: true,
         }, offset)
         .to(overlay, {
           opacity: 0,
+          duration: fadeDuration,
           onComplete: () => overlay.remove()
         }, '>');
 
@@ -1361,13 +1366,13 @@
           masterTl.to(word, {
             autoAlpha: 1,
             color: isMint ? 'var(--ua-mint)' : 'var(--ua-white)',
-            duration: 0.08,
+            duration: 0.05,
             ease: 'none',
-          }, streamStart + i * 0.06);
+          }, streamStart + i * 0.04);
         });
 
         // Phase 3: shimmer — sweep color from dim→bright across all words
-        const shimmerStart = masterTl.duration() + 0.3;
+        const shimmerStart = masterTl.duration() + 0.15;
         allWords.forEach((word, i) => {
           const isMint = mintSpan && mintSpan.contains(word);
           const dimColor = isMint ? '#1a9950' : 'var(--ua-gray)';
