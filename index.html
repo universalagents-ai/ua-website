@@ -1050,6 +1050,7 @@
       if (page) {
         tl.fromTo(page, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
         tl.call(onReveal, null, "reveal+=0.5");
+        tl.call(() => ScrollTrigger.refresh(), null, "reveal+=0.6");
         if (progressBar) tl.to(progressBar, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
       }
 
