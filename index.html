@@ -411,6 +411,34 @@
       }
     }
 
+    /* ------------------------- Skeleton Text Reveal ------------------------- */
+
+    [data-load-skeleton] .single-line {
+      visibility: hidden;
+    }
+
+    .skeleton-overlay {
+      position: absolute;
+      top: 50%;
+      transform: translate(0px, -50%);
+      left: 0;
+      width: 100%;
+      height: 80%;
+      border-radius: 0.25rem;
+      z-index: 1;
+      background-color: var(--color-skeleton-base);
+    }
+
+    [data-load-skeleton="mint"] {
+      --color-skeleton-base: rgba(0, 0, 0, 0.1);
+      --color-skeleton-pulse: rgba(0, 0, 0, 0.18);
+    }
+
+    [data-load-skeleton="dark"] {
+      --color-skeleton-base: #1a1f2a;
+      --color-skeleton-pulse: #2e3643;
+    }
+
     /* ------------------------- FAQ Section ------------------------- */
 
     .faq {
@@ -873,7 +901,7 @@
     <section class="mission" data-theme="light">
       <div class="container">
         <p data-reveal class="mission__label">Our Mission</p>
-        <h2 data-reveal data-reveal-delay="0.1" class="mission__statement">Is to help every business turn into an agent.</h2>
+        <h2 data-load-skeleton="mint" class="mission__statement">Is to help every business turn into an agent.</h2>
       </div>
     </section>
 
@@ -1261,6 +1289,97 @@
       );
     }
 
+    /* ------------------------- Skeleton Text Reveal ------------------------- */
+
+    function skeletonCleanup() {
+      document.querySelectorAll('[data-load-skeleton]').forEach(target => {
+        if (target.splitInstance) {
+          target.splitInstance.revert();
+          delete target.splitInstance;
+        }
+        target.querySelectorAll('.skeleton-overlay').forEach(overlay => overlay.remove());
+      });
+
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars && trigger.vars.trigger && trigger.vars.trigger.closest && trigger.vars.trigger.closest('[data-load-skeleton]')) {
+          trigger.kill();
+        }
+      });
+    }
+
+    function initSkeletonSplit() {
+      document.querySelectorAll('[data-load-skeleton]').forEach(target => {
+        const splitInstance = new SplitText(target, {
+          type: 'lines',
+          linesClass: 'single-line',
+        });
+        target.splitInstance = splitInstance;
+        target.setAttribute('aria-label', target.textContent);
+
+        splitInstance.lines.forEach(line => {
+          line.setAttribute('aria-hidden', 'true');
+          const wrapper = document.createElement('div');
+          wrapper.classList.add('single-line-wrap');
+          line.parentNode.insertBefore(wrapper, line);
+          wrapper.appendChild(line);
+        });
+      });
+    }
+
+    function initSkeletonLoader() {
+      document.querySelectorAll('[data-load-skeleton]').forEach(instance => {
+        const overlays = [];
+        const lineWrappers = instance.querySelectorAll('.single-line-wrap');
+
+        lineWrappers.forEach(wrapper => {
+          const overlay = document.createElement('div');
+          overlay.classList.add('skeleton-overlay');
+          wrapper.style.position = 'relative';
+          wrapper.appendChild(overlay);
+          overlays.push(overlay);
+        });
+
+        overlays.forEach((overlay, i) => {
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: overlay,
+              start: 'top 90%',
+              once: true,
+            },
+            defaults: { duration: 0.5, ease: 'power2.inOut' }
+          });
+
+          const pulseColor = gsap.getProperty(instance, '--color-skeleton-pulse');
+          const textEl = overlay.previousElementSibling;
+
+          tl.to(overlay, {
+            backgroundColor: pulseColor,
+            duration: 0.3,
+            ease: 'power1.inOut',
+            repeat: 2,
+            yoyo: true,
+            delay: i * 0.05
+          })
+          .to(overlay, {
+            opacity: 0,
+            onComplete: () => overlay.remove()
+          })
+          .to(textEl, { autoAlpha: 1 }, '<');
+        });
+      });
+    }
+
+    function initSkeletonTextEffects() {
+      skeletonCleanup();
+      initSkeletonSplit();
+      initSkeletonLoader();
+    }
+
+    function debounce(fn, wait) {
+      let t;
+      return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
+    }
+
     /* ------------------------- FAQ ------------------------- */
 
     function initFaqPills() {
@@ -1449,6 +1568,18 @@
       initContentRevealScroll();
       initFooterParallax();
       initScrollProgressBar();
+
+      // Skeleton text reveal — wait for fonts
+      document.fonts.ready.then(initSkeletonTextEffects);
+
+      // Rebuild skeleton on width resize (text reflows)
+      let prevWidth = window.innerWidth;
+      window.addEventListener('resize', debounce(() => {
+        if (window.innerWidth !== prevWidth) {
+          prevWidth = window.innerWidth;
+          initSkeletonTextEffects();
+        }
+      }, 250));
     });
   </script>
 
