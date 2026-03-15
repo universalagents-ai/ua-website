@@ -1054,12 +1054,12 @@
       if (page) {
         tl.fromTo(page, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
         tl.call(onReveal, null, "reveal+=0.5");
-        // Fire hero skeleton immediately with the wipe
+        // Fire hero skeleton just after wipe starts
         tl.call(() => {
           document.querySelectorAll('[data-skeleton-auto]').forEach(el => {
             if (el._skeletonTl) el._skeletonTl.play();
           });
-        }, null, "reveal");
+        }, null, "reveal+=0.1");
         if (progressBar) tl.to(progressBar, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
       }
 
@@ -1326,7 +1326,7 @@
       // Phase 1: skeleton pulse and fade
       const pulseRepeat = isAuto ? 1 : 2;
       const pulseDuration = isAuto ? 0.2 : 0.3;
-      const fadeDuration = isAuto ? 0.25 : 0.5;
+      const fadeDuration = isAuto ? 0.3 : 0.5;
 
       overlays.forEach((overlay, i) => {
         const textEl = overlay.previousElementSibling;
@@ -1356,7 +1356,7 @@
 
       // Phase 2 (auto only): stream words in one by one
       if (isAuto && allWords.length) {
-        const streamStart = masterTl.duration();
+        const streamStart = masterTl.duration() + 0.05;
 
         // Find which words are inside the mint span
         const mintSpan = instance.querySelector('span[style*="ua-mint"]');
