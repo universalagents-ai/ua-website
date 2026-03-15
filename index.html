@@ -404,6 +404,10 @@
       visibility: hidden;
     }
 
+    .single-line-wrap {
+      display: inline-block;
+    }
+
     .skeleton-overlay {
       position: absolute;
       top: 50%;
@@ -880,7 +884,7 @@
     <!-- Hero -->
     <section class="hero">
       <div class="container">
-        <h1 data-load-skeleton="dark" data-parallax="trigger" data-parallax-start="0" data-parallax-end="30" data-parallax-scroll-start="top top" class="hero__heading">Are you agent <span style="color: var(--ua-mint)">ready?</span></h1>
+        <h1 data-load-skeleton="dark" data-skeleton-auto data-parallax="trigger" data-parallax-start="0" data-parallax-end="30" data-parallax-scroll-start="top top" class="hero__heading">Are you agent <span style="color: var(--ua-mint)">ready?</span></h1>
       </div>
     </section>
 
@@ -1050,7 +1054,12 @@
       if (page) {
         tl.fromTo(page, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
         tl.call(onReveal, null, "reveal+=0.5");
-        tl.call(() => ScrollTrigger.refresh(), null, "reveal+=0.6");
+        tl.call(() => {
+          // Play any skeleton loaders marked as auto (hero)
+          document.querySelectorAll('[data-skeleton-auto]').forEach(el => {
+            if (el._skeletonTl) el._skeletonTl.play();
+          });
+        }, null, "reveal+=0.6");
         if (progressBar) tl.to(progressBar, { autoAlpha: 1, duration: 0.6 }, "reveal+=0.4");
       }
 
@@ -1285,46 +1294,59 @@
       });
     }
 
+    function buildSkeletonTimeline(instance) {
+      const overlays = [];
+      const lineWrappers = instance.querySelectorAll('.single-line-wrap');
+
+      lineWrappers.forEach(wrapper => {
+        const overlay = document.createElement('div');
+        overlay.classList.add('skeleton-overlay');
+        wrapper.style.position = 'relative';
+        wrapper.appendChild(overlay);
+        overlays.push(overlay);
+      });
+
+      const masterTl = gsap.timeline({ paused: true, defaults: { duration: 0.5, ease: 'power2.inOut' } });
+      const pulseColor = gsap.getProperty(instance, '--color-skeleton-pulse');
+
+      overlays.forEach((overlay, i) => {
+        const textEl = overlay.previousElementSibling;
+        const offset = i * 0.05;
+
+        masterTl.to(overlay, {
+          backgroundColor: pulseColor,
+          duration: 0.3,
+          ease: 'power1.inOut',
+          repeat: 2,
+          yoyo: true,
+        }, offset)
+        .to(overlay, {
+          opacity: 0,
+          onComplete: () => overlay.remove()
+        }, '>')
+        .to(textEl, { autoAlpha: 1 }, '<');
+      });
+
+      return masterTl;
+    }
+
     function initSkeletonLoader() {
       document.querySelectorAll('[data-load-skeleton]').forEach(instance => {
-        const overlays = [];
-        const lineWrappers = instance.querySelectorAll('.single-line-wrap');
+        const tl = buildSkeletonTimeline(instance);
+        const isAuto = instance.hasAttribute('data-skeleton-auto');
 
-        lineWrappers.forEach(wrapper => {
-          const overlay = document.createElement('div');
-          overlay.classList.add('skeleton-overlay');
-          wrapper.style.position = 'relative';
-          wrapper.appendChild(overlay);
-          overlays.push(overlay);
-        });
-
-        overlays.forEach((overlay, i) => {
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: overlay,
-              start: 'top 90%',
-              once: true,
-            },
-            defaults: { duration: 0.5, ease: 'power2.inOut' }
+        if (isAuto) {
+          // Store for manual trigger from loader
+          instance._skeletonTl = tl;
+        } else {
+          // ScrollTrigger for below-the-fold elements
+          ScrollTrigger.create({
+            trigger: instance,
+            start: 'top 90%',
+            once: true,
+            onEnter: () => tl.play(),
           });
-
-          const pulseColor = gsap.getProperty(instance, '--color-skeleton-pulse');
-          const textEl = overlay.previousElementSibling;
-
-          tl.to(overlay, {
-            backgroundColor: pulseColor,
-            duration: 0.3,
-            ease: 'power1.inOut',
-            repeat: 2,
-            yoyo: true,
-            delay: i * 0.05
-          })
-          .to(overlay, {
-            opacity: 0,
-            onComplete: () => overlay.remove()
-          })
-          .to(textEl, { autoAlpha: 1 }, '<');
-        });
+        }
       });
     }
 
