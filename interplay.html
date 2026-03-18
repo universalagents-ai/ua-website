@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interplay — Own your intelligence. A modular AI operating system built for how agencies actually work.">
+  <meta name="theme-color" content="#f8f8f8">
+  <meta name="color-scheme" content="light">
+  <title>Interplay — Own Your Intelligence</title>
+
+  <!-- Font preloading -->
+  <link rel="preload" href="assets/fonts/GeistMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Geist-Medium.woff2" as="font" type="font/woff2" crossorigin>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.2.3/dist/lenis.min.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }
+  </script>
+
+  <style>
+    @font-face {
+      font-family: 'GeistMono';
+      src: url('assets/fonts/GeistMono-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'GeistMono';
+      src: url('assets/fonts/GeistMono-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Geist';
+      src: url('assets/fonts/Geist-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Geist';
+      src: url('assets/fonts/Geist-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Geist';
+      src: url('assets/fonts/Geist-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ------------------------- Scaling System [Osmo] ------------------------- */
+
+    /* Desktop */
+    :root {
+      --ip-black: #0a0a0a;
+      --ip-dark: #1a1a1a;
+      --ip-gray: #555555;
+      --ip-light-gray: #999999;
+      --ip-border: rgba(0, 0, 0, 0.08);
+      --ip-white: #ffffff;
+      --ip-bg: #f8f8f8;
+      --ip-pink: #FF69BA;
+      --ip-mint: #65FFA3;
+
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+      --duration-fast: 0.2s;
+      --duration-normal: 0.4s;
+      --duration-slow: 0.6s;
+
+      --size-unit: 16;
+      --size-container-ideal: 1440;
+      --size-container-min: 992px;
+      --size-container-max: 1920px;
+      --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
+      --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
+
+      --grid-padding: 1.5em;
+
+      --text-display: 3em;
+      --text-heading: 2.5em;
+      --text-title: 1.25em;
+      --text-body: 1.5em;
+      --text-label: 0.8125em;
+
+      --font-body: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'GeistMono', monospace;
+
+      --section-padding: 8em;
+    }
+
+    /* Tablet */
+    @media screen and (max-width: 991px) {
+      :root {
+        --size-container-ideal: 834;
+        --size-container-min: 768px;
+        --size-container-max: 991px;
+        --grid-padding: 1.25em;
+        --text-display: 2.5em;
+        --text-heading: 2em;
+        --text-body: 1.25em;
+        --section-padding: 6em;
+      }
+    }
+
+    /* Mobile Landscape */
+    @media screen and (max-width: 767px) {
+      :root {
+        --size-container-ideal: 550;
+        --size-container-min: 480px;
+        --size-container-max: 767px;
+        --grid-padding: 1em;
+        --text-display: 2.25em;
+        --text-heading: 1.75em;
+        --text-title: 1.125em;
+        --text-body: 1.1em;
+        --section-padding: 5em;
+      }
+    }
+
+    /* Mobile Portrait */
+    @media screen and (max-width: 479px) {
+      :root {
+        --size-container-ideal: 390;
+        --size-container-min: 320px;
+        --size-container-max: 479px;
+        --grid-padding: 0.75em;
+        --text-display: 1.45em;
+        --text-heading: 1.25em;
+        --text-title: 1em;
+        --text-body: 1em;
+        --section-padding: 4em;
+      }
+    }
+
+    /* ------------------------- Reduced Motion ------------------------- */
+
+    @media (prefers-reduced-motion: reduce) {
+      :root {
+        --duration-fast: 0s;
+        --duration-normal: 0s;
+        --duration-slow: 0s;
+      }
+
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ------------------------- Scroll Reveal Base ------------------------- */
+
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* ------------------------- Reset & Base ------------------------- */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: var(--size-font);
+    }
+
+    body {
+      margin: 0;
+      background: var(--ip-bg);
+      font-family: var(--font-body);
+      font-size: 1em;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+      font-feature-settings: "liga" 1, "calt" 1;
+      color: var(--ip-dark);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-wrap: pretty;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ------------------------- Container ------------------------- */
+
+    .container {
+      width: 100%;
+      max-width: var(--size-container);
+      margin-inline: auto;
+      padding-inline: var(--grid-padding);
+    }
+
+    .container.is--narrow {
+      max-width: 55em;
+    }
+
+    /* ------------------------- Chroma Ambient Background ------------------------- */
+
+    .chroma {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .chroma__blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.6;
+      will-change: transform;
+    }
+
+    .chroma__blob--1 {
+      width: 50vw; height: 50vh;
+      top: -10%; left: -5%;
+      background: radial-gradient(circle, #ffc1fd 0%, transparent 70%);
+      animation: chroma-drift-1 25s ease-in-out infinite alternate;
+    }
+    .chroma__blob--2 {
+      width: 45vw; height: 45vh;
+      top: 10%; right: -10%;
+      background: radial-gradient(circle, #96d0ff 0%, transparent 70%);
+      animation: chroma-drift-2 30s ease-in-out infinite alternate;
+    }
+    .chroma__blob--3 {
+      width: 40vw; height: 40vh;
+      bottom: 5%; left: 20%;
+      background: radial-gradient(circle, #ffb005 0%, transparent 70%);
+      animation: chroma-drift-3 22s ease-in-out infinite alternate;
+    }
+    .chroma__blob--4 {
+      width: 35vw; height: 35vh;
+      bottom: -5%; right: 15%;
+      background: radial-gradient(circle, #ffada0 0%, transparent 70%);
+      animation: chroma-drift-4 28s ease-in-out infinite alternate;
+    }
+
+    .chroma__diffusion {
+      position: absolute;
+      inset: -25%;
+      width: 150%;
+      height: 150%;
+      z-index: 1;
+      filter: blur(80px);
+      background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(248,248,248,0.7) 60%, rgb(248,248,248) 100%);
+    }
+
+    @keyframes chroma-drift-1 {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(8vw, 6vh) scale(1.15); }
+    }
+    @keyframes chroma-drift-2 {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-6vw, 8vh) scale(1.1); }
+    }
+    @keyframes chroma-drift-3 {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5vw, -7vh) scale(1.2); }
+    }
+    @keyframes chroma-drift-4 {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-7vw, -5vh) scale(1.05); }
+    }
+
+    /* ------------------------- Page Content ------------------------- */
+
+    .page {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ------------------------- Hero Section ------------------------- */
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero__logo {
+      width: clamp(200px, 40vw, 480px);
+      height: auto;
+      margin-bottom: 2em;
+    }
+
+    .hero__logo svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hero__logo path[stroke="white"] {
+      stroke: var(--ip-dark);
+    }
+
+    .hero__cube-wrap {
+      margin-bottom: 2em;
+    }
+
+    .hero__cube-wrap canvas {
+      display: block;
+      width: 120px;
+      height: 120px;
+    }
+
+    .hero__tagline {
+      font-family: var(--font-mono);
+      font-size: var(--text-heading);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ip-dark);
+      margin: 0 0 0.5em;
+    }
+
+    .hero__sub {
+      font-size: var(--text-body);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--ip-gray);
+      max-width: 38ch;
+      margin: 0 auto;
+      text-wrap: balance;
+    }
+
+    /* ------------------------- Section System ------------------------- */
+
+    .section {
+      padding: var(--section-padding) 0;
+    }
+
+    .section__label {
+      font-family: var(--font-mono);
+      font-size: var(--text-label);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin: 0 0 2em;
+      color: var(--ip-dark);
+    }
+
+    .section__heading {
+      font-family: var(--font-mono);
+      font-size: var(--text-heading);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      margin: 0 0 1em;
+      color: var(--ip-dark);
+    }
+
+    .section__body {
+      font-size: var(--text-body);
+      line-height: 1.7;
+      color: var(--ip-gray);
+      max-width: 55ch;
+      margin: 0 0 1.2em;
+    }
+
+    .section__body:last-child {
+      margin-bottom: 0;
+    }
+
+    .section__body strong {
+      color: var(--ip-dark);
+      font-weight: 500;
+    }
+
+    .section__kicker {
+      font-family: var(--font-mono);
+      font-size: var(--text-body);
+      font-weight: 500;
+      color: var(--ip-dark);
+      margin: 1.5em 0 0;
+    }
+
+    /* ------------------------- Divider ------------------------- */
+
+    .divider {
+      width: 3em;
+      height: 1px;
+      background: var(--ip-border);
+      margin: 0;
+    }
+
+    /* ------------------------- CTA Section ------------------------- */
+
+    .section--cta {
+      border-top: 1px solid var(--ip-border);
+      padding-top: var(--section-padding);
+    }
+
+    .cta__heading {
+      font-family: var(--font-mono);
+      font-size: var(--text-title);
+      font-weight: 400;
+      color: var(--ip-dark);
+      margin: 0 0 0.5em;
+    }
+
+    .cta__body {
+      font-size: var(--text-body);
+      line-height: 1.7;
+      color: var(--ip-gray);
+      margin: 0;
+    }
+
+    .cta__body a {
+      color: var(--ip-dark);
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: opacity var(--duration-fast);
+    }
+
+    .cta__body a:hover {
+      opacity: 0.6;
+    }
+
+    /* ------------------------- Navigation (Bold Full) ------------------------- */
+
+    .bold-nav-full {
+      z-index: 100;
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+    }
+
+    .bold-nav-full__bar {
+      z-index: 1;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: var(--grid-padding);
+      display: flex;
+      position: absolute;
+    }
+
+    .bold-nav-full__logo {
+      pointer-events: auto;
+      color: var(--ip-dark);
+      width: clamp(36px, 2.5em, 2.5em);
+      display: flex;
+    }
+
+    .bold-nav-full__logo svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .bold-nav-full__hamburger {
+      pointer-events: auto;
+      color: var(--ip-dark);
+      cursor: pointer;
+      background: none;
+      border: none;
+      justify-content: center;
+      align-items: center;
+      width: 2.5em;
+      height: 2.5em;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar {
+      background-color: currentColor;
+      width: 1.8em;
+      height: 1.5px;
+      position: absolute;
+      transform: translate(0, 0) rotate(0.001deg);
+      transition: transform 0.5s cubic-bezier(.7, 0, .3, 1);
+    }
+
+    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar:nth-child(1) {
+      transform: translate(0, -.35em) scale(1, 1) rotate(0.001deg);
+    }
+
+    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar:nth-child(3) {
+      transform: translate(0, .35em) scale(1, 1) rotate(0.001deg);
+    }
+
+    .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(1) {
+      transform: translate(0, -.35em) scale(.5, 1) rotate(0.001deg);
+    }
+
+    .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(3) {
+      transform: translate(0, .35em) scale(.5, 1) rotate(0.001deg);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(1) {
+      transform: translate(0, 0) rotate(45deg) scale(1, 1);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(2) {
+      transform: translate(-150%, 0) rotate(0.001deg) scale(1, 1);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(3) {
+      transform: translate(0, 0) rotate(-45deg) scale(1, 1);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(1) {
+      transform: translate(0, 0) rotate(45deg) scale(.7, 1);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(3) {
+      transform: translate(0, 0) rotate(-45deg) scale(.7, 1);
+    }
+
+    .bold-nav-full__tile {
+      pointer-events: auto;
+      background-color: var(--ip-black);
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: clip-path 1s cubic-bezier(.9, 0, .1, 1);
+      clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__tile {
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger {
+      color: var(--ip-white);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__logo {
+      color: var(--ip-white);
+    }
+
+    .bold-nav-full__ul {
+      flex-flow: column;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+    }
+
+    .bold-nav-full__li {
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 0 0 0.15em;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.5s cubic-bezier(.7, 0, .3, 1);
+    }
+
+    .bold-nav-full__ul:has(.bold-nav-full__li:hover) .bold-nav-full__li {
+      opacity: 0.15;
+    }
+
+    .bold-nav-full__ul:has(.bold-nav-full__li:hover) .bold-nav-full__li:hover {
+      opacity: 1;
+    }
+
+    .bold-nav-full__link {
+      color: var(--ip-white);
+      font-family: var(--font-mono);
+      font-size: clamp(2.5em, calc(4vw + 3vh), 6em);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      position: relative;
+      transform: translateY(100%) rotate(5deg);
+      transition: transform 0.75s cubic-bezier(.7, 0, .3, 1);
+    }
+
+    .bold-nav-full__link.is--current {
+      color: var(--ip-pink);
+    }
+
+    .bold-nav-full__li:nth-child(1) .bold-nav-full__link { transition-delay: 0.15s; }
+    .bold-nav-full__li:nth-child(2) .bold-nav-full__link { transition-delay: 0.1s; }
+    .bold-nav-full__li:nth-child(3) .bold-nav-full__link { transition-delay: 0.05s; }
+
+    [data-navigation-status="active"] .bold-nav-full__link {
+      transform: translateY(0%) rotate(0.001deg);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__li:nth-child(1) .bold-nav-full__link { transition-delay: 0.3s; }
+    [data-navigation-status="active"] .bold-nav-full__li:nth-child(2) .bold-nav-full__link { transition-delay: 0.35s; }
+    [data-navigation-status="active"] .bold-nav-full__li:nth-child(3) .bold-nav-full__link { transition-delay: 0.4s; }
+
+    .bold-nav-full__link-text {
+      text-shadow: 0 1.1em 0;
+      display: block;
+      position: relative;
+    }
+
+    .bold-nav-full__link .bold-nav-full__link-text {
+      transition: transform 0.5s cubic-bezier(.7, 0, .3, 1);
+      transform: translateY(0%) rotate(0.001deg);
+    }
+
+    .bold-nav-full__link:hover .bold-nav-full__link-text {
+      transform: translateY(-100%) rotate(0.001deg);
+    }
+
+    .bold-nav-full__link::before {
+      content: "";
+      position: absolute;
+      bottom: -0.0625em;
+      left: 0;
+      width: 100%;
+      height: 0.06em;
+      background-color: var(--ip-white);
+      transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+      transform-origin: right;
+      transform: scaleX(0) rotate(0.001deg);
+    }
+
+    .bold-nav-full__link.is--current::before {
+      background-color: var(--ip-pink);
+    }
+
+    .bold-nav-full__link:hover::before {
+      transform-origin: left;
+      transform: scaleX(1) rotate(0.001deg);
+    }
+
+    .bold-nav__bottom {
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: var(--grid-padding);
+      display: flex;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .bold-nav__word {
+      font-family: var(--font-mono);
+      font-size: var(--text-label);
+      color: var(--ip-light-gray);
+      margin: 0;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .bold-nav__word::before {
+      content: "";
+      position: absolute;
+      bottom: -0.0625em;
+      left: 0;
+      width: 100%;
+      height: 0.08em;
+      background-color: var(--ip-light-gray);
+      transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+      transform-origin: right;
+      transform: scaleX(0) rotate(0.001deg);
+    }
+
+    .bold-nav__word:hover::before {
+      transform-origin: left;
+      transform: scaleX(1) rotate(0.001deg);
+    }
+
+    /* ------------------------- Cursor Trail (nav overlay) ------------------------- */
+
+    .cursor-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 101;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .cursor-wrap.is--active {
+      opacity: 1;
+    }
+
+    .cursor-dot {
+      width: 2em;
+      height: 2em;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+
+    .cursor-canvas {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      position: absolute;
+    }
+
+    @media (max-width: 991px), (prefers-reduced-motion: reduce) {
+      .cursor-wrap {
+        display: none;
+      }
+    }
+
+    /* ------------------------- Footer ------------------------- */
+
+    .footer-wrap {
+      position: relative;
+      overflow: hidden;
+      background: var(--ip-pink);
+      z-index: 1;
+    }
+
+    .footer {
+      letter-spacing: -0.02em;
+      flex-flow: column;
+      justify-content: space-between;
+      min-height: 100dvh;
+      padding: var(--grid-padding);
+      display: flex;
+      position: relative;
+    }
+
+    .footer__links-row {
+      display: flex;
+      gap: 1.5em;
+      padding-top: 4em;
+    }
+
+    .footer__col {
+      display: flex;
+      flex-flow: column;
+      gap: 1.5em;
+      width: 50%;
+    }
+
+    .footer__eyebrow {
+      font-size: var(--text-label);
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ip-black);
+      margin: 0;
+    }
+
+    .footer__links {
+      display: flex;
+      flex-flow: column;
+      gap: 0.25em;
+      align-items: flex-start;
+    }
+
+    .footer__a {
+      color: var(--ip-white);
+      font-size: var(--text-body);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .footer__a::before {
+      content: "";
+      position: absolute;
+      bottom: -0.0625em;
+      left: 0;
+      width: 100%;
+      height: 0.08em;
+      background-color: var(--ip-white);
+      transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+      transform-origin: right;
+      transform: scaleX(0) rotate(0.001deg);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .footer__a:hover::before {
+        transform-origin: left;
+        transform: scaleX(1) rotate(0.001deg);
+      }
+    }
+
+    .footer__logo-row {
+      display: flex;
+      flex-flow: column;
+      gap: 1em;
+    }
+
+    .footer__wordmark {
+      width: 100%;
+      color: var(--ip-white);
+    }
+
+    .footer__wordmark svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .footer__bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1em;
+    }
+
+    .footer__copyright {
+      font-size: var(--text-label);
+      color: var(--ip-black);
+      margin: 0;
+    }
+
+    .footer-wrap__dark {
+      opacity: 0;
+      pointer-events: none;
+      background-color: var(--ip-black);
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    @media screen and (max-width: 991px) {
+      .footer__links-row {
+        flex-flow: column;
+        gap: 3em;
+      }
+      .footer__col {
+        width: 100%;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      .footer__a {
+        font-size: var(--text-title);
+      }
+      .footer__links-row {
+        gap: 2em;
+      }
+    }
+
+    /* ------------------------- Scroll Progress Bar ------------------------- */
+
+    .progress-bar {
+      z-index: 50;
+      position: fixed;
+      inset: 0 0 auto 0;
+      width: 100%;
+      height: 3px;
+      transform-origin: 0%;
+      transform: scale3d(0, 1, 1);
+      background-color: var(--ip-pink);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Progress Bar -->
+  <div class="progress-bar"></div>
+
+  <!-- Navigation -->
+  <nav data-navigation-status="not-active" class="bold-nav-full">
+    <div class="bold-nav-full__bar">
+      <a href="/" class="bold-nav-full__logo" aria-label="Universal Agents — home">
+        <svg viewBox="0 0 375 212" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M139.559 206.539V171.457L125.292 196.903C109.101 208.47 94.0662 211.938 73.6319 211.938C31.2262 211.938 6.5552 188.036 1.92469 159.897C0.381189 149.486 0 140.237 0 123.659V1.83467H42.0183V115.173C42.0183 121.728 42.4057 132.907 43.5618 143.312C46.6425 165.671 61.2964 180.319 87.511 180.319C117.194 180.319 139.553 157.572 139.553 98.2067V1.83467H181.571V206.539H139.553H139.559Z" fill="currentColor"/>
+          <path d="M251.01 206.267V192.513H223.508V178.765H209.754V151.263H196V55.0037H209.754V27.5018H223.508V13.754H251.01V0.00624914H306.014V13.754H319.761V27.5018H333.515V0H374.765V206.261H333.515V178.759H319.761V192.507H306.014V206.261H251.01V206.267ZM306.014 165.011V151.257H319.761V137.509H333.515V68.7577H319.761V55.0099H306.014V41.2621H251.01V55.0099H237.256V151.263H251.01V165.017H306.014V165.011Z" fill="currentColor"/>
+        </svg>
+      </a>
+      <button data-navigation-toggle="toggle" class="bold-nav-full__hamburger" aria-label="Menu">
+        <div class="bold-nav-full__hamburger-bar"></div>
+        <div class="bold-nav-full__hamburger-bar"></div>
+        <div class="bold-nav-full__hamburger-bar"></div>
+      </button>
+    </div>
+    <div class="bold-nav-full__tile">
+      <ul class="bold-nav-full__ul">
+        <li class="bold-nav-full__li">
+          <a href="/" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Home</span></a>
+        </li>
+        <li class="bold-nav-full__li">
+          <a href="/interplay.html" class="bold-nav-full__link is--current" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Interplay</span></a>
+        </li>
+        <li class="bold-nav-full__li">
+          <a href="https://www.linkedin.com/company/universal-agents/" target="_blank" rel="noopener" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">LinkedIn</span></a>
+        </li>
+      </ul>
+      <div class="bold-nav__bottom">
+        <a href="/" class="bold-nav__word" data-navigation-toggle="close">Universal Agents</a>
+        <a href="mailto:hello@universalagents.ai" class="bold-nav__word">hello@universalagents.ai</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Cursor trail (active during nav overlay) -->
+  <div class="cursor-wrap">
+    <div data-cursor-dot class="cursor-dot"></div>
+    <canvas data-cursor-canvas class="cursor-canvas"></canvas>
+  </div>
+
+  <!-- Chroma Ambient Background -->
+  <div class="chroma">
+    <div class="chroma__blob chroma__blob--1"></div>
+    <div class="chroma__blob chroma__blob--2"></div>
+    <div class="chroma__blob chroma__blob--3"></div>
+    <div class="chroma__blob chroma__blob--4"></div>
+    <div class="chroma__diffusion"></div>
+  </div>
+
+  <!-- Shared SVG definitions -->
+  <svg style="display: none;">
+    <symbol id="wordmark" viewBox="0 0 1143 165" fill="none">
+      <path d="M61.714 125.306V109.79L55.4096 121.04C48.2506 126.153 41.6029 127.687 32.5664 127.687C13.8141 127.687 2.90015 117.117 0.854703 104.676C0.175324 100.074 0 95.983 0 88.6486V34.7804H18.5843V84.901C18.5843 87.8012 18.7523 92.7395 19.2637 97.349C20.6298 107.24 27.1021 113.713 38.6954 113.713C51.8228 113.713 61.7067 103.653 61.7067 77.3986V34.7804H80.291V125.306H61.7067H61.714Z" fill="currentColor"/>
+      <path d="M176.272 74.3301V125.305H157.519V76.3755C157.519 72.1166 157.519 68.1937 157.176 63.5915C156.321 53.3643 150.872 46.2052 138.08 46.2052C125.289 46.2052 114.55 56.4324 114.55 84.7326V125.305H95.7981V34.78H114.55V49.7847L120.687 39.3822C127.846 33.9252 134.494 32.3912 143.53 32.3912C162.962 32.3912 174.044 42.4504 175.753 58.3026C176.096 62.9048 176.264 66.9957 176.264 74.3301H176.272Z" fill="currentColor"/>
+      <path d="M190.585 3.23634H209.505V24.8888H190.585V3.23634ZM190.585 34.78H209.337V125.305H190.585V34.78Z" fill="currentColor"/>
+      <path d="M247.863 125.306L213.259 34.7804H233.888L259.288 111.499L284.345 34.7804H304.288L269.684 125.306H247.863Z" fill="currentColor"/>
+      <path d="M383.398 85.2368H318.448C319.982 106.889 329.866 114.048 342.145 114.048C353.059 114.048 361.577 107.401 363.455 95.9754H382.375C378.452 117.453 361.234 127.687 341.459 127.687C317.25 127.687 299.009 112.346 299.009 80.2912C299.009 51.6477 317.25 32.384 343.336 32.384C369.423 32.384 383.741 52.1591 383.741 77.7344C383.741 79.4365 383.741 81.9933 383.398 85.2368ZM364.47 72.1095C363.104 55.4026 355.777 46.0227 342.65 46.0227C329.522 46.0227 320.661 54.7159 318.616 72.1095H364.477H364.47Z" fill="currentColor"/>
+      <path d="M439.821 33.5817V48.2432C422.603 47.0524 411.865 55.9136 411.865 78.2454V125.298H393.112V34.7798H411.865V50.1206L419.535 37.6726C423.626 34.4364 428.908 32.559 433.517 32.559C436.074 32.559 437.951 32.9023 439.821 33.5817Z" fill="currentColor"/>
+      <path d="M508.35 60.6915H489.254C487.377 51.1437 481.752 45.5187 472.548 45.5187C463.343 45.5187 459.42 50.4643 459.42 57.28C459.42 65.4618 466.068 68.8733 479.539 72.4528C499.314 77.5664 509.716 85.4121 509.716 101.432C509.716 118.994 494.2 127.687 474.425 127.687C454.65 127.687 439.477 118.651 436.92 98.1962H455.841C458.054 109.789 465.732 114.392 475.104 114.392C483.797 114.392 490.789 110.644 490.789 102.798C490.789 94.9527 484.652 90.6938 469.311 86.6029C452.772 82.344 440.5 75.3529 440.5 59.4935C440.5 42.6185 453.795 32.384 473.914 32.384C494.032 32.384 506.305 44.1453 508.35 60.6842V60.6915Z" fill="currentColor"/>
+      <path d="M540.736 127.687C524.708 127.687 511.581 118.483 511.581 101.6C511.581 81.482 527.608 70.5754 561.87 70.5754H567.663V68.3619C567.663 64.9504 567.662 61.8822 567.319 58.4707C566.808 51.1364 562.206 46.0227 551.467 46.0227C540.728 46.0227 534.928 52.1591 533.905 63.409H515.153C516.344 43.634 531.181 32.384 551.803 32.384C575.158 32.384 584.362 42.2752 585.896 57.616C586.24 61.3636 586.408 66.1411 586.408 70.4001V102.28C586.408 109.103 586.751 115.239 588.11 125.298H569.525L567.823 112.171L563.221 121.887C557.085 126.146 549.239 127.68 540.721 127.68L540.736 127.687ZM547.559 114.048C559.32 114.048 567.677 106.035 567.677 91.3732V83.0234C545.689 81.3213 531.363 86.2595 531.363 100.074C531.363 109.621 537.668 114.056 547.559 114.056V114.048Z" fill="currentColor"/>
+      <path d="M620.003 106.21C620.346 111.323 622.728 113.025 630.742 112.346V125.473C626.994 125.985 622.728 126.328 618.469 126.328C608.578 126.328 601.93 122.749 601.251 111.155C601.083 107.744 601.083 103.653 601.083 98.1959V0H619.835V97.6846C619.835 100.753 619.835 103.485 620.003 106.21Z" fill="currentColor"/>
+      <path d="M696.848 127.475V121.222H684.341V114.969H678.088V102.462H671.835V58.6897H678.088V46.1833H684.341V39.9301H696.848V33.6768H721.861V39.9301H728.114V46.1833H734.367V33.6768H753.127V127.475H734.367V114.969H728.114V121.222H721.861V127.475H696.848ZM721.861 108.715V102.462H728.114V96.209H734.367V64.9429H728.114V58.6897H721.861V52.4365H696.848V58.6897H690.595V102.462H696.848V108.715H721.861Z" fill="currentColor"/>
+      <path d="M786.898 164.994V158.741H774.392V152.488H768.139V146.235H761.885V139.981H768.139V133.728H780.645V139.981H786.898V146.235H818.164V139.981H824.418V114.969H818.164V121.222H811.911V127.475H786.898V121.222H774.392V114.969H768.139V102.462H761.885V58.6897H768.139V46.1833H774.392V39.9301H786.898V33.6768H811.911V39.9301H818.164V46.1833H824.418V33.6768H843.177V146.235H836.924V152.488H830.671V158.741H818.164V164.994H786.898ZM811.911 108.715V102.462H818.164V96.209H824.418V64.9429H818.164V58.6897H811.911V52.4365H786.898V58.6897H780.645V102.462H786.898V108.715H811.911Z" fill="currentColor"/>
+      <path d="M877.526 127.475V121.222H865.019V114.969H858.766V102.462H852.513V58.6897H858.766V46.1833H865.019V39.9301H877.526V33.6768H902.539V39.9301H915.045V46.1833H921.298V58.6897H927.552V83.7026H871.273V102.462H877.526V108.715H902.539V102.462H908.792V96.209H927.552V108.715H921.298V114.969H915.045V121.222H902.539V127.475H877.526ZM908.792 71.1961V58.6897H902.539V52.4365H877.526V58.6897H871.273V71.1961H908.792Z" fill="currentColor"/>
+      <path d="M936.113 127.475V33.6768H954.872V46.1833H961.126V39.9301H967.379V33.6768H986.139V39.9301H998.645V46.1833H1004.9V58.6897H1011.15V127.475H992.392V58.6897H986.139V52.4365H967.379V58.6897H961.126V64.9429H954.872V127.475H936.113Z" fill="currentColor"/>
+      <path d="M1030.85 127.475V52.4369H1018.34V33.6773H1030.85V8.6644H1049.61V33.6773H1074.62V52.4369H1049.61V127.475H1030.85Z" fill="currentColor"/>
+      <path d="M1092.95 127.475V121.222H1086.69V114.969H1080.44V102.462H1086.69V96.209H1092.95V102.462H1099.2V108.715H1105.45V114.969H1117.96V108.715H1124.21V96.209H1117.96V89.9558H1111.71V83.7026H1099.2V77.4493H1092.95V71.1961H1086.69V64.9429H1080.44V46.1833H1086.69V39.9301H1092.95V33.6768H1130.47V39.9301H1136.72V58.6897H1124.21V52.4365H1117.96V46.1833H1105.45V52.4365H1099.2V58.6897H1105.45V64.9429H1111.71V71.1961H1124.21V77.4493H1130.47V83.7026H1136.72V89.9558H1142.97V114.969H1136.72V121.222H1130.47V127.475H1092.95Z" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <!-- Page Content -->
+  <main class="page">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div data-reveal class="hero__cube-wrap">
+        <canvas id="hero-cube" width="480" height="480" style="width:120px;height:120px;display:block;"></canvas>
+      </div>
+      <div data-reveal class="hero__logo">
+        <img src="assets/svg/interplay-logo.svg" alt="Interplay" style="width:100%;height:auto;display:block;">
+      </div>
+      <h1 data-reveal class="hero__tagline">Own your intelligence.</h1>
+      <p data-reveal class="hero__sub">A modular AI operating system built for how agencies actually work.</p>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="section">
+      <div class="container is--narrow">
+        <p data-reveal class="section__label">The Differentiation Dilemma</p>
+        <h2 data-reveal class="section__heading">If your AI strategy is a subscription, it's not a strategy.</h2>
+        <p data-reveal class="section__body">When every agency runs AI through ChatGPT, Claude, Copilot and Perplexity, an uncomfortable truth emerges: everyone has the same models, the same prompts, the same outputs. Differentiation gets harder every day.</p>
+        <p data-reveal class="section__body">Worse, current AI is built for individuals, not teams. No way to share, combine, compound or retain intelligence across people. Just siloed thinking and wasted expertise.</p>
+        <p data-reveal class="section__body">Holding companies have poured <strong>$12 billion+</strong> into proprietary AI platforms. For indie agencies, building something proprietary has felt impossible. Until now.</p>
+      </div>
+    </section>
+
+    <div class="container is--narrow"><div data-reveal class="divider"></div></div>
+
+    <!-- Solution Section -->
+    <section class="section">
+      <div class="container is--narrow">
+        <p data-reveal class="section__label">Introducing</p>
+        <h2 data-reveal class="section__heading">Interplay.</h2>
+        <p data-reveal class="section__body">A dynamic, agentic AI operating system built for how agencies actually work. Cross-model, cross-platform infrastructure designed for <strong>total human ownership</strong>, with greater customization, flexibility, and more differentiated outcomes.</p>
+        <p data-reveal class="section__body">Interplay lets teams <strong>shape, share and scale</strong> their expertise through self-contained units of customized intelligence called <strong>Living Blocks</strong>. Think modular building blocks meets distributed AI agents.</p>
+      </div>
+    </section>
+
+    <div class="container is--narrow"><div data-reveal class="divider"></div></div>
+
+    <!-- Available Section -->
+    <section class="section">
+      <div class="container is--narrow">
+        <h2 data-reveal class="section__heading">Available to All Indies.</h2>
+        <p data-reveal class="section__body">We've spent a year building and iterating on Interplay, perfecting infrastructure, interface and experience. Strategists have built better brand strategies. Growth teams have identified perfect prospects. Media planners have sharpened audience targeting and channel mixes. Creatives have pressure-tested ideas.</p>
+        <p data-reveal class="section__body">We're now seeking additional <strong>Alpha-phase agency partners</strong> to push Interplay through more complex use cases.</p>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section section--cta">
+      <div class="container is--narrow">
+        <h3 data-reveal class="cta__heading">Get in Touch</h3>
+        <p data-reveal class="cta__body">To get involved, reach out to Stu Amos at <a href="mailto:stu@universalagents.ai">stu@universalagents.ai</a></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div data-footer-parallax class="footer-wrap">
+    <footer data-footer-parallax-inner class="footer">
+      <div class="footer__links-row">
+        <div class="footer__col">
+          <p class="footer__eyebrow">( Connect )</p>
+          <div class="footer__links">
+            <a href="https://www.linkedin.com/company/universal-agents" target="_blank" rel="noopener noreferrer" class="footer__a">LinkedIn</a>
+            <a href="mailto:hello@universalagents.ai" class="footer__a">hello@universalagents.ai</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__logo-row">
+        <div class="footer__bottom">
+          <p class="footer__eyebrow">Every business, agent ready</p>
+          <p class="footer__copyright">&copy; 2026 Universal Agents</p>
+        </div>
+        <div class="footer__wordmark">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1143 165" fill="none"><use href="#wordmark"/></svg>
+        </div>
+      </div>
+    </footer>
+    <div data-footer-parallax-dark class="footer-wrap__dark"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* ------------------------- Lenis Smooth Scroll ------------------------- */
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReduced) {
+        const lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          touchMultiplier: 2,
+        });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+      }
+
+      /* ------------------------- Cursor Trail ------------------------- */
+
+      function initCursorTrail() {
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const trailDuration = 1250;
+        const color = [101, 255, 163]; // mint
+        const strokeMinWidth = 2, strokeMaxWidth = 16, strokeSmoothing = 0.1;
+        const velocitySlow = 0.08, velocityFast = 2.8;
+        const glowBlur = 10, glowIntensity = 0.25, cursorLag = 0.15;
+
+        const dot = document.querySelector('[data-cursor-dot]');
+        const canvas = document.querySelector('[data-cursor-canvas]');
+        if (!dot || !canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        let points = [], hasMouse = false, runningWidth = strokeMinWidth;
+        let isActive = false, rafId = null;
+
+        gsap.set(dot, { xPercent: -50, yPercent: -50, opacity: 0 });
+        const xTo = gsap.quickTo(dot, 'x', { duration: cursorLag, ease: 'power3' });
+        const yTo = gsap.quickTo(dot, 'y', { duration: cursorLag, ease: 'power3' });
+
+        function resize() {
+          const dpr = window.devicePixelRatio || 1;
+          canvas.width = window.innerWidth * dpr;
+          canvas.height = window.innerHeight * dpr;
+          ctx.scale(dpr, dpr);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+          if (!isActive) return;
+          hasMouse = true;
+          xTo(e.clientX); yTo(e.clientY);
+        });
+
+        const tickerFn = () => {
+          if (!isActive || !hasMouse) return;
+          const x = gsap.getProperty(dot, 'x'), y = gsap.getProperty(dot, 'y');
+          if (points.length > 0) {
+            const last = points[points.length - 1];
+            const dx = x - last.x, dy = y - last.y;
+            if (dx * dx + dy * dy < 0.1) return;
+          }
+          points.push({ x, y, time: performance.now() });
+        };
+
+        function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+        function render() {
+          if (!isActive) { rafId = null; return; }
+          const now = performance.now();
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          points = points.filter(p => now - p.time < trailDuration);
+          if (points.length >= 3) {
+            const [r, g, b] = color;
+            ctx.lineCap = 'butt';
+            ctx.shadowColor = `rgba(${r},${g},${b},${glowIntensity})`;
+            ctx.shadowBlur = glowBlur;
+            for (let i = 1; i < points.length - 1; i++) {
+              const prev = points[i - 1], curr = points[i], next = points[i + 1];
+              const mx1 = (prev.x + curr.x) * 0.5, my1 = (prev.y + curr.y) * 0.5;
+              const mx2 = (curr.x + next.x) * 0.5, my2 = (curr.y + next.y) * 0.5;
+              const dx = curr.x - prev.x, dy = curr.y - prev.y;
+              const dt = curr.time - prev.time || 1;
+              const velocity = Math.sqrt(dx * dx + dy * dy) / dt;
+              const t = clamp((velocity - velocitySlow) / (velocityFast - velocitySlow), 0, 1);
+              const targetWidth = strokeMaxWidth + t * (strokeMinWidth - strokeMaxWidth);
+              runningWidth += (targetWidth - runningWidth) * strokeSmoothing;
+              const age = now - curr.time;
+              const life = 1 - age / trailDuration;
+              const alpha = life * life;
+              if (alpha <= 0.005) continue;
+              ctx.beginPath();
+              ctx.moveTo(mx1, my1);
+              ctx.quadraticCurveTo(curr.x, curr.y, mx2, my2);
+              ctx.lineWidth = runningWidth;
+              ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+              ctx.stroke();
+            }
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+          }
+          rafId = requestAnimationFrame(render);
+        }
+
+        window.__cursorTrail = {
+          start() {
+            if (isActive) return;
+            isActive = true; resize(); points = []; hasMouse = false; runningWidth = strokeMinWidth;
+            gsap.ticker.add(tickerFn);
+            rafId = requestAnimationFrame(render);
+          },
+          stop() {
+            isActive = false; gsap.ticker.remove(tickerFn);
+            if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+            ctx.clearRect(0, 0, canvas.width, canvas.height); points = [];
+          }
+        };
+      }
+
+      initCursorTrail();
+
+      /* ------------------------- Navigation ------------------------- */
+
+      const navEl = document.querySelector('[data-navigation-status]');
+      const cursorWrap = document.querySelector('.cursor-wrap');
+      if (navEl) {
+        let cursorTimer = null;
+
+        function showCursorTrail() {
+          clearTimeout(cursorTimer);
+          cursorTimer = setTimeout(() => {
+            if (cursorWrap) cursorWrap.classList.add('is--active');
+            if (window.__cursorTrail) window.__cursorTrail.start();
+          }, 1000);
+        }
+
+        function hideCursorTrail() {
+          clearTimeout(cursorTimer);
+          if (cursorWrap) cursorWrap.classList.remove('is--active');
+          if (window.__cursorTrail) window.__cursorTrail.stop();
+        }
+
+        document.querySelectorAll('[data-navigation-toggle="toggle"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const isActive = navEl.getAttribute('data-navigation-status') === 'active';
+            navEl.setAttribute('data-navigation-status', isActive ? 'not-active' : 'active');
+            if (isActive) hideCursorTrail();
+            else showCursorTrail();
+          });
+        });
+
+        document.querySelectorAll('[data-navigation-toggle="close"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            navEl.setAttribute('data-navigation-status', 'not-active');
+            hideCursorTrail();
+          });
+        });
+
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && navEl.getAttribute('data-navigation-status') === 'active') {
+            navEl.setAttribute('data-navigation-status', 'not-active');
+            hideCursorTrail();
+          }
+        });
+      }
+
+      /* ------------------------- Scroll Reveal ------------------------- */
+
+      document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+        if (prefersReduced) {
+          gsap.set(el, { opacity: 1, y: 0 });
+          return;
+        }
+
+        // Hero elements: animate on load with stagger
+        if (el.closest('.hero')) {
+          gsap.fromTo(el,
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power3.out',
+              delay: 0.3 + i * 0.15,
+            }
+          );
+          return;
+        }
+
+        gsap.fromTo(el,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'clamp(top 85%)',
+              once: true,
+            },
+          }
+        );
+      });
+
+      /* ------------------------- Footer Parallax ------------------------- */
+
+      document.querySelectorAll('[data-footer-parallax]').forEach(el => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: 'clamp(top bottom)',
+            end: 'clamp(top top)',
+            scrub: true,
+          }
+        });
+
+        const inner = el.querySelector('[data-footer-parallax-inner]');
+        const dark = el.querySelector('[data-footer-parallax-dark]');
+
+        if (inner) tl.from(inner, { yPercent: -25, ease: 'linear' });
+        if (dark) tl.from(dark, { opacity: 0.5, ease: 'linear' }, '<');
+      });
+
+      /* ------------------------- Scroll Progress Bar ------------------------- */
+
+      const bar = document.querySelector('.progress-bar');
+      if (bar) {
+        gsap.to(bar, {
+          scaleX: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: document.body,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.5,
+          },
+        });
+      }
+    });
+  </script>
+
+  <!-- Spectrum Cube (Three.js) -->
+  <script type="module">
+    import * as THREE from 'three';
+
+    const cvs = document.getElementById('hero-cube');
+    if (cvs) {
+      const renderer = new THREE.WebGLRenderer({ canvas: cvs, antialias: true, alpha: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(480, 480);
+      renderer.toneMapping = THREE.NoToneMapping;
+
+      const scene = new THREE.Scene();
+      const F = 2.2;
+      const cam = new THREE.OrthographicCamera(-F, F, F, -F, -10, 10);
+      cam.position.set(0, 0, 5);
+
+      scene.add(new THREE.AmbientLight(0xffffff, 1.8));
+
+      // Spectrum side texture
+      const sideCanvas = document.createElement('canvas');
+      sideCanvas.width = 256; sideCanvas.height = 256;
+      const sideCtx = sideCanvas.getContext('2d');
+      const sideTex = new THREE.CanvasTexture(sideCanvas);
+      sideTex.colorSpace = THREE.SRGBColorSpace;
+
+      // Face texture (white gradient)
+      const faceCanvas = document.createElement('canvas');
+      faceCanvas.width = 256; faceCanvas.height = 256;
+      const faceCtx = faceCanvas.getContext('2d');
+      const faceTex = new THREE.CanvasTexture(faceCanvas);
+      faceTex.colorSpace = THREE.SRGBColorSpace;
+      const fg = faceCtx.createLinearGradient(0, 256, 256, 0);
+      fg.addColorStop(0, '#ffffff'); fg.addColorStop(1, '#dadada');
+      faceCtx.fillStyle = fg; faceCtx.fillRect(0, 0, 256, 256);
+      faceTex.needsUpdate = true;
+
+      const faceMat = new THREE.MeshBasicMaterial({ map: faceTex, side: THREE.DoubleSide });
+      const sideMat = new THREE.MeshBasicMaterial({ map: sideTex, side: THREE.DoubleSide });
+
+      const s = 1.6, cr = 0.12 * s, x0 = -s / 2, y0 = -s / 2;
+      const shape = new THREE.Shape();
+      shape.moveTo(x0 + cr, y0);
+      shape.lineTo(x0 + s - cr, y0);
+      shape.quadraticCurveTo(x0 + s, y0, x0 + s, y0 + cr);
+      shape.lineTo(x0 + s, y0 + s - cr);
+      shape.quadraticCurveTo(x0 + s, y0 + s, x0 + s - cr, y0 + s);
+      shape.lineTo(x0 + cr, y0 + s);
+      shape.quadraticCurveTo(x0, y0 + s, x0, y0 + s - cr);
+      shape.lineTo(x0, y0 + cr);
+      shape.quadraticCurveTo(x0, y0, x0 + cr, y0);
+
+      const geo = new THREE.ExtrudeGeometry(shape, {
+        depth: 1.42, bevelEnabled: true,
+        bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 1
+      });
+      geo.computeBoundingBox();
+      const bb = geo.boundingBox;
+      geo.translate(0, 0, -(bb.min.z + (bb.max.z - bb.min.z) * 0.5));
+
+      const mesh = new THREE.Mesh(geo, [faceMat, sideMat]);
+      mesh.matrixAutoUpdate = false;
+      scene.add(mesh);
+
+      const scale = 0.48;
+      const st = { shearX: 0.55, shearY: 0.55, rotX: 0, rotY: 0, scaleAnim: 1, squash: 1.0 };
+
+      function update() {
+        const sm = new THREE.Matrix4();
+        sm.set(1, 0, st.shearX, 0, 0, 1, st.shearY, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+        const sqY = st.squash, sqXZ = 1 / Math.sqrt(Math.max(0.01, st.squash));
+        const sqm = new THREE.Matrix4(); sqm.makeScale(sqXZ, sqY, sqXZ);
+        const rot = new THREE.Matrix4(); rot.makeRotationFromEuler(new THREE.Euler(st.rotX, st.rotY, 0, 'XYZ'));
+        const sv = scale * st.scaleAnim;
+        const sc = new THREE.Matrix4(); sc.makeScale(sv, sv, sv);
+        mesh.matrix.identity();
+        mesh.matrix.multiply(sc).multiply(rot).multiply(sqm).multiply(sm);
+        mesh.matrixWorldNeedsUpdate = true;
+      }
+
+      function paintSpectrum(t) {
+        const w = 256, h = 256, angle = t * 0.25, cx = w / 2, cy = h / 2, phase = t * 0.18;
+        const grad = sideCtx.createLinearGradient(
+          cx + Math.cos(angle) * w, cy + Math.sin(angle) * h,
+          cx - Math.cos(angle) * w, cy - Math.sin(angle) * h
+        );
+        for (let i = 0; i <= 1; i += 0.1) grad.addColorStop(i, 'hsl(' + (((i + phase) % 1) * 360) + ', 92%, 48%)');
+        sideCtx.fillStyle = grad; sideCtx.fillRect(0, 0, w, h);
+        const grad2 = sideCtx.createLinearGradient(
+          cx + Math.sin(angle * 0.7) * w * 0.6, 0,
+          cx - Math.sin(angle * 0.7) * w * 0.6, h
+        );
+        for (let i = 0; i <= 1; i += 0.2) grad2.addColorStop(i, 'hsla(' + (((i + phase + 0.5) % 1) * 360) + ', 85%, 42%, 0.3)');
+        sideCtx.fillStyle = grad2; sideCtx.fillRect(0, 0, w, h);
+        sideTex.needsUpdate = true;
+      }
+
+      const land = 'back.out(2.0)';
+      const upd = () => update();
+      function flip() {
+        st.shearX = 0.55; st.shearY = 0.55;
+        st.rotX = 0; st.rotY = 0; st.scaleAnim = 1; st.squash = 1;
+        const tl = gsap.timeline({ onComplete: flip });
+        tl.to(st, { rotY: Math.PI, shearX: 0, shearY: 0, squash: 0.92, duration: 0.5, ease: 'power2.in', onUpdate: upd })
+          .to(st, { rotY: Math.PI, shearX: 0.55, shearY: 0.55, squash: 1, duration: 0.4, ease: land, onUpdate: upd })
+          .to(st, { duration: 1.5 })
+          .to(st, { rotY: Math.PI * 2, shearX: 0, shearY: 0, squash: 0.92, duration: 0.5, ease: 'power2.in', onUpdate: upd })
+          .to(st, { rotY: Math.PI * 2, shearX: 0.55, shearY: 0.55, squash: 1, duration: 0.4, ease: land, onUpdate: upd });
+      }
+      flip();
+
+      let visible = true;
+      let rafId = null;
+
+      function render(time) {
+        if (!visible) { rafId = null; return; }
+        paintSpectrum((time || 0) * 0.001);
+        update();
+        renderer.render(scene, cam);
+        rafId = requestAnimationFrame(render);
+      }
+      rafId = requestAnimationFrame(render);
+
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        if (visible && !rafId) rafId = requestAnimationFrame(render);
+      }, { threshold: 0 }).observe(cvs);
+    }
+  </script>
+
+</body>
+</html>

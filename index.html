@@ -1741,7 +1741,7 @@
           <a href="/" class="bold-nav-full__link is--current" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Home</span></a>
         </li>
         <li class="bold-nav-full__li">
-          <a href="https://interplay-proto2.vercel.app/" target="_blank" rel="noopener" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Interplay</span></a>
+          <a href="/interplay.html" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Interplay</span></a>
         </li>
         <li class="bold-nav-full__li">
           <a href="https://www.linkedin.com/company/universal-agents/" target="_blank" rel="noopener" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">LinkedIn</span></a>
@@ -2077,7 +2077,7 @@
         </div>
 
         <div data-reveal>
-          <a href="/interplay" aria-label="Explore Interplay" class="btn-animate-chars interplay__cta">
+          <a href="/interplay.html" aria-label="Explore Interplay" class="btn-animate-chars interplay__cta">
             <div class="btn-animate-chars__bg"></div>
             <span data-button-animate-chars class="btn-animate-chars__text">Explore Interplay →</span>
           </a>
@@ -3138,8 +3138,36 @@
     /* ------------------------- Init ------------------------- */
 
     document.addEventListener("DOMContentLoaded", () => {
-      const revealLogomark = setupLogomarkReveal();
-      document.fonts.ready.then(() => initLoader(revealLogomark));
+      const hasVisited = sessionStorage.getItem('ua-visited');
+
+      if (hasVisited) {
+        // Skip loader — show everything immediately
+        gsap.registerPlugin(CustomEase, SplitText, ScrollTrigger);
+        const wrap = document.querySelector('[data-load-wrap]');
+        if (wrap) wrap.style.display = 'none';
+        const page = document.querySelector('main[data-load-reset]');
+        if (page) gsap.set(page, { autoAlpha: 1 });
+        const logomark = document.querySelector('.logomark[data-load-reset]');
+        if (logomark) gsap.set(logomark, { autoAlpha: 1 });
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) gsap.set(progressBar, { autoAlpha: 1 });
+        // Auto-play skeletons immediately
+        document.fonts.ready.then(() => {
+          initSkeletonTextEffects();
+          document.querySelectorAll('[data-skeleton-auto], [data-skeleton-wait]').forEach(el => {
+            if (el._skeletonTl) el._skeletonTl.play();
+          });
+        });
+      } else {
+        const revealLogomark = setupLogomarkReveal();
+        document.fonts.ready.then(() => {
+          initLoader(revealLogomark);
+          sessionStorage.setItem('ua-visited', '1');
+        });
+        // Skeleton text reveal — wait for fonts
+        document.fonts.ready.then(initSkeletonTextEffects);
+      }
+
       initNavigation();
       initLenis();
       initGlobalParallax();
@@ -3154,9 +3182,6 @@
       initLogoWallCycle();
       initButtonCharacterStagger();
       init3dPerspectiveHover();
-
-      // Skeleton text reveal — wait for fonts
-      document.fonts.ready.then(initSkeletonTextEffects);
 
       // Rebuild skeleton on width resize (text reflows)
       let prevWidth = window.innerWidth;
