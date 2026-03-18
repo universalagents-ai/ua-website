@@ -11,12 +11,16 @@
   <!-- Font preloading — critical above-the-fold fonts only -->
   <link rel="preload" href="assets/fonts/GeistMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/GeistMono-Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
 
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/CustomEase.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.2.3/dist/lenis.min.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }
+  </script>
 
   <style>
     @font-face {
@@ -35,19 +39,43 @@
       font-display: swap;
     }
 
+    @font-face {
+      font-family: 'Geist';
+      src: url('assets/fonts/Geist-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Geist';
+      src: url('assets/fonts/Geist-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Geist';
+      src: url('assets/fonts/Geist-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
     /* ------------------------- Scaling System by Osmo [https://osmo.supply/] ------------------------- */
 
     /* Desktop */
     :root {
       /* Brand palette */
-      --ua-mint: #3FFF8C;
+      --ua-mint: #65FFA3;
       --ua-pink: #FF69BA;
       --ua-blue: #25B1FF;
       --ua-black: #0a0a0a;
       --ua-dark-gray: #333333;
-      --ua-gray: #787878;
+      --ua-gray: #b0b0b0;
       --ua-white: #ffffff;
-      --ua-mint-dim: rgba(63, 255, 140, 0.15);
+      --ua-mint-dim: rgba(101, 255, 163, 0.15);
       --ua-pink-dim: rgba(255, 105, 186, 0.15);
       --ua-blue-dim: rgba(37, 177, 255, 0.15);
 
@@ -82,12 +110,13 @@
       --text-display: 3em;
       --text-heading: 2.5em;
       --text-title: 1.25em;
-      --text-body: 1em;
+      --text-body: 1.5em;
       --text-label: 0.8125em;
 
       /* Font stacks */
       --font-display: 'GeistMono', monospace;
-      --font-body: 'GeistMono', monospace;
+      --font-body: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'GeistMono', monospace;
 
       /* Section spacing */
       --section-padding: 8em;
@@ -104,6 +133,7 @@
         --grid-padding: 1.25em;
         --text-display: 2.5em;
         --text-heading: 2em;
+        --text-body: 1.25em;
         --section-padding: 6em;
       }
     }
@@ -120,6 +150,7 @@
         --text-display: 2.25em;
         --text-heading: 1.75em;
         --text-title: 1.125em;
+        --text-body: 1.1em;
         --section-padding: 5em;
       }
     }
@@ -136,6 +167,7 @@
         --text-display: 1.45em;
         --text-heading: 1.25em;
         --text-title: 1em;
+        --text-body: 1em;
         --section-padding: 4em;
       }
     }
@@ -189,9 +221,9 @@
       font-family: var(--font-body);
       font-size: 1em;
       font-weight: 400;
-      line-height: 1.6;
-      letter-spacing: 0.025em;
-      font-feature-settings: "zero" 1, "tnum" 1;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+      font-feature-settings: "liga" 1, "calt" 1;
       color: var(--ua-white);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -217,22 +249,6 @@
       border: 0;
     }
 
-    .skip-link {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 200;
-      padding: 0.5em 1em;
-      background: var(--ua-mint);
-      color: var(--ua-black);
-      font-size: var(--text-body);
-      transform: translateY(-100%);
-      transition: transform var(--duration-fast);
-    }
-
-    .skip-link:focus {
-      transform: translateY(0);
-    }
 
     [data-load-reset] { opacity: 0; }
 
@@ -267,7 +283,15 @@
     /* ------------------------- Page Content ------------------------- */
 
     .page {
-      background: var(--ua-black);
+      background: #1b1b1b;
+      background-image: radial-gradient(
+        ellipse at 75% 5%,
+        rgba(233, 94, 255, 0.35) 0%,
+        rgba(232, 108, 210, 0.25) 25%,
+        rgba(231, 123, 165, 0.15) 50%,
+        rgba(230, 137, 121, 0.08) 75%,
+        transparent 100%
+      );
       color: var(--ua-white);
     }
 
@@ -281,6 +305,7 @@
     }
 
     .hero__heading {
+      font-family: var(--font-mono);
       z-index: 1;
       position: relative;
       text-align: center;
@@ -291,110 +316,489 @@
       letter-spacing: -0.02em;
     }
 
+    .hero__cube-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero__cube-wrap canvas {
+      display: block;
+      width: 360px;
+      height: 360px;
+    }
+
     /* ------------------------- Mission Section ------------------------- */
 
     .mission {
-      background: var(--ua-mint);
-      color: var(--ua-black);
-      min-height: 100dvh;
+      background: transparent;
+      color: var(--ua-white);
       display: flex;
       align-items: center;
-      padding: 4em 0;
+      padding: var(--section-padding) 0;
     }
 
     .mission__label {
+      font-family: var(--font-mono);
       font-size: var(--text-label);
       font-weight: 500;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       margin: 0 0 2em;
+      color: var(--ua-white);
     }
 
     .mission__statement {
+      font-family: var(--font-mono);
       font-size: var(--text-display);
       font-weight: 900;
       line-height: 1.1;
       letter-spacing: -0.02em;
       margin: 0;
       max-width: 20ch;
+      color: var(--ua-mint);
     }
 
     /* ------------------------- Test Section ------------------------- */
 
-    .test-section {
+    /* ------------------------- Shared Section Structure ------------------------- */
+
+    .section {
       padding: var(--section-padding) 0;
     }
 
-    .test-section__heading {
+    .section__label {
+      font-family: var(--font-mono);
+      font-size: var(--text-label);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin: 0 0 2em;
+      color: var(--ua-white);
+    }
+
+    .section__heading {
+      font-family: var(--font-mono);
       font-size: var(--text-heading);
       font-weight: 900;
       line-height: 1.2;
       letter-spacing: -0.015em;
-      margin: 0 0 2em;
-      text-align: center;
+      margin: 0 0 1.5em;
     }
 
-    .test-section__row {
-      display: flex;
-      gap: var(--grid-gap);
-      margin-bottom: var(--grid-gap);
-    }
-
-    .test-section__card {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 0.75em;
-      padding: 3em 2em;
-      text-align: center;
-    }
-
-    .test-section__card-title {
-      font-size: var(--text-title);
-      font-weight: 900;
-      margin: 0 0 0.5em;
-    }
-
-    .test-section__card-text {
+    .section__body {
       font-size: var(--text-body);
       line-height: 1.6;
       color: var(--ua-gray);
-      margin: 0;
+      max-width: 65ch;
     }
 
-    .test-section__image-row {
+    .section__body:empty::before {
+      content: '[ Section content TBD ]';
+      opacity: 0.2;
+      font-style: italic;
+    }
+
+    /* ------------------------- Interplay Section ------------------------- */
+
+    .section--interplay {
+      text-align: center;
+    }
+
+    .interplay__badge-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5em;
+    }
+
+    .interplay__badge {
+      font-family: var(--font-mono);
+      font-size: var(--text-label);
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ua-mint);
+      border: 1px solid var(--ua-mint);
+      border-radius: 100em;
+      padding: 0.4em 1.2em;
+    }
+
+    .interplay__logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2em;
+    }
+
+    .interplay__logo {
+      width: 16em;
+      height: auto;
+    }
+
+    .interplay__text {
+      font-size: var(--text-body);
+      line-height: 1.6;
+      color: var(--ua-gray);
+      max-width: 45ch;
+      margin: 0 auto 2em;
+    }
+
+    /* ------------------------- 3D Perspective Hover ------------------------- */
+
+    .perspective__wrap {
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      display: flex;
+      position: relative;
+      margin-bottom: 3em;
+    }
+
+    .perspective__item {
+      position: relative;
+    }
+
+    [data-3d-hover-target] {
+      transform: perspective(50vw);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    [data-3d-hover-inner="layer-1"] { transform: translateZ(2vw); }
+    [data-3d-hover-inner="layer-2"] { transform: translateZ(4vw); }
+    [data-3d-hover-inner="layer-3"] { transform: translateZ(6vw); }
+    [data-3d-hover-inner="layer-4"] { transform: translateZ(9vw); }
+
+    /* ------------------------- Interplay Preview ------------------------- */
+
+    .interplay__preview {
+      width: clamp(20em, 50vw, 40em);
+      aspect-ratio: 16 / 10;
+    }
+
+    .interplay__preview-frame {
+      width: 100%;
+      height: 100%;
+      border-radius: 0.75em;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 60px rgba(0, 0, 0, 0.4);
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .interplay__preview-mock {
+      width: 100%;
+      height: 100%;
+      background: #f8f8f8;
+      border-radius: 0.75em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      pointer-events: none;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .interplay__preview-chroma {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .interplay__preview-chroma-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      will-change: transform;
+    }
+
+    .interplay__preview-chroma-blob--1 {
+      width: 50%; height: 50%;
+      top: -10%; left: -5%;
+      background: radial-gradient(circle, #ffc1fd 0%, transparent 70%);
+      animation: chroma-drift-1 25s ease-in-out infinite alternate;
+      opacity: 0.6;
+    }
+    .interplay__preview-chroma-blob--2 {
+      width: 45%; height: 45%;
+      top: 10%; right: -10%;
+      background: radial-gradient(circle, #96d0ff 0%, transparent 70%);
+      animation: chroma-drift-2 30s ease-in-out infinite alternate;
+      opacity: 0.6;
+    }
+    .interplay__preview-chroma-blob--3 {
+      width: 40%; height: 40%;
+      bottom: 5%; left: 20%;
+      background: radial-gradient(circle, #ffb005 0%, transparent 70%);
+      animation: chroma-drift-3 22s ease-in-out infinite alternate;
+      opacity: 0.6;
+    }
+    .interplay__preview-chroma-blob--4 {
+      width: 35%; height: 35%;
+      bottom: -5%; right: 15%;
+      background: radial-gradient(circle, #ffada0 0%, transparent 70%);
+      animation: chroma-drift-4 28s ease-in-out infinite alternate;
+      opacity: 0.6;
+    }
+
+    .interplay__preview-chroma-diffusion {
+      position: absolute;
+      inset: -25%;
+      width: 150%;
+      height: 150%;
+      z-index: 1;
+      filter: blur(50px);
+      background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(248,248,248,0.7) 60%, rgb(248,248,248) 100%);
+    }
+
+    @keyframes chroma-drift-1 {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(8%, 6%) scale(1.15); }
+    }
+    @keyframes chroma-drift-2 {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-6%, 8%) scale(1.1); }
+    }
+    @keyframes chroma-drift-3 {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5%, -7%) scale(1.2); }
+    }
+    @keyframes chroma-drift-4 {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-7%, -5%) scale(1.05); }
+    }
+
+    .interplay__preview-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .interplay__preview-cube {
+      display: block;
+      width: 80px;
+      height: 80px;
+    }
+
+    .interplay__preview-heading {
+      font-size: 1.4em;
+      font-weight: 300;
+      color: rgba(0, 0, 0, 0.7);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    @media screen and (max-width: 767px) {
+      .interplay__preview {
+        width: 100%;
+      }
+    }
+
+    /* ------------------------- Animated Button ------------------------- */
+
+    .btn-animate-chars {
+      color: var(--ua-mint);
+      cursor: pointer;
+      border-radius: 0.5em;
+      justify-content: center;
+      align-items: center;
+      padding: 0.8em 2em;
+      font-size: var(--text-body);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      display: inline-flex;
+      position: relative;
+    }
+
+    .btn-animate-chars__text {
+      white-space: nowrap;
+      line-height: 1.3;
+    }
+
+    .btn-animate-chars [data-button-animate-chars] {
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+    }
+
+    .btn-animate-chars [data-button-animate-chars] span {
+      display: inline-block;
+      position: relative;
+      text-shadow: 0px 1.3em currentColor;
+      transform: translateY(0em) rotate(0.001deg);
+      transition: transform 0.6s cubic-bezier(0.625, 0.05, 0, 1);
+    }
+
+    .btn-animate-chars:hover [data-button-animate-chars] span {
+      transform: translateY(-1.3em) rotate(0.001deg);
+    }
+
+    .btn-animate-chars__bg {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 0.5em;
+      position: absolute;
+      inset: 0;
+      transition: inset 0.6s cubic-bezier(0.625, 0.05, 0, 1), border-color 0.3s;
+    }
+
+    .btn-animate-chars:hover .btn-animate-chars__bg {
+      inset: -0.125em;
+      border-color: var(--ua-mint);
+    }
+
+    /* ------------------------- Partners Section ------------------------- */
+
+    .partners__text {
+      font-size: var(--text-body);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--ua-gray);
+      margin: 0 0 1.2em;
+      max-width: 65ch;
+    }
+
+    .partners__text--strong {
+      font-weight: 700;
+      color: var(--ua-white);
+    }
+
+    .partners__intro {
+      font-size: var(--text-body);
+      color: var(--ua-gray);
+      margin: 2em 0 1.5em;
+    }
+
+    .partners__logos {
       display: flex;
       gap: var(--grid-gap);
     }
 
-    .test-section__image-mask {
-      flex: 1;
-      aspect-ratio: 16 / 9;
-      border-radius: 0.75em;
-      position: relative;
-      overflow: hidden;
+    .partners__logo-item {
+      flex: 0 0 auto;
     }
 
-    .test-section__image-inner {
-      width: 100%;
-      height: 120%;
-      position: absolute;
-      background: linear-gradient(135deg, var(--ua-mint) 0%, var(--ua-blue) 50%, var(--ua-pink) 100%);
-    }
-
-    .test-section__label {
-      position: absolute;
-      bottom: 1.5em;
-      left: 1.5em;
-      z-index: 1;
+    .partners__logo-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 10em;
+      height: 4em;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5em;
+      color: rgba(255, 255, 255, 0.2);
       font-size: var(--text-label);
-      color: var(--ua-gray);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
 
-    @media screen and (max-width: 767px) {
-      .test-section__row,
-      .test-section__image-row {
+    @media screen and (max-width: 479px) {
+      .partners__logos {
         flex-direction: column;
+      }
+    }
+
+    /* ------------------------- Claude Partner Block ------------------------- */
+
+    .claude-partner {
+      text-align: center;
+      max-width: 40em;
+      margin: 0 auto 4em;
+    }
+
+    .claude-partner__logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2em;
+    }
+
+    .claude-partner__logo {
+      width: 5em;
+      height: 5em;
+      opacity: 0.85;
+    }
+
+    .claude-partner__text {
+      font-size: var(--text-body);
+      line-height: 1.6;
+      color: var(--ua-gray);
+      max-width: 45ch;
+      margin: 0 auto;
+    }
+
+    /* ------------------------- Logo Wall ------------------------- */
+
+    .logo-wall {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      max-width: var(--size-container);
+      margin: 0 auto;
+    }
+
+    .logo-wall__collection {
+      width: 100%;
+    }
+
+    .logo-wall__list {
+      display: flex;
+      flex-flow: wrap;
+    }
+
+    .logo-wall__item {
+      width: 25%;
+      position: relative;
+    }
+
+    [data-logo-wall-list] [data-logo-wall-item]:nth-child(n+9) {
+      display: none;
+    }
+
+    .logo-wall__logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .logo-wall__logo-before {
+      padding-top: 66.66%;
+    }
+
+    .logo-wall__logo-target {
+      justify-content: center;
+      align-items: center;
+      width: 66.66%;
+      height: 40%;
+      display: flex;
+      position: absolute;
+    }
+
+    .logo-wall__logo-img {
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      filter: brightness(0) invert(1);
+      opacity: 0.5;
+    }
+
+    @media screen and (max-width: 991px) {
+      .logo-wall__item {
+        width: 33.333%;
+      }
+
+      [data-logo-wall-list] [data-logo-wall-item]:nth-child(n+7) {
+        display: none;
       }
     }
 
@@ -421,8 +825,8 @@
     }
 
     [data-load-skeleton="mint"] {
-      --color-skeleton-base: rgba(0, 0, 0, 0.1);
-      --color-skeleton-pulse: rgba(0, 0, 0, 0.18);
+      --color-skeleton-base: rgba(101, 255, 163, 0.1);
+      --color-skeleton-pulse: rgba(101, 255, 163, 0.25);
     }
 
     [data-load-skeleton="dark"] {
@@ -437,11 +841,12 @@
     }
 
     .faq__heading {
+      font-family: var(--font-mono);
       font-size: var(--text-label);
       font-weight: 500;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--ua-gray);
+      color: var(--ua-white);
       margin: 0 0 3em;
     }
 
@@ -471,7 +876,7 @@
       background: transparent;
       border: none;
       color: var(--ua-gray);
-      font-family: inherit;
+      font-family: var(--font-mono);
       font-size: var(--text-body);
       font-weight: 500;
       text-align: left;
@@ -512,6 +917,7 @@
     }
 
     .faq__answer-title {
+      font-family: var(--font-mono);
       font-size: var(--text-heading);
       font-weight: 700;
       line-height: 1.1;
@@ -539,8 +945,9 @@
     }
 
     .faq__placeholder-text {
+      font-family: var(--font-mono);
       font-size: var(--text-body);
-      color: var(--ua-gray);
+      color: var(--ua-mint);
       margin: 0;
     }
 
@@ -728,6 +1135,7 @@
       background-color: var(--ua-mint);
       pointer-events: none;
       opacity: 0;
+      visibility: hidden;
     }
 
     /* ------------------------- Logomark ------------------------- */
@@ -764,7 +1172,15 @@
     }
 
     .loader__bg {
-      background-color: var(--ua-black);
+      background-color: #1b1b1b;
+      background-image: radial-gradient(
+        ellipse at 75% 5%,
+        rgba(233, 94, 255, 0.35) 0%,
+        rgba(232, 108, 210, 0.25) 25%,
+        rgba(231, 123, 165, 0.15) 50%,
+        rgba(230, 137, 121, 0.08) 75%,
+        transparent 100%
+      );
       width: 100%;
       height: 100%;
       position: absolute;
@@ -837,14 +1253,12 @@
       white-space: nowrap;
       margin-bottom: -.25em;
       padding-bottom: .25em;
-      font-size: var(--text-body);
+      font-size: var(--text-label);
       position: absolute;
     }
   </style>
 </head>
 <body>
-
-  <a href="#main" class="skip-link">Skip to content</a>
 
   <!-- Scroll Progress Bar -->
   <div class="progress-bar"></div>
@@ -883,6 +1297,9 @@
 
     <!-- Hero -->
     <section class="hero">
+      <div class="hero__cube-wrap">
+        <canvas id="hero-cube" width="720" height="720"></canvas>
+      </div>
       <div class="container">
         <h1 data-load-skeleton="dark" data-skeleton-auto data-parallax="trigger" data-parallax-start="0" data-parallax-end="30" data-parallax-scroll-start="top top" class="hero__heading">Are you agent <span style="color: var(--ua-mint)">ready?</span></h1>
       </div>
@@ -896,39 +1313,187 @@
       </div>
     </section>
 
-    <!-- Test Section — parallax verification -->
-    <section class="test-section">
+    <!-- Why — the case for agent readiness -->
+    <section id="why" class="section">
       <div class="container">
-        <h2 data-reveal data-parallax="trigger" data-parallax-start="40" data-parallax-end="0" data-parallax-scroll-end="center center" class="test-section__heading">Parallax test zone</h2>
+        <p data-reveal class="section__label">Why?</p>
+        <h2 data-reveal class="section__heading"><!-- Content TBD --></h2>
+        <div data-reveal class="section__body">
+          <!-- Because if your agent doesn't want to do business with my business agent... -->
+        </div>
+      </div>
+    </section>
 
-        <!-- Cards with staggered parallax -->
-        <div data-reveal-group data-stagger="150" class="test-section__row">
-          <div data-parallax="trigger" data-parallax-start="30" data-parallax-end="-10" data-parallax-disable="mobileLandscape" class="test-section__card">
-            <p class="test-section__card-title">Start: 30%</p>
-            <p class="test-section__card-text">Vertical parallax, disabled on mobile landscape and below</p>
+    <!-- Living Block — agentic brain IP -->
+    <section id="living-block" class="section">
+      <div class="container">
+        <p data-reveal class="section__label">Living Block</p>
+        <h2 data-reveal class="section__heading"><!-- Content TBD: Agentic Brain IP / Box --></h2>
+        <div data-reveal class="section__body">
+          <!-- Visual: brain/block concept -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Agent Sprint -->
+    <section id="agent-sprint" class="section">
+      <div class="container">
+        <p data-reveal class="section__label">Agent Sprint</p>
+        <h2 data-reveal class="section__heading"><!-- Content TBD --></h2>
+        <div data-reveal class="section__body">
+          <!-- Sprint process / features -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Stack — trust & security -->
+    <section id="our-stack" class="section">
+      <div class="container">
+        <p data-reveal class="section__label">Our Stack</p>
+        <h2 data-reveal class="section__heading">Built on Claude</h2>
+
+        <div data-reveal class="claude-partner">
+          <div class="claude-partner__logo-wrap">
+            <img src="assets/svg/claude-symbol.svg" alt="Claude" class="claude-partner__logo">
           </div>
-          <div data-parallax="trigger" data-parallax-start="50" data-parallax-end="-10" data-parallax-disable="mobileLandscape" class="test-section__card">
-            <p class="test-section__card-title">Start: 50%</p>
-            <p class="test-section__card-text">Higher start = more dramatic offset before settling</p>
-          </div>
-          <div data-parallax="trigger" data-parallax-start="70" data-parallax-end="-10" data-parallax-disable="mobileLandscape" class="test-section__card">
-            <p class="test-section__card-title">Start: 70%</p>
-            <p class="test-section__card-text">Most dramatic — long travel distance</p>
+          <p class="claude-partner__text">We build with Anthropic's Claude — the model we trust most for safety, reasoning, and creative collaboration. We're independent, and we stay close to every frontier lab and platform shaping what agents can do.</p>
+        </div>
+      </div>
+      <div data-logo-wall-shuffle="false" data-logo-wall-cycle-init class="logo-wall">
+        <div class="logo-wall__collection">
+          <div data-logo-wall-list class="logo-wall__list">
+            <!-- Frontier Labs (visible on load: slots 1-8) -->
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/openai.svg" loading="lazy" width="100" alt="OpenAI" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/anthropic.svg" loading="lazy" width="100" alt="Anthropic" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/gemini.svg" loading="lazy" width="100" alt="Google Gemini" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/meta.svg" loading="lazy" width="100" alt="Meta AI" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/deepseek.svg" loading="lazy" width="100" alt="DeepSeek" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/mistral.svg" loading="lazy" width="100" alt="Mistral AI" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/xai.svg" loading="lazy" width="100" alt="xAI" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/qwen.svg" loading="lazy" width="100" alt="Qwen" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <!-- AI Platforms & Dev Ecosystem (cycle in from pool) -->
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/perplexity.svg" loading="lazy" width="100" alt="Perplexity" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/cohere.svg" loading="lazy" width="100" alt="Cohere" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/huggingface.svg" loading="lazy" width="100" alt="Hugging Face" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/groq.svg" loading="lazy" width="100" alt="Groq" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/langchain.svg" loading="lazy" width="100" alt="LangChain" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/vercel.svg" loading="lazy" width="100" alt="Vercel" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/replicate.svg" loading="lazy" width="100" alt="Replicate" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
+            <div data-logo-wall-item class="logo-wall__item">
+              <div data-logo-wall-target-parent class="logo-wall__logo">
+                <div class="logo-wall__logo-before"></div>
+                <div data-logo-wall-target class="logo-wall__logo-target">
+                  <img src="assets/svg/logos/together.svg" loading="lazy" width="100" alt="Together AI" class="logo-wall__logo-img">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- Image masks with background parallax -->
-        <div data-reveal-group data-stagger="200" class="test-section__image-row">
-          <div class="test-section__image-mask" data-parallax="trigger" data-parallax-start="0" data-parallax-end="40" data-parallax-scroll-start="top bottom">
-            <div data-parallax="target" class="test-section__image-inner"></div>
-            <span class="test-section__label">scrub: true (default)</span>
-          </div>
-          <div class="test-section__image-mask" data-parallax="trigger" data-parallax-scrub="2" data-parallax-start="0" data-parallax-end="40" data-parallax-scroll-start="top bottom">
-            <div data-parallax="target" class="test-section__image-inner"></div>
-            <span class="test-section__label">scrub: 2s (laggy)</span>
-          </div>
-        </div>
-
       </div>
     </section>
 
@@ -967,6 +1532,72 @@
             <div data-faq-a="4" class="faq__answer">
               <p class="faq__answer-title">Agents designed with you</p>
               <p class="faq__answer-body">Most AI consultancies hand you a platform and wish you luck. We sit with your team, understand the nuance of how you work, and build agent systems that feel like a natural extension of your process. The best agent is one your team actually uses — and that requires design thinking, not just engineering.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interplay — product section -->
+    <section id="interplay" class="section section--interplay">
+      <div class="container">
+        <div data-reveal class="interplay__badge-wrap">
+          <span class="interplay__badge">Coming Soon</span>
+        </div>
+        <div data-reveal class="interplay__logo-wrap">
+          <img src="assets/svg/interplay-logo.svg" alt="Interplay" class="interplay__logo">
+        </div>
+        <p data-reveal class="interplay__text">Our modular intelligence platform. Interplay gives your team living blocks — authored, governed AI workspaces that turn your best thinking into reusable agent infrastructure.</p>
+
+        <div data-reveal class="perspective__wrap">
+          <div data-3d-hover-target data-max-rotate="12" class="perspective__item interplay__preview">
+            <div class="interplay__preview-frame">
+              <div class="interplay__preview-mock">
+                <div data-3d-hover-inner="layer-1" class="interplay__preview-chroma">
+                  <div class="interplay__preview-chroma-blob interplay__preview-chroma-blob--1"></div>
+                  <div class="interplay__preview-chroma-blob interplay__preview-chroma-blob--2"></div>
+                  <div class="interplay__preview-chroma-blob interplay__preview-chroma-blob--3"></div>
+                  <div class="interplay__preview-chroma-blob interplay__preview-chroma-blob--4"></div>
+                  <div class="interplay__preview-chroma-diffusion"></div>
+                </div>
+                <div data-3d-hover-inner="layer-3" class="interplay__preview-content">
+                  <canvas id="interplay-cube" width="360" height="360" class="interplay__preview-cube"></canvas>
+                </div>
+                <div data-3d-hover-inner="layer-4" class="interplay__preview-content">
+                  <p class="interplay__preview-heading">What's the play?</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div data-reveal>
+          <a href="/interplay" aria-label="Explore Interplay" class="btn-animate-chars interplay__cta">
+            <div class="btn-animate-chars__bg"></div>
+            <span data-button-animate-chars class="btn-animate-chars__text">Explore Interplay →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Partners -->
+    <section id="partners" class="section">
+      <div class="container">
+        <p data-reveal class="section__label">Partners</p>
+        <div data-reveal>
+          <p class="partners__text">Interplay shapes specifically tuned agents around your creative agency's thinking. Agents that understand your business, reflect your people, your culture, and your process.</p>
+          <p class="partners__text">We enable teams to work independently yet also build collective IP. Think GitHub for creative intelligence. Force multiplying creativity and innovation.</p>
+          <p class="partners__text partners__text--strong">It's your agency. Amplified. Powered by Universal Agents.</p>
+          <p class="partners__intro">We are currently building Interplay in strategic partnership with:</p>
+          <div class="partners__logos">
+            <div class="partners__logo-item">
+              <div class="partners__logo-placeholder">Partner 1</div>
+            </div>
+            <div class="partners__logo-item">
+              <div class="partners__logo-placeholder">Partner 2</div>
+            </div>
+            <div class="partners__logo-item">
+              <div class="partners__logo-placeholder">Partner 3</div>
             </div>
           </div>
         </div>
@@ -1277,6 +1908,13 @@
 
     function initSkeletonSplit() {
       document.querySelectorAll('[data-load-skeleton]').forEach(target => {
+        // Capture mint words BEFORE SplitText destroys the span
+        const mintSpan = target.querySelector('span[style*="ua-mint"]');
+        if (mintSpan) {
+          const mintText = mintSpan.textContent.trim().toLowerCase();
+          target._mintWords = new Set(mintText.split(/\s+/).filter(Boolean));
+        }
+
         const splitInstance = new SplitText(target, {
           type: 'lines',
           linesClass: 'single-line',
@@ -1358,23 +1996,35 @@
       if (isAuto && allWords.length) {
         const streamStart = masterTl.duration();
 
-        // Find which words are inside the mint span
-        const mintSpan = instance.querySelector('span[style*="ua-mint"]');
+        // Use mint words captured before SplitText destroyed the span
+        const mintWords = instance._mintWords || new Set();
 
         allWords.forEach((word, i) => {
-          const isMint = mintSpan && mintSpan.contains(word);
-          masterTl.to(word, {
-            autoAlpha: 1,
-            color: isMint ? 'var(--ua-mint)' : 'var(--ua-white)',
-            duration: 0.05,
-            ease: 'none',
-          }, streamStart + i * 0.15);
+          const isMint = mintWords.has(word.textContent.trim().toLowerCase());
+          if (isMint) {
+            word.style.display = 'inline-block';
+            gsap.set(word, { rotationX: -90, transformOrigin: 'center bottom' });
+            masterTl.to(word, {
+              autoAlpha: 1,
+              rotationX: 0,
+              color: 'var(--ua-mint)',
+              duration: 0.6,
+              ease: 'back.out(1.5)',
+            }, streamStart + i * 0.15);
+          } else {
+            masterTl.to(word, {
+              autoAlpha: 1,
+              color: 'var(--ua-white)',
+              duration: 0.05,
+              ease: 'none',
+            }, streamStart + i * 0.15);
+          }
         });
 
         // Phase 3: shimmer — sweep color from dim→bright across all words
         const shimmerStart = masterTl.duration() + 0.15;
         allWords.forEach((word, i) => {
-          const isMint = mintSpan && mintSpan.contains(word);
+          const isMint = mintWords.has(word.textContent.trim().toLowerCase());
           const dimColor = isMint ? '#1a9950' : 'var(--ua-gray)';
           const fullColor = isMint ? 'var(--ua-mint)' : 'var(--ua-white)';
 
@@ -1388,8 +2038,20 @@
 
     function initSkeletonLoader() {
       document.querySelectorAll('[data-load-skeleton]').forEach(instance => {
+        // If already revealed (e.g. after resize), skip skeleton — just show text
+        if (instance._skeletonRevealed) {
+          instance.querySelectorAll('.skeleton-overlay').forEach(o => o.remove());
+          instance.querySelectorAll('.single-line').forEach(l => gsap.set(l, { autoAlpha: 1 }));
+          if (instance.hasAttribute('data-skeleton-auto')) {
+            instance.querySelectorAll('.word-wrap span').forEach(w => gsap.set(w, { autoAlpha: 1 }));
+          }
+          return;
+        }
+
         const tl = buildSkeletonTimeline(instance);
         const isAuto = instance.hasAttribute('data-skeleton-auto');
+
+        tl.eventCallback('onComplete', () => { instance._skeletonRevealed = true; });
 
         if (isAuto) {
           // Store for manual trigger from loader
@@ -1588,7 +2250,169 @@
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.5,
+          onUpdate: (self) => {
+            if (self.progress > 0.01) {
+              bar.style.visibility = 'visible';
+              bar.style.opacity = '1';
+            } else {
+              bar.style.visibility = 'hidden';
+              bar.style.opacity = '0';
+            }
+          },
         },
+      });
+    }
+
+    /* ------------------------- 3D Perspective Hover ------------------------- */
+
+    function init3dPerspectiveHover() {
+      const canHover = window.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
+      if (!canHover) return;
+      const nodeList = document.querySelectorAll('[data-3d-hover-target]');
+      if (!nodeList.length) return;
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+      const DEFAULT_MAX_DEG = 20;
+      const targets = Array.from(nodeList).map(el => {
+        const maxAttr = parseFloat(el.getAttribute('data-max-rotate'));
+        const maxRotate = Number.isFinite(maxAttr) ? maxAttr : DEFAULT_MAX_DEG;
+        return {
+          el, maxRotate,
+          rect: el.getBoundingClientRect(),
+          proxy: { rx: 0, ry: 0 },
+          setRotationX: gsap.quickSetter(el, 'rotationX', 'deg'),
+          setRotationY: gsap.quickSetter(el, 'rotationY', 'deg'),
+        };
+      });
+
+      let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+      let isFrameScheduled = false;
+
+      function measureAll() { targets.forEach(t => t.rect = t.el.getBoundingClientRect()); }
+
+      function onPointerMove(e) {
+        mouseX = e.clientX; mouseY = e.clientY;
+        if (!isFrameScheduled) { isFrameScheduled = true; requestAnimationFrame(updateAll); }
+      }
+
+      function updateAll() {
+        isFrameScheduled = false;
+        targets.forEach(({ rect, maxRotate, proxy, setRotationX, setRotationY }) => {
+          const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+          const normX = Math.max(-1, Math.min(1, (mouseX - cx) / ((rect.width / 2) || 1)));
+          const normY = Math.max(-1, Math.min(1, (mouseY - cy) / ((rect.height / 2) || 1)));
+          gsap.to(proxy, {
+            rx: -normY * maxRotate, ry: normX * maxRotate,
+            duration: 0.5, ease: 'power3.out', overwrite: true,
+            onUpdate: () => { setRotationX(proxy.rx); setRotationY(proxy.ry); }
+          });
+        });
+      }
+
+      measureAll();
+      document.addEventListener('pointermove', onPointerMove, { passive: true });
+      window.addEventListener('resize', () => requestAnimationFrame(measureAll), { passive: true });
+      window.addEventListener('scroll', () => requestAnimationFrame(measureAll), { passive: true });
+    }
+
+    /* ------------------------- Button Character Stagger ------------------------- */
+
+    function initButtonCharacterStagger() {
+      const offsetIncrement = 0.01;
+      document.querySelectorAll('[data-button-animate-chars]').forEach(button => {
+        const text = button.textContent;
+        while (button.firstChild) button.removeChild(button.firstChild);
+        [...text].forEach((char, index) => {
+          const span = document.createElement('span');
+          span.textContent = char;
+          span.style.transitionDelay = index * offsetIncrement + 's';
+          if (char === ' ') span.style.whiteSpace = 'pre';
+          button.appendChild(span);
+        });
+      });
+    }
+
+    /* ------------------------- Logo Wall Cycle ------------------------- */
+
+    function initLogoWallCycle() {
+      const loopDelay = 1.5;
+      const duration  = 0.9;
+
+      document.querySelectorAll('[data-logo-wall-cycle-init]').forEach(root => {
+        const list   = root.querySelector('[data-logo-wall-list]');
+        const items  = Array.from(list.querySelectorAll('[data-logo-wall-item]'));
+        const shuffleFront = root.getAttribute('data-logo-wall-shuffle') !== 'false';
+        const originalTargets = items
+          .map(item => item.querySelector('[data-logo-wall-target]'))
+          .filter(Boolean);
+
+        let visibleItems = [], visibleCount = 0, pool = [], pattern = [], patternIndex = 0, tl;
+
+        function isVisible(el) { return window.getComputedStyle(el).display !== 'none'; }
+
+        function shuffleArray(arr) {
+          const a = arr.slice();
+          for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+        }
+
+        function setup() {
+          if (tl) tl.kill();
+          visibleItems = items.filter(isVisible);
+          visibleCount = visibleItems.length;
+          pattern = shuffleArray(Array.from({ length: visibleCount }, (_, i) => i));
+          patternIndex = 0;
+          items.forEach(item => item.querySelectorAll('[data-logo-wall-target]').forEach(old => old.remove()));
+          pool = originalTargets.map(n => n.cloneNode(true));
+          let front, rest;
+          if (shuffleFront) {
+            const shuffled = shuffleArray(pool);
+            front = shuffled.slice(0, visibleCount);
+            rest = shuffleArray(shuffled.slice(visibleCount));
+          } else {
+            front = pool.slice(0, visibleCount);
+            rest = shuffleArray(pool.slice(visibleCount));
+          }
+          pool = front.concat(rest);
+          for (let i = 0; i < visibleCount; i++) {
+            const parent = visibleItems[i].querySelector('[data-logo-wall-target-parent]') || visibleItems[i];
+            parent.appendChild(pool.shift());
+          }
+          tl = gsap.timeline({ repeat: -1, repeatDelay: loopDelay });
+          tl.call(swapNext);
+          tl.play();
+        }
+
+        function swapNext() {
+          const nowCount = items.filter(isVisible).length;
+          if (nowCount !== visibleCount) { setup(); return; }
+          if (!pool.length) return;
+          const idx = pattern[patternIndex % visibleCount];
+          patternIndex++;
+          const container = visibleItems[idx];
+          const parent = container.querySelector('[data-logo-wall-target-parent]') || container;
+          const existing = parent.querySelectorAll('[data-logo-wall-target]');
+          if (existing.length > 1) return;
+          const current = parent.querySelector('[data-logo-wall-target]');
+          const incoming = pool.shift();
+          gsap.set(incoming, { yPercent: 50, autoAlpha: 0 });
+          parent.appendChild(incoming);
+          if (current) {
+            gsap.to(current, { yPercent: -50, autoAlpha: 0, duration, ease: 'expo.inOut', onComplete: () => { current.remove(); pool.push(current); } });
+          }
+          gsap.to(incoming, { yPercent: 0, autoAlpha: 1, duration, delay: 0.1, ease: 'expo.inOut' });
+        }
+
+        setup();
+        ScrollTrigger.create({
+          trigger: root, start: 'top bottom', end: 'bottom top',
+          onEnter: () => tl.play(), onLeave: () => tl.pause(),
+          onEnterBack: () => tl.play(), onLeaveBack: () => tl.pause()
+        });
+        document.addEventListener('visibilitychange', () => document.hidden ? tl.pause() : tl.play());
       });
     }
 
@@ -1605,6 +2429,9 @@
       initContentRevealScroll();
       initFooterParallax();
       initScrollProgressBar();
+      initLogoWallCycle();
+      initButtonCharacterStagger();
+      init3dPerspectiveHover();
 
       // Skeleton text reveal — wait for fonts
       document.fonts.ready.then(initSkeletonTextEffects);
@@ -1618,6 +2445,250 @@
         }
       }, 250));
     });
+  </script>
+
+  <!-- Hero Cube (Three.js) -->
+  <script type="module">
+    import * as THREE from 'three';
+
+    function makeMatcapTexture(stops, size = 256, exp = 0.5) {
+      const cv = document.createElement('canvas');
+      cv.width = size; cv.height = size;
+      const ctx = cv.getContext('2d');
+      const cx = size * 0.42, cy = size * 0.38;
+      const grad = ctx.createRadialGradient(cx, cy, 0, size / 2, size / 2, size * exp);
+      for (const s of stops) grad.addColorStop(s.pos, s.color);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, size, size);
+      const tex = new THREE.CanvasTexture(cv);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    const cvs = document.getElementById('hero-cube');
+    if (cvs) {
+      const renderer = new THREE.WebGLRenderer({ canvas: cvs, antialias: true, alpha: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(720, 720);
+      renderer.toneMapping = THREE.NoToneMapping;
+
+      const scene = new THREE.Scene();
+      const F = 2.2;
+      const cam = new THREE.OrthographicCamera(-F, F, F, -F, -10, 10);
+      cam.position.set(0, 0, 5);
+
+      scene.add(new THREE.AmbientLight(0xffffff, 1.8));
+      const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
+      keyLight.position.set(-1, 2, 5);
+      scene.add(keyLight);
+      const fillLight = new THREE.DirectionalLight(0xffc0e0, 0.2);
+      fillLight.position.set(-4, -3, 2);
+      scene.add(fillLight);
+
+      const matcapStops = [
+        { pos: 0, color: '#f0c0e8' },
+        { pos: 0.15, color: '#e95eff' },
+        { pos: 0.4, color: '#e86cd2' },
+        { pos: 0.72, color: '#5a2848' },
+        { pos: 1.0, color: '#1b1b1b' }
+      ];
+
+      const sideMat = new THREE.MeshMatcapMaterial({
+        matcap: makeMatcapTexture(matcapStops, 256, 0.5),
+        side: THREE.DoubleSide
+      });
+
+      const faceCanvas = document.createElement('canvas');
+      faceCanvas.width = 512; faceCanvas.height = 512;
+      const faceCtx = faceCanvas.getContext('2d');
+      const fg = faceCtx.createLinearGradient(0, 512, 512, 0);
+      fg.addColorStop(0, '#e86cd2');
+      fg.addColorStop(1, '#3d1a30');
+      faceCtx.fillStyle = fg;
+      faceCtx.fillRect(0, 0, 512, 512);
+      const faceTex = new THREE.CanvasTexture(faceCanvas);
+      faceTex.colorSpace = THREE.SRGBColorSpace;
+      const faceMat = new THREE.MeshBasicMaterial({ map: faceTex, side: THREE.DoubleSide });
+
+      const s = 1.6, cornerR = 0.12 * s, x0 = -s / 2, y0 = -s / 2;
+      const shape = new THREE.Shape();
+      shape.moveTo(x0 + cornerR, y0);
+      shape.lineTo(x0 + s - cornerR, y0);
+      shape.quadraticCurveTo(x0 + s, y0, x0 + s, y0 + cornerR);
+      shape.lineTo(x0 + s, y0 + s - cornerR);
+      shape.quadraticCurveTo(x0 + s, y0 + s, x0 + s - cornerR, y0 + s);
+      shape.lineTo(x0 + cornerR, y0 + s);
+      shape.quadraticCurveTo(x0, y0 + s, x0, y0 + s - cornerR);
+      shape.lineTo(x0, y0 + cornerR);
+      shape.quadraticCurveTo(x0, y0, x0 + cornerR, y0);
+
+      const geo = new THREE.ExtrudeGeometry(shape, {
+        depth: 1.42, bevelEnabled: true,
+        bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 1
+      });
+      geo.computeBoundingBox();
+      const bb = geo.boundingBox;
+      geo.translate(0, 0, -(bb.min.z + (bb.max.z - bb.min.z) * 0.5));
+
+      const mesh = new THREE.Mesh(geo, [faceMat, sideMat]);
+      mesh.matrixAutoUpdate = false;
+      scene.add(mesh);
+
+      const scale = 0.48;
+      const state = { shearX: 0.55, shearY: 0.55, rotX: 0, rotY: 0, scaleAnim: 1, squash: 1.0 };
+
+      function updateHero() {
+        const shearMat = new THREE.Matrix4();
+        shearMat.set(1, 0, state.shearX, 0, 0, 1, state.shearY, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+        const sqY = state.squash, sqXZ = 1 / Math.sqrt(Math.max(0.01, state.squash));
+        const squashMat = new THREE.Matrix4(); squashMat.makeScale(sqXZ, sqY, sqXZ);
+        const rot = new THREE.Matrix4(); rot.makeRotationFromEuler(new THREE.Euler(state.rotX, state.rotY, 0, 'XYZ'));
+        const sv = scale * state.scaleAnim;
+        const sc = new THREE.Matrix4(); sc.makeScale(sv, sv, sv);
+        mesh.matrix.identity();
+        mesh.matrix.multiply(sc).multiply(rot).multiply(squashMat).multiply(shearMat);
+        mesh.matrixWorldNeedsUpdate = true;
+      }
+
+      const landEase = 'back.out(2.0)';
+      const upd = () => updateHero();
+
+      function playFlip() {
+        state.shearX = 0.55; state.shearY = 0.55;
+        state.rotX = 0; state.rotY = 0;
+        state.scaleAnim = 1; state.squash = 1;
+        const tl = gsap.timeline({ onComplete: playFlip });
+        tl.to(state, { rotY: Math.PI, shearX: 0, shearY: 0, squash: 0.92, duration: 0.5, ease: 'power2.in', onUpdate: upd })
+          .to(state, { rotY: Math.PI, shearX: 0.55, shearY: 0.55, squash: 1, duration: 0.4, ease: landEase, onUpdate: upd })
+          .to(state, { duration: 1.5 })
+          .to(state, { rotY: Math.PI * 2, shearX: 0, shearY: 0, squash: 0.92, duration: 0.5, ease: 'power2.in', onUpdate: upd })
+          .to(state, { rotY: Math.PI * 2, shearX: 0.55, shearY: 0.55, squash: 1, duration: 0.4, ease: landEase, onUpdate: upd });
+      }
+      playFlip();
+
+      (function renderHero() {
+        updateHero();
+        renderer.render(scene, cam);
+        requestAnimationFrame(renderHero);
+      })();
+    }
+
+    // ========================
+    // INTERPLAY PREVIEW CUBE (spectrum)
+    // ========================
+    const ipCvs = document.getElementById('interplay-cube');
+    if (ipCvs) {
+      const r2 = new THREE.WebGLRenderer({ canvas: ipCvs, antialias: true, alpha: true });
+      r2.setPixelRatio(window.devicePixelRatio);
+      r2.setSize(360, 360);
+      r2.toneMapping = THREE.NoToneMapping;
+
+      const s2 = new THREE.Scene();
+      const F2 = 2.2;
+      const c2 = new THREE.OrthographicCamera(-F2, F2, F2, -F2, -10, 10);
+      c2.position.set(0, 0, 5);
+      s2.add(new THREE.AmbientLight(0xffffff, 1.8));
+      const kl2 = new THREE.DirectionalLight(0xffffff, 0.6);
+      kl2.position.set(-1, 2, 5); s2.add(kl2);
+
+      // Spectrum side texture (animated rainbow)
+      const ipSideCanvas = document.createElement('canvas');
+      ipSideCanvas.width = 256; ipSideCanvas.height = 256;
+      const ipSideCtx = ipSideCanvas.getContext('2d');
+      const ipSideTex = new THREE.CanvasTexture(ipSideCanvas);
+      ipSideTex.colorSpace = THREE.SRGBColorSpace;
+
+      // Face texture (white gradient)
+      const ipFaceCanvas = document.createElement('canvas');
+      ipFaceCanvas.width = 256; ipFaceCanvas.height = 256;
+      const ipFaceCtx = ipFaceCanvas.getContext('2d');
+      const ipFaceTex = new THREE.CanvasTexture(ipFaceCanvas);
+      ipFaceTex.colorSpace = THREE.SRGBColorSpace;
+      const ipFg = ipFaceCtx.createLinearGradient(0, 256, 256, 0);
+      ipFg.addColorStop(0, '#ffffff'); ipFg.addColorStop(1, '#dadada');
+      ipFaceCtx.fillStyle = ipFg; ipFaceCtx.fillRect(0, 0, 256, 256);
+      ipFaceTex.needsUpdate = true;
+
+      const ipFaceMat = new THREE.MeshBasicMaterial({ map: ipFaceTex, side: THREE.DoubleSide });
+      const ipSideMat = new THREE.MeshBasicMaterial({ map: ipSideTex, side: THREE.DoubleSide });
+
+      const ipS = 1.6, ipCr = 0.12 * ipS, ipX0 = -ipS / 2, ipY0 = -ipS / 2;
+      const ipShape = new THREE.Shape();
+      ipShape.moveTo(ipX0 + ipCr, ipY0);
+      ipShape.lineTo(ipX0 + ipS - ipCr, ipY0);
+      ipShape.quadraticCurveTo(ipX0 + ipS, ipY0, ipX0 + ipS, ipY0 + ipCr);
+      ipShape.lineTo(ipX0 + ipS, ipY0 + ipS - ipCr);
+      ipShape.quadraticCurveTo(ipX0 + ipS, ipY0 + ipS, ipX0 + ipS - ipCr, ipY0 + ipS);
+      ipShape.lineTo(ipX0 + ipCr, ipY0 + ipS);
+      ipShape.quadraticCurveTo(ipX0, ipY0 + ipS, ipX0, ipY0 + ipS - ipCr);
+      ipShape.lineTo(ipX0, ipY0 + ipCr);
+      ipShape.quadraticCurveTo(ipX0, ipY0, ipX0 + ipCr, ipY0);
+
+      const ipGeo = new THREE.ExtrudeGeometry(ipShape, {
+        depth: 1.42, bevelEnabled: true, bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 1
+      });
+      ipGeo.computeBoundingBox();
+      const ipBb = ipGeo.boundingBox;
+      ipGeo.translate(0, 0, -(ipBb.min.z + (ipBb.max.z - ipBb.min.z) * 0.5));
+
+      const ipMesh = new THREE.Mesh(ipGeo, [ipFaceMat, ipSideMat]);
+      ipMesh.matrixAutoUpdate = false;
+      s2.add(ipMesh);
+
+      const ipScale = 0.48;
+      const ipSt = { shearX: 0.55, shearY: 0.55, rotX: 0, rotY: 0, scaleAnim: 1, squash: 1.0 };
+
+      function updateIp() {
+        const sm = new THREE.Matrix4();
+        sm.set(1, 0, ipSt.shearX, 0, 0, 1, ipSt.shearY, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+        const sqY = ipSt.squash, sqXZ = 1 / Math.sqrt(Math.max(0.01, ipSt.squash));
+        const sqm = new THREE.Matrix4(); sqm.makeScale(sqXZ, sqY, sqXZ);
+        const rot = new THREE.Matrix4(); rot.makeRotationFromEuler(new THREE.Euler(ipSt.rotX, ipSt.rotY, 0, 'XYZ'));
+        const sv = ipScale * ipSt.scaleAnim;
+        const sc = new THREE.Matrix4(); sc.makeScale(sv, sv, sv);
+        ipMesh.matrix.identity();
+        ipMesh.matrix.multiply(sc).multiply(rot).multiply(sqm).multiply(sm);
+        ipMesh.matrixWorldNeedsUpdate = true;
+      }
+
+      function paintSpectrum(t) {
+        const w = 256, h = 256, angle = t * 0.25, cx = w / 2, cy = h / 2, phase = t * 0.18;
+        const grad = ipSideCtx.createLinearGradient(
+          cx + Math.cos(angle) * w, cy + Math.sin(angle) * h,
+          cx - Math.cos(angle) * w, cy - Math.sin(angle) * h
+        );
+        for (let i = 0; i <= 1; i += 0.1) grad.addColorStop(i, 'hsl(' + (((i + phase) % 1) * 360) + ', 92%, 48%)');
+        ipSideCtx.fillStyle = grad; ipSideCtx.fillRect(0, 0, w, h);
+        const grad2 = ipSideCtx.createLinearGradient(
+          cx + Math.sin(angle * 0.7) * w * 0.6, 0,
+          cx - Math.sin(angle * 0.7) * w * 0.6, h
+        );
+        for (let i = 0; i <= 1; i += 0.2) grad2.addColorStop(i, 'hsla(' + (((i + phase + 0.5) % 1) * 360) + ', 85%, 42%, 0.3)');
+        ipSideCtx.fillStyle = grad2; ipSideCtx.fillRect(0, 0, w, h);
+        ipSideTex.needsUpdate = true;
+      }
+
+      const ipLand = 'back.out(2.0)';
+      const ipUpd = () => updateIp();
+      function ipFlip() {
+        ipSt.shearX = 0.55; ipSt.shearY = 0.55;
+        ipSt.rotX = 0; ipSt.rotY = 0; ipSt.scaleAnim = 1; ipSt.squash = 1;
+        const tl = gsap.timeline({ onComplete: ipFlip });
+        tl.to(ipSt, { rotY: Math.PI, shearX: 0, shearY: 0, squash: 0.92, duration: 0.5, ease: 'power2.in', onUpdate: ipUpd })
+          .to(ipSt, { rotY: Math.PI, shearX: 0.55, shearY: 0.55, squash: 1, duration: 0.4, ease: ipLand, onUpdate: ipUpd })
+          .to(ipSt, { duration: 1.5 })
+          .to(ipSt, { rotY: Math.PI * 2, shearX: 0, shearY: 0, squash: 0.92, duration: 0.5, ease: 'power2.in', onUpdate: ipUpd })
+          .to(ipSt, { rotY: Math.PI * 2, shearX: 0.55, shearY: 0.55, squash: 1, duration: 0.4, ease: ipLand, onUpdate: ipUpd });
+      }
+      ipFlip();
+
+      (function renderIp(time) {
+        paintSpectrum(time * 0.001);
+        updateIp();
+        r2.render(s2, c2);
+        requestAnimationFrame(renderIp);
+      })(0);
+    }
   </script>
 
 </body>
