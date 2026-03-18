@@ -340,6 +340,7 @@
       display: flex;
       align-items: center;
       padding: var(--section-padding) 0;
+      text-align: center;
     }
 
     .mission__label {
@@ -355,10 +356,10 @@
     .mission__statement {
       font-family: var(--font-mono);
       font-size: var(--text-display);
-      font-weight: 900;
+      font-weight: 400;
       line-height: 1.1;
       letter-spacing: -0.02em;
-      margin: 0;
+      margin: 0 auto;
       max-width: 20ch;
       color: var(--ua-mint);
     }
@@ -369,6 +370,7 @@
 
     .section {
       padding: var(--section-padding) 0;
+      text-align: center;
     }
 
     .section__label {
@@ -384,10 +386,11 @@
     .section__heading {
       font-family: var(--font-mono);
       font-size: var(--text-heading);
-      font-weight: 900;
+      font-weight: 400;
       line-height: 1.2;
       letter-spacing: -0.015em;
       margin: 0 0 1.5em;
+      color: var(--ua-mint);
     }
 
     .section__body {
@@ -395,6 +398,7 @@
       line-height: 1.6;
       color: var(--ua-gray);
       max-width: 65ch;
+      margin: 0 auto;
     }
 
     .section__body:empty::before {
@@ -664,12 +668,12 @@
       font-weight: 400;
       line-height: 1.6;
       color: var(--ua-gray);
-      margin: 0 0 1.2em;
+      margin: 0 auto 1.2em;
       max-width: 65ch;
     }
 
     .partners__text--strong {
-      font-weight: 700;
+      font-weight: 500;
       color: var(--ua-white);
     }
 
@@ -682,6 +686,7 @@
     .partners__logos {
       display: flex;
       flex-flow: wrap;
+      justify-content: center;
       max-width: var(--size-container);
       margin: 0 auto;
     }
@@ -939,7 +944,7 @@
     .faq__answer-title {
       font-family: var(--font-mono);
       font-size: var(--text-heading);
-      font-weight: 700;
+      font-weight: 400;
       line-height: 1.1;
       letter-spacing: -0.015em;
       color: var(--ua-mint);
@@ -1052,7 +1057,7 @@
 
     .footer__a {
       color: var(--ua-white);
-      font-size: var(--text-heading);
+      font-size: var(--text-body);
       font-weight: 400;
       line-height: 1.1;
       letter-spacing: -0.015em;
@@ -1329,7 +1334,7 @@
     <section class="mission" data-theme="light">
       <div class="container">
         <p data-reveal class="mission__label">Our Mission</p>
-        <h2 data-load-skeleton="mint" class="mission__statement">Is to help every business turn into an agent.</h2>
+        <h2 data-load-skeleton="mint" data-skeleton-stream class="mission__statement">Is to help every business turn into an agent.</h2>
       </div>
     </section>
 
@@ -1370,7 +1375,7 @@
     <section id="our-stack" class="section">
       <div class="container">
         <p data-reveal class="section__label">Our Stack</p>
-        <h2 data-reveal class="section__heading" style="color: var(--ua-mint)">Built on Claude</h2>
+        <h2 data-reveal class="section__heading">Built on Claude</h2>
 
         <div data-reveal class="claude-partner">
           <div class="claude-partner__logo-wrap">
@@ -1604,6 +1609,7 @@
     <section id="partners" class="section">
       <div class="container">
         <p data-reveal class="section__label">Partners</p>
+        <h2 data-reveal class="section__heading">Built by independent thinkers for independents.</h2>
         <div data-reveal>
           <p class="partners__text">Interplay shapes specifically tuned agents around your creative agency's thinking. Agents that understand your business, reflect your people, your culture, and your process.</p>
           <p class="partners__text">We enable teams to work independently yet also build collective IP. Think GitHub for creative intelligence. Force multiplying creativity and innovation.</p>
@@ -1682,8 +1688,8 @@
           </div>
         </div>
         <div class="loader__text-wrap">
-          <span data-load-text data-load-reset class="loader__text-el">Hold tight</span>
-          <span data-load-text data-load-reset class="loader__text-el">Hi there!</span>
+          <span data-load-text data-load-reset aria-hidden="true" class="loader__text-el">Hold tight</span>
+          <span data-load-text data-load-reset aria-hidden="true" class="loader__text-el">Hi there!</span>
         </div>
       </div>
     </div>
@@ -1972,9 +1978,10 @@
       const lineWrappers = instance.querySelectorAll('.single-line-wrap');
       const isAuto = instance.hasAttribute('data-skeleton-auto');
 
-      // For auto (hero): split words inside each line for streaming
+      // Split words for streaming (auto or stream mode)
+      const isStream = instance.hasAttribute('data-skeleton-stream');
       let allWords = [];
-      if (isAuto) {
+      if (isAuto || isStream) {
         lineWrappers.forEach(wrapper => {
           const line = wrapper.querySelector('.single-line');
           if (line) {
@@ -1997,9 +2004,9 @@
       const pulseColor = gsap.getProperty(instance, '--color-skeleton-pulse');
 
       // Phase 1: skeleton pulse and fade
-      const pulseRepeat = isAuto ? 5 : 2;
-      const pulseDuration = isAuto ? 0.2 : 0.3;
-      const fadeDuration = isAuto ? 0.3 : 0.5;
+      const pulseRepeat = (isAuto || isStream) ? 3 : 2;
+      const pulseDuration = (isAuto || isStream) ? 0.2 : 0.3;
+      const fadeDuration = (isAuto || isStream) ? 0.3 : 0.5;
 
       overlays.forEach((overlay, i) => {
         const textEl = overlay.previousElementSibling;
@@ -2027,12 +2034,17 @@
         }
       });
 
-      // Phase 2 (auto only): stream words in one by one
-      if (isAuto && allWords.length) {
+      // Phase 2: stream words in one by one
+      if ((isAuto || isStream) && allWords.length) {
         const streamStart = masterTl.duration();
 
         // Use mint words captured before SplitText destroyed the span
         const mintWords = instance._mintWords || new Set();
+        // Detect element's own color for streaming
+        const baseColor = getComputedStyle(instance).color;
+        const isMintElement = baseColor.includes('101') || baseColor.includes('255') || instance.style.color?.includes('mint');
+        const defaultColor = isMintElement ? 'var(--ua-mint)' : 'var(--ua-white)';
+        const defaultDim = isMintElement ? '#1a9950' : 'var(--ua-gray)';
 
         allWords.forEach((word, i) => {
           const isMint = mintWords.has(word.textContent.trim().toLowerCase());
@@ -2049,7 +2061,7 @@
           } else {
             masterTl.to(word, {
               autoAlpha: 1,
-              color: 'var(--ua-white)',
+              color: defaultColor,
               duration: 0.05,
               ease: 'none',
             }, streamStart + i * 0.15);
@@ -2060,8 +2072,8 @@
         const shimmerStart = masterTl.duration() + 0.15;
         allWords.forEach((word, i) => {
           const isMint = mintWords.has(word.textContent.trim().toLowerCase());
-          const dimColor = isMint ? '#1a9950' : 'var(--ua-gray)';
-          const fullColor = isMint ? 'var(--ua-mint)' : 'var(--ua-white)';
+          const dimColor = isMint ? '#1a9950' : defaultDim;
+          const fullColor = isMint ? 'var(--ua-mint)' : defaultColor;
 
           masterTl.to(word, { color: dimColor, duration: 0.01 }, shimmerStart + i * 0.04);
           masterTl.to(word, { color: fullColor, duration: 0.3, ease: 'power2.out' }, shimmerStart + i * 0.04 + 0.05);
@@ -2077,7 +2089,7 @@
         if (instance._skeletonRevealed) {
           instance.querySelectorAll('.skeleton-overlay').forEach(o => o.remove());
           instance.querySelectorAll('.single-line').forEach(l => gsap.set(l, { autoAlpha: 1 }));
-          if (instance.hasAttribute('data-skeleton-auto')) {
+          if (instance.hasAttribute('data-skeleton-auto') || instance.hasAttribute('data-skeleton-stream')) {
             instance.querySelectorAll('.word-wrap span').forEach(w => gsap.set(w, { autoAlpha: 1 }));
           }
           return;
