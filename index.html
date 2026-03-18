@@ -686,20 +686,23 @@
 
     .partners__logo-item {
       flex: 0 0 auto;
-    }
-
-    .partners__logo-placeholder {
       display: flex;
       align-items: center;
-      justify-content: center;
-      width: 10em;
-      height: 4em;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 0.5em;
-      color: rgba(255, 255, 255, 0.2);
-      font-size: var(--text-label);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      height: 3em;
+      opacity: 0.7;
+      transition: opacity 300ms;
+      text-decoration: none;
+    }
+
+    .partners__logo-item:hover {
+      opacity: 1;
+    }
+
+    .partners__logo-img {
+      height: 100%;
+      width: auto;
+      max-width: 10em;
+      object-fit: contain;
     }
 
     @media screen and (max-width: 479px) {
@@ -1350,7 +1353,7 @@
     <section id="our-stack" class="section">
       <div class="container">
         <p data-reveal class="section__label">Our Stack</p>
-        <h2 data-reveal class="section__heading">Built on Claude</h2>
+        <h2 data-reveal class="section__heading" style="color: var(--ua-mint)">Built on Claude</h2>
 
         <div data-reveal class="claude-partner">
           <div class="claude-partner__logo-wrap">
@@ -1590,15 +1593,18 @@
           <p class="partners__text partners__text--strong">It's your agency. Amplified. Powered by Universal Agents.</p>
           <p class="partners__intro">We are currently building Interplay in strategic partnership with:</p>
           <div class="partners__logos">
-            <div class="partners__logo-item">
-              <div class="partners__logo-placeholder">Partner 1</div>
-            </div>
-            <div class="partners__logo-item">
-              <div class="partners__logo-placeholder">Partner 2</div>
-            </div>
-            <div class="partners__logo-item">
-              <div class="partners__logo-placeholder">Partner 3</div>
-            </div>
+            <a href="https://www.laughlin.com/" target="_blank" rel="noopener" class="partners__logo-item">
+              <img src="assets/svg/partner-laughlin.svg" alt="Laughlin Constable" class="partners__logo-img">
+            </a>
+            <a href="https://www.bridge-biz-dev.com/" target="_blank" rel="noopener" class="partners__logo-item">
+              <img src="assets/svg/partner-bridge.png" alt="Bridge Business Development" class="partners__logo-img">
+            </a>
+            <a href="https://www.hudsonts.com/" target="_blank" rel="noopener" class="partners__logo-item">
+              <img src="assets/svg/partner-hudson.svg" alt="Hudson" class="partners__logo-img">
+            </a>
+            <a href="https://parallel.systems/" target="_blank" rel="noopener" class="partners__logo-item">
+              <img src="assets/svg/partner-parallel.svg" alt="Parallel System" class="partners__logo-img">
+            </a>
           </div>
         </div>
       </div>
