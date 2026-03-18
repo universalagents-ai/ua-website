@@ -227,6 +227,7 @@
       color: var(--ua-white);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      text-wrap: pretty;
     }
 
     /* Type scale utility classes — use these instead of raw font-size */
@@ -301,7 +302,6 @@
       justify-content: center;
       min-height: 100dvh;
       position: relative;
-      overflow: clip;
     }
 
     .hero__heading {
@@ -330,6 +330,20 @@
       display: block;
       width: 360px;
       height: 360px;
+    }
+
+    /* Floating cube that tracks scroll from hero to mission */
+    .scroll-cube {
+      pointer-events: none;
+      z-index: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100dvh;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
     /* ------------------------- Mission Section ------------------------- */
@@ -364,7 +378,28 @@
       color: var(--ua-mint);
     }
 
-    /* ------------------------- Test Section ------------------------- */
+    .mission__body {
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--ua-gray);
+      max-width: 42ch;
+      margin: 2em auto 0;
+    }
+
+    .mission__kicker {
+      font-family: var(--font-mono);
+      font-size: var(--text-body);
+      font-weight: 500;
+      color: var(--ua-white);
+      margin: 1.5em auto 0;
+    }
+
+    [data-reveal-after-skeleton] {
+      opacity: 0;
+      transform: translateY(20px);
+    }
 
     /* ------------------------- Shared Section Structure ------------------------- */
 
@@ -389,7 +424,8 @@
       font-weight: 400;
       line-height: 1.2;
       letter-spacing: -0.015em;
-      margin: 0 0 1.5em;
+      margin: 0 auto 1.5em;
+      max-width: 20ch;
       color: var(--ua-mint);
     }
 
@@ -397,7 +433,7 @@
       font-size: var(--text-body);
       line-height: 1.6;
       color: var(--ua-gray);
-      max-width: 65ch;
+      max-width: 50ch;
       margin: 0 auto;
     }
 
@@ -405,6 +441,122 @@
       content: '[ Section content TBD ]';
       opacity: 0.2;
       font-style: italic;
+    }
+
+    /* ------------------------- Agent Sprint Hero ------------------------- */
+
+    .sprint-hero__title {
+      font-family: var(--font-mono);
+      font-size: 7em;
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--ua-mint);
+      margin: 0.3em auto 0;
+      max-width: 15ch;
+    }
+
+    .sprint-hero__visual {
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16 / 9;
+      margin: 2em auto;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(101, 255, 163, 0.06), rgba(255, 105, 186, 0.06));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    @media screen and (max-width: 991px) {
+      .sprint-hero__title {
+        font-size: 5.5em;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      .sprint-hero__title {
+        font-size: 3.5em;
+      }
+    }
+
+    /* ------------------------- Sprint Blocks (Shape/Share/Scale) ------------------------- */
+
+    .sprint-blocks {
+      display: flex;
+      flex-direction: column;
+      margin-top: var(--section-padding);
+    }
+
+    .sprint-block {
+      display: flex;
+      align-items: stretch;
+      min-height: 100vh;
+    }
+
+    .sprint-block:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .sprint-block__visual {
+      flex: 3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sprint-block__visual-inner {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(101, 255, 163, 0.06), rgba(255, 105, 186, 0.06));
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .sprint-block:nth-child(even) .sprint-block__visual-inner {
+      border-right: none;
+      border-left: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .sprint-block__content {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 var(--grid-padding) 3em;
+      text-align: left;
+    }
+
+    .sprint-block__word {
+      font-family: var(--font-mono);
+      font-size: var(--text-heading);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      color: var(--ua-mint);
+      margin: 0 0 0.5em;
+    }
+
+    .sprint-block__text {
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--ua-gray);
+      max-width: 28ch;
+      margin: 0;
+    }
+
+    @media screen and (max-width: 767px) {
+      .sprint-block,
+      .sprint-block:nth-child(even) {
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .sprint-block__visual {
+        min-height: 50vh;
+      }
+
+      .sprint-block__content {
+        padding: 2em var(--grid-padding) var(--section-padding);
+      }
     }
 
     /* ------------------------- Interplay Section ------------------------- */
@@ -669,7 +821,8 @@
       line-height: 1.6;
       color: var(--ua-gray);
       margin: 0 auto 1.2em;
-      max-width: 65ch;
+      max-width: 55ch;
+      text-wrap: balance;
     }
 
     .partners__text--strong {
@@ -751,6 +904,13 @@
       width: 5em;
       height: 5em;
       opacity: 0.85;
+    }
+
+    .claude-sparkle {
+      font-size: 5em;
+      line-height: 1;
+      color: #D97757;
+      display: inline-block;
     }
 
     .claude-partner__text {
@@ -1154,7 +1314,7 @@
       position: fixed;
       inset: 0 0 auto 0;
       width: 100%;
-      height: 2px;
+      height: 3px;
       transform-origin: 0%;
       transform: scale3d(0, 1, 1);
       background-color: var(--ua-mint);
@@ -1163,20 +1323,292 @@
       visibility: hidden;
     }
 
+    /* ------------------------- Navigation (Bold Full) ------------------------- */
+
+    .bold-nav-full {
+      z-index: 100;
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+    }
+
+    .bold-nav-full__bar {
+      z-index: 1;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: var(--grid-padding);
+      display: flex;
+      position: absolute;
+    }
+
+    .bold-nav-full__logo {
+      pointer-events: auto;
+      color: var(--ua-white);
+      width: clamp(36px, 2.5em, 2.5em);
+      display: flex;
+    }
+
+    .bold-nav-full__hamburger {
+      pointer-events: auto;
+      color: var(--ua-white);
+      cursor: pointer;
+      background: none;
+      border: none;
+      justify-content: center;
+      align-items: center;
+      width: 2.5em;
+      height: 2.5em;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar {
+      background-color: currentColor;
+      width: 1.8em;
+      height: 1.5px;
+      position: absolute;
+      transform: translate(0, 0) rotate(0.001deg);
+      transition: transform 0.5s cubic-bezier(.7, 0, .3, 1);
+    }
+
+    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar:nth-child(1) {
+      transform: translate(0, -.35em) scale(1, 1) rotate(0.001deg);
+    }
+
+    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar:nth-child(3) {
+      transform: translate(0, .35em) scale(1, 1) rotate(0.001deg);
+    }
+
+    .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(1) {
+      transform: translate(0, -.35em) scale(.5, 1) rotate(0.001deg);
+    }
+
+    .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(3) {
+      transform: translate(0, .35em) scale(.5, 1) rotate(0.001deg);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(1) {
+      transform: translate(0, 0) rotate(45deg) scale(1, 1);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(2) {
+      transform: translate(-150%, 0) rotate(0.001deg) scale(1, 1);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(3) {
+      transform: translate(0, 0) rotate(-45deg) scale(1, 1);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(1) {
+      transform: translate(0, 0) rotate(45deg) scale(.7, 1);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(3) {
+      transform: translate(0, 0) rotate(-45deg) scale(.7, 1);
+    }
+
+    .bold-nav-full__tile {
+      pointer-events: auto;
+      background-color: var(--ua-black);
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: clip-path 1s cubic-bezier(.9, 0, .1, 1);
+      clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__tile {
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
+
+    .bold-nav-full__ul {
+      flex-flow: column;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+    }
+
+    .bold-nav-full__li {
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 0 0 0.15em;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.5s cubic-bezier(.7, 0, .3, 1);
+    }
+
+    .bold-nav-full__ul:has(.bold-nav-full__li:hover) .bold-nav-full__li {
+      opacity: 0.15;
+    }
+
+    .bold-nav-full__ul:has(.bold-nav-full__li:hover) .bold-nav-full__li:hover {
+      opacity: 1;
+    }
+
+    .bold-nav-full__link {
+      color: var(--ua-white);
+      font-family: var(--font-mono);
+      font-size: clamp(2.5em, calc(4vw + 3vh), 6em);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      position: relative;
+      transform: translateY(100%) rotate(5deg);
+      transition: transform 0.75s cubic-bezier(.7, 0, .3, 1);
+    }
+
+    .bold-nav-full__link.is--current {
+      color: var(--ua-mint);
+    }
+
+    .bold-nav-full__li:nth-child(1) .bold-nav-full__link { transition-delay: 0.15s; }
+    .bold-nav-full__li:nth-child(2) .bold-nav-full__link { transition-delay: 0.1s; }
+    .bold-nav-full__li:nth-child(3) .bold-nav-full__link { transition-delay: 0.05s; }
+
+    [data-navigation-status="active"] .bold-nav-full__link {
+      transform: translateY(0%) rotate(0.001deg);
+    }
+
+    [data-navigation-status="active"] .bold-nav-full__li:nth-child(1) .bold-nav-full__link { transition-delay: 0.3s; }
+    [data-navigation-status="active"] .bold-nav-full__li:nth-child(2) .bold-nav-full__link { transition-delay: 0.35s; }
+    [data-navigation-status="active"] .bold-nav-full__li:nth-child(3) .bold-nav-full__link { transition-delay: 0.4s; }
+
+    .bold-nav-full__link-text {
+      text-shadow: 0 1.1em 0;
+      display: block;
+      position: relative;
+    }
+
+    .bold-nav-full__link .bold-nav-full__link-text {
+      transition: transform 0.5s cubic-bezier(.7, 0, .3, 1);
+      transform: translateY(0%) rotate(0.001deg);
+    }
+
+    .bold-nav-full__link:hover .bold-nav-full__link-text {
+      transform: translateY(-100%) rotate(0.001deg);
+    }
+
+    /* Underline sweep on nav links */
+    .bold-nav-full__link::before {
+      content: "";
+      position: absolute;
+      bottom: -0.0625em;
+      left: 0;
+      width: 100%;
+      height: 0.06em;
+      background-color: var(--ua-white);
+      transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+      transform-origin: right;
+      transform: scaleX(0) rotate(0.001deg);
+    }
+
+    .bold-nav-full__link.is--current::before {
+      background-color: var(--ua-mint);
+    }
+
+    .bold-nav-full__link:hover::before {
+      transform-origin: left;
+      transform: scaleX(1) rotate(0.001deg);
+    }
+
+    .bold-nav__bottom {
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: var(--grid-padding);
+      display: flex;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .bold-nav__word {
+      font-family: var(--font-mono);
+      font-size: var(--text-label);
+      color: var(--ua-gray);
+      margin: 0;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .bold-nav__word::before {
+      content: "";
+      position: absolute;
+      bottom: -0.0625em;
+      left: 0;
+      width: 100%;
+      height: 0.08em;
+      background-color: var(--ua-gray);
+      transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+      transform-origin: right;
+      transform: scaleX(0) rotate(0.001deg);
+    }
+
+    .bold-nav__word:hover::before {
+      transform-origin: left;
+      transform: scaleX(1) rotate(0.001deg);
+    }
+
+    /* ------------------------- Cursor Trail (nav overlay) ------------------------- */
+
+    .cursor-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 101;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .cursor-wrap.is--active {
+      opacity: 1;
+    }
+
+    .cursor-dot {
+      width: 2em;
+      height: 2em;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+
+    .cursor-canvas {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      position: absolute;
+    }
+
+    @media (max-width: 991px), (prefers-reduced-motion: reduce) {
+      .cursor-wrap {
+        display: none;
+      }
+    }
+
     /* ------------------------- Logomark ------------------------- */
 
     .logomark {
-      position: fixed;
-      top: var(--grid-padding);
-      left: var(--grid-padding);
-      z-index: 50;
-      width: clamp(36px, 2.5em, 2.5em);
       color: var(--ua-white);
-      transition: color var(--duration-normal) var(--ease-out-quart);
-    }
-
-    .logomark.is--dark {
-      color: var(--ua-black);
     }
 
     .logomark svg {
@@ -1288,13 +1720,45 @@
   <!-- Scroll Progress Bar -->
   <div class="progress-bar"></div>
 
-  <!-- Logomark -->
-  <a href="/" class="logomark" data-load-reset aria-label="Universal Agents — home">
-    <svg viewBox="0 0 375 212" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M139.559 206.539V171.457L125.292 196.903C109.101 208.47 94.0662 211.938 73.6319 211.938C31.2262 211.938 6.5552 188.036 1.92469 159.897C0.381189 149.486 0 140.237 0 123.659V1.83467H42.0183V115.173C42.0183 121.728 42.4057 132.907 43.5618 143.312C46.6425 165.671 61.2964 180.319 87.511 180.319C117.194 180.319 139.553 157.572 139.553 98.2067V1.83467H181.571V206.539H139.553H139.559Z" fill="currentColor"/>
-      <path d="M251.01 206.267V192.513H223.508V178.765H209.754V151.263H196V55.0037H209.754V27.5018H223.508V13.754H251.01V0.00624914H306.014V13.754H319.761V27.5018H333.515V0H374.765V206.261H333.515V178.759H319.761V192.507H306.014V206.261H251.01V206.267ZM306.014 165.011V151.257H319.761V137.509H333.515V68.7577H319.761V55.0099H306.014V41.2621H251.01V55.0099H237.256V151.263H251.01V165.017H306.014V165.011Z" fill="currentColor"/>
-    </svg>
-  </a>
+  <!-- Navigation -->
+  <nav data-navigation-status="not-active" class="bold-nav-full">
+    <div class="bold-nav-full__bar">
+      <a href="/" class="bold-nav-full__logo logomark" data-load-reset aria-label="Universal Agents — home">
+        <svg viewBox="0 0 375 212" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M139.559 206.539V171.457L125.292 196.903C109.101 208.47 94.0662 211.938 73.6319 211.938C31.2262 211.938 6.5552 188.036 1.92469 159.897C0.381189 149.486 0 140.237 0 123.659V1.83467H42.0183V115.173C42.0183 121.728 42.4057 132.907 43.5618 143.312C46.6425 165.671 61.2964 180.319 87.511 180.319C117.194 180.319 139.553 157.572 139.553 98.2067V1.83467H181.571V206.539H139.553H139.559Z" fill="currentColor"/>
+          <path d="M251.01 206.267V192.513H223.508V178.765H209.754V151.263H196V55.0037H209.754V27.5018H223.508V13.754H251.01V0.00624914H306.014V13.754H319.761V27.5018H333.515V0H374.765V206.261H333.515V178.759H319.761V192.507H306.014V206.261H251.01V206.267ZM306.014 165.011V151.257H319.761V137.509H333.515V68.7577H319.761V55.0099H306.014V41.2621H251.01V55.0099H237.256V151.263H251.01V165.017H306.014V165.011Z" fill="currentColor"/>
+        </svg>
+      </a>
+      <button data-navigation-toggle="toggle" class="bold-nav-full__hamburger" aria-label="Menu">
+        <div class="bold-nav-full__hamburger-bar"></div>
+        <div class="bold-nav-full__hamburger-bar"></div>
+        <div class="bold-nav-full__hamburger-bar"></div>
+      </button>
+    </div>
+    <div class="bold-nav-full__tile">
+      <ul class="bold-nav-full__ul">
+        <li class="bold-nav-full__li">
+          <a href="/" class="bold-nav-full__link is--current" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Home</span></a>
+        </li>
+        <li class="bold-nav-full__li">
+          <a href="https://interplay-proto2.vercel.app/" target="_blank" rel="noopener" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Interplay</span></a>
+        </li>
+        <li class="bold-nav-full__li">
+          <a href="https://www.linkedin.com/company/universal-agents/" target="_blank" rel="noopener" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">LinkedIn</span></a>
+        </li>
+      </ul>
+      <div class="bold-nav__bottom">
+        <a href="/" class="bold-nav__word" data-navigation-toggle="close">Universal Agents</a>
+        <a href="mailto:hello@universalagents.ai" class="bold-nav__word">hello@universalagents.ai</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Cursor trail (active during nav overlay) -->
+  <div class="cursor-wrap">
+    <div data-cursor-dot class="cursor-dot"></div>
+    <canvas data-cursor-canvas class="cursor-canvas"></canvas>
+  </div>
 
   <!-- Shared SVG definitions -->
   <svg style="display: none;">
@@ -1322,51 +1786,67 @@
 
     <!-- Hero -->
     <section class="hero">
-      <div class="hero__cube-wrap">
-        <canvas id="hero-cube" width="720" height="720"></canvas>
+      <div class="scroll-cube">
+        <canvas id="hero-cube" width="720" height="720" style="width:360px;height:360px;display:block;"></canvas>
       </div>
       <div class="container">
         <h1 data-load-skeleton="dark" data-skeleton-auto data-parallax="trigger" data-parallax-start="0" data-parallax-end="30" data-parallax-scroll-start="top top" class="hero__heading">Are you agent <span style="color: var(--ua-mint)">ready?</span></h1>
       </div>
     </section>
 
+    <!-- Cube dock — spacer where cube lands just above mission -->
+    <div id="cube-dock" style="height: 72px;"></div>
+
     <!-- Mission -->
     <section class="mission" data-theme="light">
       <div class="container">
-        <p data-reveal class="mission__label">Our Mission</p>
-        <h2 data-load-skeleton="mint" data-skeleton-stream class="mission__statement">Is to help every business turn into an agent.</h2>
-      </div>
-    </section>
-
-    <!-- Why — the case for agent readiness -->
-    <section id="why" class="section">
-      <div class="container">
-        <p data-reveal class="section__label">Why?</p>
-        <h2 data-reveal class="section__heading"><!-- Content TBD --></h2>
-        <div data-reveal class="section__body">
-          <!-- Because if your agent doesn't want to do business with my business agent... -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Living Block — agentic brain IP -->
-    <section id="living-block" class="section">
-      <div class="container">
-        <p data-reveal class="section__label">Living Block</p>
-        <h2 data-reveal class="section__heading"><!-- Content TBD: Agentic Brain IP / Box --></h2>
-        <div data-reveal class="section__body">
-          <!-- Visual: brain/block concept -->
-        </div>
+        <p class="mission__label" style="opacity: 0; transform: translateY(20px);" id="mission-label">Our Mission</p>
+        <h2 data-load-skeleton="mint" data-skeleton-stream data-skeleton-wait class="mission__statement">Help every business become an agent.</h2>
+        <p data-reveal-after-skeleton class="mission__body">The world now moves at agent speed. Decisions made in minutes, not months. Insights assembled in seconds, not sprints. If your business can't think, respond, and act like an agent — you're already behind.</p>
+        <p data-reveal-after-skeleton class="mission__kicker">We make sure you're not.</p>
       </div>
     </section>
 
     <!-- Agent Sprint -->
     <section id="agent-sprint" class="section">
       <div class="container">
-        <p data-reveal class="section__label">Agent Sprint</p>
-        <h2 data-reveal class="section__heading"><!-- Content TBD --></h2>
-        <div data-reveal class="section__body">
-          <!-- Sprint process / features -->
+        <p data-reveal class="section__label">Introducing</p>
+        <h2 data-reveal class="sprint-hero__title">Agent Sprint</h2>
+        <div data-reveal class="sprint-hero__visual"></div>
+        <p data-reveal class="section__heading">Your intelligence, structured in weeks — not quarters.</p>
+        <p data-reveal class="section__body">A time-bound engagement that maps your people, encodes your expertise, and delivers a working agentic system. Not a strategy deck. A living brain.</p>
+      </div>
+
+      <!-- Shape / Share / Scale -->
+      <div class="sprint-blocks">
+        <div class="sprint-block" data-reveal>
+          <div class="sprint-block__visual">
+            <div class="sprint-block__visual-inner"></div>
+          </div>
+          <div class="sprint-block__content">
+            <h3 class="sprint-block__word">Shape</h3>
+            <p class="sprint-block__text">We map your team's expertise into Living Blocks — proprietary skills tied to the people who built them. Your methods. Your judgment. Your taste. Encoded.</p>
+          </div>
+        </div>
+
+        <div class="sprint-block" data-reveal>
+          <div class="sprint-block__visual">
+            <div class="sprint-block__visual-inner"></div>
+          </div>
+          <div class="sprint-block__content">
+            <h3 class="sprint-block__word">Share</h3>
+            <p class="sprint-block__text">Your blocks become collaborative surfaces. Team members talk to crystallized expertise, not generic AI. The org chart becomes an intelligence network.</p>
+          </div>
+        </div>
+
+        <div class="sprint-block" data-reveal>
+          <div class="sprint-block__visual">
+            <div class="sprint-block__visual-inner"></div>
+          </div>
+          <div class="sprint-block__content">
+            <h3 class="sprint-block__word">Scale</h3>
+            <p class="sprint-block__text">Multiply your best thinking across every engagement without diluting what makes it yours. Agent speed, human signature.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -1379,9 +1859,9 @@
 
         <div data-reveal class="claude-partner">
           <div class="claude-partner__logo-wrap">
-            <img src="assets/svg/claude-symbol.svg" alt="Claude" class="claude-partner__logo">
+            <span class="claude-sparkle" id="claude-spinner" aria-label="Claude">·</span>
           </div>
-          <p class="claude-partner__text">We build with Anthropic's Claude — the model we trust most for safety, reasoning, and creative collaboration. We're independent, and we stay close to every frontier lab and platform shaping what agents can do.</p>
+          <p class="claude-partner__text">We build on Anthropic's Claude — the model we trust most for safety, reasoning, and creative collaboration. But we're independent by design, and we track every frontier lab and platform shaping what agents can do — so you don't have to.</p>
         </div>
       </div>
       <div data-logo-wall-shuffle="false" data-logo-wall-cycle-init class="logo-wall">
@@ -1608,13 +2088,10 @@
     <!-- Partners -->
     <section id="partners" class="section">
       <div class="container">
-        <p data-reveal class="section__label">Partners</p>
-        <h2 data-reveal class="section__heading">Built by independent thinkers for independents.</h2>
+        <p data-reveal class="section__label">How We Build</p>
+        <h2 data-reveal class="section__heading">Human in the loop. By design.</h2>
         <div data-reveal>
-          <p class="partners__text">Interplay shapes specifically tuned agents around your creative agency's thinking. Agents that understand your business, reflect your people, your culture, and your process.</p>
-          <p class="partners__text">We enable teams to work independently yet also build collective IP. Think GitHub for creative intelligence. Force multiplying creativity and innovation.</p>
-          <p class="partners__text partners__text--strong">It's your agency. Amplified. Powered by Universal Agents.</p>
-          <p class="partners__intro">We are currently building Interplay in strategic partnership with:</p>
+          <p class="partners__text">The companies shaping AI today are making decisions that will outlast the technology itself. Universal Agents and our partners are aligned on the one that matters most: <span class="partners__text--strong">we build for human agency and amplification, and nothing less.</span></p>
           <div class="partners__logos">
             <a href="https://www.laughlin.com/" target="_blank" rel="noopener" class="partners__logo-item">
               <div class="partners__logo-before"></div>
@@ -1771,18 +2248,50 @@
       };
     }
 
-    /* ------------------------- Logomark Theme Detection ------------------------- */
+    /* ------------------------- Navigation ------------------------- */
 
-    function initLogomarkTheme() {
-      if (!document.querySelector('.logomark')) return;
+    function initNavigation() {
+      const navEl = document.querySelector('[data-navigation-status]');
+      const cursorWrap = document.querySelector('.cursor-wrap');
+      if (!navEl) return;
 
-      document.querySelectorAll('[data-theme="light"]').forEach((section) => {
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top top',
-          end: 'bottom top',
-          toggleClass: { targets: '.logomark', className: 'is--dark' },
+      let cursorTimer = null;
+
+      function showCursorTrail() {
+        clearTimeout(cursorTimer);
+        cursorTimer = setTimeout(() => {
+          if (cursorWrap) cursorWrap.classList.add('is--active');
+          if (window.__cursorTrail) window.__cursorTrail.start();
+        }, 1000);
+      }
+
+      function hideCursorTrail() {
+        clearTimeout(cursorTimer);
+        if (cursorWrap) cursorWrap.classList.remove('is--active');
+        if (window.__cursorTrail) window.__cursorTrail.stop();
+      }
+
+      document.querySelectorAll('[data-navigation-toggle="toggle"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const isActive = navEl.getAttribute('data-navigation-status') === 'active';
+          navEl.setAttribute('data-navigation-status', isActive ? 'not-active' : 'active');
+          if (isActive) hideCursorTrail();
+          else showCursorTrail();
         });
+      });
+
+      document.querySelectorAll('[data-navigation-toggle="close"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          navEl.setAttribute('data-navigation-status', 'not-active');
+          hideCursorTrail();
+        });
+      });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && navEl.getAttribute('data-navigation-status') === 'active') {
+          navEl.setAttribute('data-navigation-status', 'not-active');
+          hideCursorTrail();
+        }
       });
     }
 
@@ -2098,10 +2607,26 @@
         const tl = buildSkeletonTimeline(instance);
         const isAuto = instance.hasAttribute('data-skeleton-auto');
 
-        tl.eventCallback('onComplete', () => { instance._skeletonRevealed = true; });
+        tl.eventCallback('onComplete', () => {
+          instance._skeletonRevealed = true;
+          // Cascade-reveal siblings that wait for this skeleton
+          const siblings = instance.parentElement?.querySelectorAll('[data-reveal-after-skeleton]');
+          if (siblings?.length) {
+            gsap.to(siblings, {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power3.out',
+              stagger: 0.3,
+            });
+          }
+        });
 
         if (isAuto) {
           // Store for manual trigger from loader
+          instance._skeletonTl = tl;
+        } else if (instance.hasAttribute('data-skeleton-wait')) {
+          // Store for manual trigger from orchestrator (e.g. cube dock)
           instance._skeletonTl = tl;
         } else {
           // ScrollTrigger for below-the-fold elements
@@ -2150,111 +2675,6 @@
           if (placeholder) placeholder.classList.add('is--hidden');
         });
       });
-    }
-
-    /* ------------------------- Content Reveal on Scroll [Osmo] ------------------------- */
-
-    function initContentRevealScroll() {
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      const ctx = gsap.context(() => {
-        document.querySelectorAll('[data-reveal-group]').forEach(groupEl => {
-          const groupStaggerSec = (parseFloat(groupEl.getAttribute('data-stagger')) || 100) / 1000;
-          const groupDistance = groupEl.getAttribute('data-distance') || '2em';
-          const triggerStart = groupEl.getAttribute('data-start') || 'top 80%';
-          const animDuration = 0.8;
-          const animEase = 'power4.inOut';
-
-          if (prefersReduced) {
-            gsap.set(groupEl, { clearProps: 'all', y: 0, autoAlpha: 1 });
-            return;
-          }
-
-          const directChildren = Array.from(groupEl.children).filter(el => el.nodeType === 1);
-          if (!directChildren.length) {
-            gsap.set(groupEl, { y: groupDistance, autoAlpha: 0 });
-            ScrollTrigger.create({
-              trigger: groupEl,
-              start: triggerStart,
-              once: true,
-              onEnter: () => gsap.to(groupEl, {
-                y: 0, autoAlpha: 1, duration: animDuration, ease: animEase,
-                onComplete: () => gsap.set(groupEl, { clearProps: 'all' })
-              })
-            });
-            return;
-          }
-
-          const slots = [];
-          directChildren.forEach(child => {
-            const nestedGroup = child.matches('[data-reveal-group-nested]')
-              ? child
-              : child.querySelector(':scope [data-reveal-group-nested]');
-
-            if (nestedGroup) {
-              const includeParent = child.getAttribute('data-ignore') === 'false' || nestedGroup.getAttribute('data-ignore') === 'false';
-              slots.push({ type: 'nested', parentEl: child, nestedEl: nestedGroup, includeParent });
-            } else {
-              slots.push({ type: 'item', el: child });
-            }
-          });
-
-          slots.forEach(slot => {
-            if (slot.type === 'item') {
-              const isNestedSelf = slot.el.matches('[data-reveal-group-nested]');
-              const d = isNestedSelf ? groupDistance : (slot.el.getAttribute('data-distance') || groupDistance);
-              gsap.set(slot.el, { y: d, autoAlpha: 0 });
-            } else {
-              if (slot.includeParent) gsap.set(slot.parentEl, { y: groupDistance, autoAlpha: 0 });
-              const nestedD = slot.nestedEl.getAttribute('data-distance') || groupDistance;
-              Array.from(slot.nestedEl.children).forEach(target => gsap.set(target, { y: nestedD, autoAlpha: 0 }));
-            }
-          });
-
-          slots.forEach(slot => {
-            if (slot.type === 'nested' && slot.includeParent) {
-              gsap.set(slot.parentEl, { y: groupDistance });
-            }
-          });
-
-          ScrollTrigger.create({
-            trigger: groupEl,
-            start: triggerStart,
-            once: true,
-            onEnter: () => {
-              const tl = gsap.timeline();
-
-              slots.forEach((slot, slotIndex) => {
-                const slotTime = slotIndex * groupStaggerSec;
-
-                if (slot.type === 'item') {
-                  tl.to(slot.el, {
-                    y: 0, autoAlpha: 1, duration: animDuration, ease: animEase,
-                    onComplete: () => gsap.set(slot.el, { clearProps: 'all' })
-                  }, slotTime);
-                } else {
-                  if (slot.includeParent) {
-                    tl.to(slot.parentEl, {
-                      y: 0, autoAlpha: 1, duration: animDuration, ease: animEase,
-                      onComplete: () => gsap.set(slot.parentEl, { clearProps: 'all' })
-                    }, slotTime);
-                  }
-                  const nestedMs = parseFloat(slot.nestedEl.getAttribute('data-stagger'));
-                  const nestedStaggerSec = isNaN(nestedMs) ? groupStaggerSec : nestedMs / 1000;
-                  Array.from(slot.nestedEl.children).forEach((nestedChild, nestedIndex) => {
-                    tl.to(nestedChild, {
-                      y: 0, autoAlpha: 1, duration: animDuration, ease: animEase,
-                      onComplete: () => gsap.set(nestedChild, { clearProps: 'all' })
-                    }, slotTime + nestedIndex * nestedStaggerSec);
-                  });
-                }
-              });
-            }
-          });
-        });
-      });
-
-      return () => ctx.revert();
     }
 
     /* ------------------------- Footer Parallax ------------------------- */
@@ -2359,7 +2779,14 @@
       measureAll();
       document.addEventListener('pointermove', onPointerMove, { passive: true });
       window.addEventListener('resize', () => requestAnimationFrame(measureAll), { passive: true });
-      window.addEventListener('scroll', () => requestAnimationFrame(measureAll), { passive: true });
+
+      let scrollMeasureScheduled = false;
+      window.addEventListener('scroll', () => {
+        if (!scrollMeasureScheduled) {
+          scrollMeasureScheduled = true;
+          requestAnimationFrame(() => { measureAll(); scrollMeasureScheduled = false; });
+        }
+      }, { passive: true });
     }
 
     /* ------------------------- Button Character Stagger ------------------------- */
@@ -2463,17 +2890,265 @@
       });
     }
 
+    /* ------------------------- Scroll Cube Tracking ------------------------- */
+
+    function initHeroFade() {
+      const hero = document.querySelector('.hero');
+      const heading = document.querySelector('.hero__heading');
+      if (!hero || !heading) return;
+
+      gsap.to(heading, {
+        opacity: 0,
+        scale: 0.95,
+        filter: 'blur(8px)',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: 'center top',
+          scrub: true,
+        },
+      });
+    }
+
+    function initScrollCube() {
+      const cube = document.querySelector('.scroll-cube');
+      const dock = document.getElementById('cube-dock');
+      if (!cube || !dock) return;
+
+      let missionTriggered = false;
+      let hasScrolled = false;
+
+      // Wait for first real scroll before allowing the mission trigger
+      window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true });
+
+      // Pin the cube in viewport center from page top until dock reaches center
+      ScrollTrigger.create({
+        trigger: cube,
+        start: 'top top',
+        endTrigger: dock,
+        end: 'top center',
+        pin: true,
+        pinSpacing: false,
+        onEnterBack: () => {
+          if (window.__heroCube) {
+            window.__heroCube.deactivateSpectrum();
+          }
+        },
+        onLeave: () => {
+          if (!hasScrolled) return;
+
+          // Cube → spectrum colors (repeatable)
+          if (window.__heroCube) {
+            window.__heroCube.activateSpectrum();
+          }
+
+          // Mission content reveal (one-time only)
+          if (!missionTriggered) {
+            missionTriggered = true;
+
+            const label = document.getElementById('mission-label');
+            if (label) {
+              gsap.to(label, {
+                opacity: 1, y: 0, duration: 0.6, ease: 'power3.out',
+              });
+            }
+
+            const statement = document.querySelector('.mission__statement');
+            if (statement && statement._skeletonTl) {
+              gsap.delayedCall(0.4, () => statement._skeletonTl.play());
+            }
+          }
+        },
+      });
+    }
+
+    /* ------------------------- Cursor Trail Effect ------------------------- */
+
+    function initCursorTrail() {
+      if (window.matchMedia('(pointer: coarse)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const trailDuration = 1250;
+      const trailColor = '#65FFA3';
+
+      const strokeMinWidth = 2;
+      const strokeMaxWidth = 16;
+      const strokeSmoothing = 0.1;
+
+      const velocitySlow = 0.08;
+      const velocityFast = 2.8;
+
+      const glowBlur = 10;
+      const glowIntensity = 0.25;
+
+      const cursorLag = 0.15;
+
+      const dot = document.querySelector('[data-cursor-dot]');
+      const canvas = document.querySelector('[data-cursor-canvas]');
+      if (!dot || !canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      let points = [];
+      let hasMouse = false;
+      let runningWidth = strokeMinWidth;
+      let isActive = false;
+      let rafId = null;
+
+      function hexToRgb(hex) {
+        const m = hex.replace('#', '').match(/.{2}/g);
+        return m.map(c => parseInt(c, 16));
+      }
+
+      const color = hexToRgb(trailColor);
+
+      gsap.set(dot, { xPercent: -50, yPercent: -50, opacity: 0 });
+      const xTo = gsap.quickTo(dot, 'x', { duration: cursorLag, ease: 'power3' });
+      const yTo = gsap.quickTo(dot, 'y', { duration: cursorLag, ease: 'power3' });
+
+      function resize() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        ctx.scale(dpr, dpr);
+      }
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isActive) return;
+        hasMouse = true;
+        xTo(e.clientX);
+        yTo(e.clientY);
+      });
+
+      let tickerFn = () => {
+        if (!isActive || !hasMouse) return;
+        const x = gsap.getProperty(dot, 'x');
+        const y = gsap.getProperty(dot, 'y');
+        if (points.length > 0) {
+          const last = points[points.length - 1];
+          const dx = x - last.x;
+          const dy = y - last.y;
+          if (dx * dx + dy * dy < 0.1) return;
+        }
+        points.push({ x, y, time: performance.now() });
+      };
+
+      function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+      function remap(v, inMin, inMax, outMin, outMax) {
+        const t = clamp((v - inMin) / (inMax - inMin), 0, 1);
+        return outMin + t * (outMax - outMin);
+      }
+
+      function render() {
+        if (!isActive) { rafId = null; return; }
+        const now = performance.now();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        points = points.filter(p => now - p.time < trailDuration);
+        if (points.length >= 3) drawTrail(now);
+        rafId = requestAnimationFrame(render);
+      }
+
+      function drawTrail(now) {
+        const [r, g, b] = color;
+        ctx.lineCap = 'butt';
+        ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${glowIntensity})`;
+        ctx.shadowBlur = glowBlur;
+
+        for (let i = 1; i < points.length - 1; i++) {
+          const prev = points[i - 1];
+          const curr = points[i];
+          const next = points[i + 1];
+
+          const mx1 = (prev.x + curr.x) * 0.5;
+          const my1 = (prev.y + curr.y) * 0.5;
+          const mx2 = (curr.x + next.x) * 0.5;
+          const my2 = (curr.y + next.y) * 0.5;
+
+          const dx = curr.x - prev.x;
+          const dy = curr.y - prev.y;
+          const dt = curr.time - prev.time || 1;
+          const velocity = Math.sqrt(dx * dx + dy * dy) / dt;
+
+          const targetWidth = remap(velocity, velocitySlow, velocityFast, strokeMaxWidth, strokeMinWidth);
+          runningWidth += (targetWidth - runningWidth) * strokeSmoothing;
+
+          const age = now - curr.time;
+          const life = 1 - age / trailDuration;
+          const alpha = life * life;
+          if (alpha <= 0.005) continue;
+
+          ctx.beginPath();
+          ctx.moveTo(mx1, my1);
+          ctx.quadraticCurveTo(curr.x, curr.y, mx2, my2);
+          ctx.lineWidth = runningWidth;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+          ctx.stroke();
+        }
+
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+      }
+
+      // Expose start/stop for navigation to control
+      window.__cursorTrail = {
+        start() {
+          if (isActive) return;
+          isActive = true;
+          resize();
+          points = [];
+          hasMouse = false;
+          runningWidth = strokeMinWidth;
+          gsap.ticker.add(tickerFn);
+          rafId = requestAnimationFrame(render);
+        },
+        stop() {
+          isActive = false;
+          gsap.ticker.remove(tickerFn);
+          if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          points = [];
+        }
+      };
+    }
+
+    /* ------------------------- Claude Sparkle Spinner ------------------------- */
+
+    function initClaudeSpinner() {
+      const el = document.getElementById('claude-spinner');
+      if (!el) return;
+
+      // Characters from Claude Code's thinking animation
+      const chars = ['·', '✻', '✽', '✶', '✳', '✢'];
+      // Eased timing: first and last hold longer (in ms)
+      const holds = [180, 100, 100, 100, 100, 180];
+      let i = 0;
+      let direction = 1;
+
+      function step() {
+        el.textContent = chars[i];
+        const delay = holds[i];
+        i += direction;
+        if (i >= chars.length) { i = chars.length - 2; direction = -1; }
+        if (i < 0) { i = 1; direction = 1; }
+        setTimeout(step, delay);
+      }
+      step();
+    }
+
     /* ------------------------- Init ------------------------- */
 
     document.addEventListener("DOMContentLoaded", () => {
       const revealLogomark = setupLogomarkReveal();
       document.fonts.ready.then(() => initLoader(revealLogomark));
+      initNavigation();
       initLenis();
       initGlobalParallax();
       initScrollReveal();
-      initLogomarkTheme();
       initFaqPills();
-      initContentRevealScroll();
+      initHeroFade();
+      initScrollCube();
+      initCursorTrail();
+      initClaudeSpinner();
       initFooterParallax();
       initScrollProgressBar();
       initLogoWallCycle();
@@ -2581,6 +3256,63 @@
       mesh.matrixAutoUpdate = false;
       scene.add(mesh);
 
+      // Expose for spectrum transition orchestration
+      window.__heroCube = {
+        mesh, faceMat, sideMat,
+        // Create spectrum side canvas (same as interplay cube)
+        spectrumSideCanvas: (() => {
+          const c = document.createElement('canvas');
+          c.width = 256; c.height = 256;
+          return c;
+        })(),
+        get spectrumSideCtx() { return this.spectrumSideCanvas.getContext('2d'); },
+        spectrumSideTex: null,
+        spectrumActive: false,
+        initSpectrum() {
+          this.spectrumSideTex = new THREE.CanvasTexture(this.spectrumSideCanvas);
+          this.spectrumSideTex.colorSpace = THREE.SRGBColorSpace;
+          // White gradient face
+          const fc = document.createElement('canvas');
+          fc.width = 256; fc.height = 256;
+          const fctx = fc.getContext('2d');
+          const fg = fctx.createLinearGradient(0, 256, 256, 0);
+          fg.addColorStop(0, '#ffffff'); fg.addColorStop(1, '#dadada');
+          fctx.fillStyle = fg; fctx.fillRect(0, 0, 256, 256);
+          this.spectrumFaceTex = new THREE.CanvasTexture(fc);
+          this.spectrumFaceTex.colorSpace = THREE.SRGBColorSpace;
+        },
+        activateSpectrum() {
+          if (!this.spectrumSideTex) this.initSpectrum();
+          this.mesh.material = [
+            new THREE.MeshBasicMaterial({ map: this.spectrumFaceTex, side: THREE.DoubleSide }),
+            new THREE.MeshBasicMaterial({ map: this.spectrumSideTex, side: THREE.DoubleSide }),
+          ];
+          this.spectrumActive = true;
+        },
+        deactivateSpectrum() {
+          this.mesh.material = [this.faceMat, this.sideMat];
+          this.spectrumActive = false;
+        },
+        paintSpectrum(t) {
+          if (!this.spectrumActive) return;
+          const w = 256, h = 256, angle = t * 0.25, cx = w / 2, cy = h / 2, phase = t * 0.18;
+          const ctx = this.spectrumSideCtx;
+          const grad = ctx.createLinearGradient(
+            cx + Math.cos(angle) * w, cy + Math.sin(angle) * h,
+            cx - Math.cos(angle) * w, cy - Math.sin(angle) * h
+          );
+          for (let i = 0; i <= 1; i += 0.1) grad.addColorStop(i, 'hsl(' + (((i + phase) % 1) * 360) + ', 92%, 48%)');
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+          const grad2 = ctx.createLinearGradient(
+            cx + Math.sin(angle * 0.7) * w * 0.6, 0,
+            cx - Math.sin(angle * 0.7) * w * 0.6, h
+          );
+          for (let i = 0; i <= 1; i += 0.2) grad2.addColorStop(i, 'hsla(' + (((i + phase + 0.5) % 1) * 360) + ', 85%, 42%, 0.3)');
+          ctx.fillStyle = grad2; ctx.fillRect(0, 0, w, h);
+          this.spectrumSideTex.needsUpdate = true;
+        }
+      };
+
       const scale = 0.48;
       const state = { shearX: 0.55, shearY: 0.55, rotX: 0, rotY: 0, scaleAnim: 1, squash: 1.0 };
 
@@ -2607,17 +3339,28 @@
         const tl = gsap.timeline({ onComplete: playFlip });
         tl.to(state, { rotY: Math.PI, shearX: 0, shearY: 0, squash: 0.92, duration: 0.5, ease: 'power2.in', onUpdate: upd })
           .to(state, { rotY: Math.PI, shearX: 0.55, shearY: 0.55, squash: 1, duration: 0.4, ease: landEase, onUpdate: upd })
-          .to(state, { duration: 1.5 })
+          .to(state, { duration: 0.6 })
           .to(state, { rotY: Math.PI * 2, shearX: 0, shearY: 0, squash: 0.92, duration: 0.5, ease: 'power2.in', onUpdate: upd })
           .to(state, { rotY: Math.PI * 2, shearX: 0.55, shearY: 0.55, squash: 1, duration: 0.4, ease: landEase, onUpdate: upd });
       }
       playFlip();
 
-      (function renderHero() {
+      let heroVisible = true;
+      let heroRafId = null;
+
+      function renderHero(time) {
+        if (!heroVisible) { heroRafId = null; return; }
+        if (window.__heroCube) window.__heroCube.paintSpectrum((time || 0) * 0.001);
         updateHero();
         renderer.render(scene, cam);
-        requestAnimationFrame(renderHero);
-      })();
+        heroRafId = requestAnimationFrame(renderHero);
+      }
+      heroRafId = requestAnimationFrame(renderHero);
+
+      new IntersectionObserver(([e]) => {
+        heroVisible = e.isIntersecting;
+        if (heroVisible && !heroRafId) heroRafId = requestAnimationFrame(renderHero);
+      }, { threshold: 0 }).observe(cvs);
     }
 
     // ========================
@@ -2729,12 +3472,21 @@
       }
       ipFlip();
 
-      (function renderIp(time) {
+      let ipVisible = false;
+      let ipRafId = null;
+
+      function renderIp(time) {
+        if (!ipVisible) { ipRafId = null; return; }
         paintSpectrum(time * 0.001);
         updateIp();
         r2.render(s2, c2);
-        requestAnimationFrame(renderIp);
-      })(0);
+        ipRafId = requestAnimationFrame(renderIp);
+      }
+
+      new IntersectionObserver(([e]) => {
+        ipVisible = e.isIntersecting;
+        if (ipVisible && !ipRafId) ipRafId = requestAnimationFrame(renderIp);
+      }, { threshold: 0 }).observe(ipCvs);
     }
   </script>
 
