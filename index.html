@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Universal Agents helps every business become agent-ready with AI-powered solutions.">
   <meta name="theme-color" content="#0a0a0a">
-  <meta name="color-scheme" content="dark">
+  <meta name="supported-color-schemes" content="light">
+  <meta name="color-scheme" content="light only">
   <title>Universal Agents</title>
 
   <!-- Font preloading — critical above-the-fold fonts only -->
@@ -218,9 +219,17 @@
       -webkit-overflow-scrolling: touch;
     }
 
+    /* Force Safari to never apply dark mode overrides */
+    @media (prefers-color-scheme: dark) {
+      *, *::before, *::after {
+        color-scheme: light only;
+      }
+    }
+
     html {
       font-size: var(--size-font);
-      color-scheme: dark;
+      color-scheme: light only;
+      -webkit-text-fill-color: currentColor;
     }
 
     body {
@@ -640,7 +649,7 @@
     }
 
     .interplay__logo {
-      width: 16em;
+      width: 32em;
       height: auto;
     }
 
@@ -799,8 +808,14 @@
       font-size: 1.4em;
       font-weight: 300;
       color: rgba(0, 0, 0, 0.7);
-      margin: -1.5em 0 0;
+      margin: 0;
       letter-spacing: -0.02em;
+      position: absolute;
+      bottom: 1.5em;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 3;
     }
 
     @media screen and (max-width: 767px) {
@@ -1459,8 +1474,10 @@
       border: none;
       justify-content: center;
       align-items: center;
-      width: 2.5em;
-      height: 2.5em;
+      width: 3em;
+      height: 3em;
+      min-width: 44px;
+      min-height: 44px;
       display: flex;
       position: relative;
       overflow: hidden;
@@ -1468,8 +1485,8 @@
 
     .bold-nav-full__hamburger .bold-nav-full__hamburger-bar {
       background-color: currentColor;
-      width: 1.8em;
-      height: 1.5px;
+      width: 2.2em;
+      height: 2px;
       position: absolute;
       transform: translate(0, 0) rotate(0.001deg);
       transition: transform 0.5s cubic-bezier(.7, 0, .3, 1);
@@ -2407,9 +2424,7 @@
                 <div data-3d-hover-inner="layer-3" class="interplay__preview-content">
                   <canvas id="interplay-cube" width="360" height="360" class="interplay__preview-cube"></canvas>
                 </div>
-                <div data-3d-hover-inner="layer-4" class="interplay__preview-content">
-                  <p class="interplay__preview-heading">What's the play?</p>
-                </div>
+                <p class="interplay__preview-heading">What's the play?</p>
               </div>
             </div>
           </div>
