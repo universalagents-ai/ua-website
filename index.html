@@ -19,7 +19,10 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.2.3/dist/lenis.min.js"></script>
   <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
   </script>
 
   <style>
@@ -461,10 +464,15 @@
       max-width: 900px;
       aspect-ratio: 16 / 9;
       margin: 2em auto;
-      border-radius: 8px;
-      background: linear-gradient(135deg, rgba(101, 255, 163, 0.06), rgba(255, 105, 186, 0.06));
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      position: relative;
     }
+
+    .sprint-hero__visual svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
 
     @media screen and (max-width: 991px) {
       .sprint-hero__title {
@@ -505,21 +513,25 @@
     .sprint-block__visual-inner {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(101, 255, 163, 0.06), rgba(255, 105, 186, 0.06));
-      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .sprint-block:nth-child(even) .sprint-block__visual-inner {
-      border-right: none;
-      border-left: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .sprint-block__visual-inner svg {
+      width: 100%;
+      height: 100%;
     }
 
     .sprint-block__content {
       flex: 2;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      padding: 0 var(--grid-padding) 3em;
+      justify-content: center;
+      padding: 0 var(--grid-padding);
       text-align: left;
     }
 
@@ -556,6 +568,8 @@
 
       .sprint-block__content {
         padding: 2em var(--grid-padding) var(--section-padding);
+        text-align: center;
+        align-items: center;
       }
     }
 
@@ -1140,6 +1154,11 @@
       opacity: 0;
     }
 
+    /* Mobile accordion answer — hidden by default on all sizes */
+    .faq__answer-mobile {
+      display: none;
+    }
+
     @media screen and (max-width: 991px) {
       .faq__wrap {
         flex-flow: column;
@@ -1163,8 +1182,55 @@
     }
 
     @media screen and (max-width: 767px) {
+      /* Hide the desktop answer panel */
+      .faq__answers {
+        display: none;
+      }
+
+      .faq__questions {
+        width: 100%;
+        flex-flow: column;
+        padding: 1.5em;
+        gap: 0;
+      }
+
+      .faq__questions li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .faq__questions li:last-child {
+        border-bottom: none;
+      }
+
       .faq__question {
         width: 100%;
+        border-radius: 0;
+        padding: 1em 0;
+      }
+
+      .faq__question.is--active {
+        background: none;
+      }
+
+      /* Show inline accordion answers on mobile */
+      .faq__answer-mobile {
+        display: none;
+        padding: 0 0 1.25em;
+      }
+
+      .faq__answer-mobile.is--active {
+        display: block;
+      }
+
+      .faq__answer-mobile .faq__answer-title {
+        font-size: 1.1em;
+        margin-bottom: 0.5em;
+      }
+
+      .faq__answer-mobile .faq__answer-body {
+        font-size: var(--text-body);
+        line-height: 1.7;
+        opacity: 0.7;
       }
     }
 
@@ -1812,7 +1878,29 @@
       <div class="container">
         <p data-reveal class="section__label">Introducing</p>
         <h2 data-reveal class="sprint-hero__title">Agent Sprint</h2>
-        <div data-reveal class="sprint-hero__visual"></div>
+        <div class="sprint-hero__visual">
+          <svg viewBox="0 -30 1920 1140" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Scale diamond: center (960,540), R=560 -->
+            <polygon id="diamond-scale" points="960,-20 1520,540 960,1100 400,540"
+                     fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <!-- Shape diamond: center (710,540), r=250 -->
+            <polygon id="diamond-shape" points="710,290 960,540 710,790 460,540"
+                     fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <!-- Share diamond: center (1210,540), r=250 -->
+            <polygon id="diamond-share" points="1210,290 1460,540 1210,790 960,540"
+                     fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <!-- Labels — positioned at exact diamond centers -->
+            <text id="label-scale" x="960" y="250" text-anchor="middle" dominant-baseline="central"
+                  fill="white" font-family="'GeistMono', monospace" font-size="30" font-weight="400"
+                  letter-spacing="0.15em" opacity="0">SCALE</text>
+            <text id="label-shape" x="710" y="540" text-anchor="middle" dominant-baseline="central"
+                  fill="white" font-family="'GeistMono', monospace" font-size="30" font-weight="400"
+                  letter-spacing="0.15em" opacity="0">SHAPE</text>
+            <text id="label-share" x="1210" y="540" text-anchor="middle" dominant-baseline="central"
+                  fill="white" font-family="'GeistMono', monospace" font-size="30" font-weight="400"
+                  letter-spacing="0.15em" opacity="0">SHARE</text>
+          </svg>
+        </div>
         <p data-reveal class="section__heading">Your intelligence, structured in weeks — not quarters.</p>
         <p data-reveal class="section__body">A time-bound engagement that maps your people, encodes your expertise, and delivers a working agentic system. Not a strategy deck. A living brain.</p>
       </div>
@@ -1821,7 +1909,42 @@
       <div class="sprint-blocks">
         <div class="sprint-block" data-reveal>
           <div class="sprint-block__visual">
-            <div class="sprint-block__visual-inner"></div>
+            <div class="sprint-block__visual-inner">
+              <svg id="shape-svg" viewBox="160 -10 1100 1100" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="glow-green" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+                    <stop offset="40%" stop-color="#65FFA3" stop-opacity="1"/>
+                    <stop offset="100%" stop-color="#4dd88a" stop-opacity="1"/>
+                  </radialGradient>
+                </defs>
+                <!-- Outer diamond border -->
+                <polygon id="shape-diamond" points="710,290 960,540 710,790 460,540"
+                         fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                <!-- Center green diamond -->
+                <rect id="shape-center" x="695" y="525" width="30" height="30" rx="4"
+                      transform="rotate(45 710 540)" fill="#65FFA3"/>
+                <!-- Dot ring group — rotates as a unit around center (710,540) -->
+                <g id="shape-dot-ring">
+                  <rect id="shape-dot-0" class="shape-dot" x="695" y="395" width="30" height="30" rx="4"
+                        transform="rotate(45 710 410)" fill="rgba(0,0,0,0.25)"/>
+                  <rect id="shape-dot-1" class="shape-dot" x="787" y="433" width="30" height="30" rx="4"
+                        transform="rotate(45 802 448)" fill="rgba(0,0,0,0.25)"/>
+                  <rect id="shape-dot-2" class="shape-dot" x="825" y="525" width="30" height="30" rx="4"
+                        transform="rotate(45 840 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect id="shape-dot-3" class="shape-dot" x="787" y="617" width="30" height="30" rx="4"
+                        transform="rotate(45 802 632)" fill="rgba(0,0,0,0.25)"/>
+                  <rect id="shape-dot-4" class="shape-dot" x="695" y="655" width="30" height="30" rx="4"
+                        transform="rotate(45 710 670)" fill="rgba(0,0,0,0.25)"/>
+                  <rect id="shape-dot-5" class="shape-dot" x="603" y="617" width="30" height="30" rx="4"
+                        transform="rotate(45 618 632)" fill="rgba(0,0,0,0.25)"/>
+                  <rect id="shape-dot-6" class="shape-dot" x="565" y="525" width="30" height="30" rx="4"
+                        transform="rotate(45 580 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect id="shape-dot-7" class="shape-dot" x="603" y="433" width="30" height="30" rx="4"
+                        transform="rotate(45 618 448)" fill="rgba(0,0,0,0.25)"/>
+                </g>
+              </svg>
+            </div>
           </div>
           <div class="sprint-block__content">
             <h3 class="sprint-block__word">Shape</h3>
@@ -1831,7 +1954,75 @@
 
         <div class="sprint-block" data-reveal>
           <div class="sprint-block__visual">
-            <div class="sprint-block__visual-inner"></div>
+            <div class="sprint-block__visual-inner">
+              <svg id="share-svg" viewBox="160 -10 1100 1100" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="glow-green-share" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+                    <stop offset="40%" stop-color="#65FFA3" stop-opacity="1"/>
+                    <stop offset="100%" stop-color="#4dd88a" stop-opacity="1"/>
+                  </radialGradient>
+                </defs>
+                <!-- Outer diamond border -->
+                <polygon id="share-diamond" points="710,290 960,540 710,790 460,540"
+                         fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                <!-- Center green diamond -->
+                <rect id="share-center" x="695" y="525" width="30" height="30" rx="4"
+                      transform="rotate(45 710 540)" fill="#65FFA3"/>
+                <!-- Diamond grid array — 45px spacing, fills diamond boundary -->
+                <g id="share-grid">
+                  <!-- row dy=-180 -->
+                  <rect class="share-dot" x="695" y="345" width="30" height="30" rx="4" transform="rotate(45 710 360)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=-135 -->
+                  <rect class="share-dot" x="650" y="390" width="30" height="30" rx="4" transform="rotate(45 665 405)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="695" y="390" width="30" height="30" rx="4" transform="rotate(45 710 405)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="740" y="390" width="30" height="30" rx="4" transform="rotate(45 755 405)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=-90 -->
+                  <rect class="share-dot" x="605" y="435" width="30" height="30" rx="4" transform="rotate(45 620 450)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="650" y="435" width="30" height="30" rx="4" transform="rotate(45 665 450)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="695" y="435" width="30" height="30" rx="4" transform="rotate(45 710 450)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="740" y="435" width="30" height="30" rx="4" transform="rotate(45 755 450)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="785" y="435" width="30" height="30" rx="4" transform="rotate(45 800 450)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=-45 -->
+                  <rect class="share-dot" x="560" y="480" width="30" height="30" rx="4" transform="rotate(45 575 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="605" y="480" width="30" height="30" rx="4" transform="rotate(45 620 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="650" y="480" width="30" height="30" rx="4" transform="rotate(45 665 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="695" y="480" width="30" height="30" rx="4" transform="rotate(45 710 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="740" y="480" width="30" height="30" rx="4" transform="rotate(45 755 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="785" y="480" width="30" height="30" rx="4" transform="rotate(45 800 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="830" y="480" width="30" height="30" rx="4" transform="rotate(45 845 495)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=0 (skip center) -->
+                  <rect class="share-dot" x="515" y="525" width="30" height="30" rx="4" transform="rotate(45 530 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="560" y="525" width="30" height="30" rx="4" transform="rotate(45 575 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="605" y="525" width="30" height="30" rx="4" transform="rotate(45 620 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="650" y="525" width="30" height="30" rx="4" transform="rotate(45 665 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="740" y="525" width="30" height="30" rx="4" transform="rotate(45 755 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="785" y="525" width="30" height="30" rx="4" transform="rotate(45 800 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="830" y="525" width="30" height="30" rx="4" transform="rotate(45 845 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="875" y="525" width="30" height="30" rx="4" transform="rotate(45 890 540)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=45 -->
+                  <rect class="share-dot" x="560" y="570" width="30" height="30" rx="4" transform="rotate(45 575 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="605" y="570" width="30" height="30" rx="4" transform="rotate(45 620 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="650" y="570" width="30" height="30" rx="4" transform="rotate(45 665 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="695" y="570" width="30" height="30" rx="4" transform="rotate(45 710 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="740" y="570" width="30" height="30" rx="4" transform="rotate(45 755 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="785" y="570" width="30" height="30" rx="4" transform="rotate(45 800 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="830" y="570" width="30" height="30" rx="4" transform="rotate(45 845 585)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=90 -->
+                  <rect class="share-dot" x="605" y="615" width="30" height="30" rx="4" transform="rotate(45 620 630)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="650" y="615" width="30" height="30" rx="4" transform="rotate(45 665 630)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="695" y="615" width="30" height="30" rx="4" transform="rotate(45 710 630)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="740" y="615" width="30" height="30" rx="4" transform="rotate(45 755 630)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="785" y="615" width="30" height="30" rx="4" transform="rotate(45 800 630)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=135 -->
+                  <rect class="share-dot" x="650" y="660" width="30" height="30" rx="4" transform="rotate(45 665 675)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="695" y="660" width="30" height="30" rx="4" transform="rotate(45 710 675)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="share-dot" x="740" y="660" width="30" height="30" rx="4" transform="rotate(45 755 675)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=180 -->
+                  <rect class="share-dot" x="695" y="705" width="30" height="30" rx="4" transform="rotate(45 710 720)" fill="rgba(0,0,0,0.25)"/>
+                </g>
+              </svg>
+            </div>
           </div>
           <div class="sprint-block__content">
             <h3 class="sprint-block__word">Share</h3>
@@ -1841,7 +2032,68 @@
 
         <div class="sprint-block" data-reveal>
           <div class="sprint-block__visual">
-            <div class="sprint-block__visual-inner"></div>
+            <div class="sprint-block__visual-inner">
+              <svg id="scale-svg" viewBox="160 -10 1100 1100" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer diamond border -->
+                <polygon id="scale-diamond" points="710,290 960,540 710,790 460,540"
+                         fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                <!-- Center green diamond -->
+                <rect id="scale-center" x="695" y="525" width="30" height="30" rx="4"
+                      transform="rotate(45 710 540)" fill="#65FFA3"/>
+                <!-- Grid — all start green, will pulse with living patterns -->
+                <g id="scale-grid">
+                  <!-- row dy=-180 -->
+                  <rect class="scale-dot" x="695" y="345" width="30" height="30" rx="4" transform="rotate(45 710 360)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=-135 -->
+                  <rect class="scale-dot" x="650" y="390" width="30" height="30" rx="4" transform="rotate(45 665 405)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="695" y="390" width="30" height="30" rx="4" transform="rotate(45 710 405)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="740" y="390" width="30" height="30" rx="4" transform="rotate(45 755 405)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=-90 -->
+                  <rect class="scale-dot" x="605" y="435" width="30" height="30" rx="4" transform="rotate(45 620 450)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="650" y="435" width="30" height="30" rx="4" transform="rotate(45 665 450)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="695" y="435" width="30" height="30" rx="4" transform="rotate(45 710 450)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="740" y="435" width="30" height="30" rx="4" transform="rotate(45 755 450)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="785" y="435" width="30" height="30" rx="4" transform="rotate(45 800 450)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=-45 -->
+                  <rect class="scale-dot" x="560" y="480" width="30" height="30" rx="4" transform="rotate(45 575 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="605" y="480" width="30" height="30" rx="4" transform="rotate(45 620 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="650" y="480" width="30" height="30" rx="4" transform="rotate(45 665 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="695" y="480" width="30" height="30" rx="4" transform="rotate(45 710 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="740" y="480" width="30" height="30" rx="4" transform="rotate(45 755 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="785" y="480" width="30" height="30" rx="4" transform="rotate(45 800 495)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="830" y="480" width="30" height="30" rx="4" transform="rotate(45 845 495)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=0 (skip center) -->
+                  <rect class="scale-dot" x="515" y="525" width="30" height="30" rx="4" transform="rotate(45 530 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="560" y="525" width="30" height="30" rx="4" transform="rotate(45 575 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="605" y="525" width="30" height="30" rx="4" transform="rotate(45 620 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="650" y="525" width="30" height="30" rx="4" transform="rotate(45 665 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="740" y="525" width="30" height="30" rx="4" transform="rotate(45 755 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="785" y="525" width="30" height="30" rx="4" transform="rotate(45 800 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="830" y="525" width="30" height="30" rx="4" transform="rotate(45 845 540)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="875" y="525" width="30" height="30" rx="4" transform="rotate(45 890 540)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=45 -->
+                  <rect class="scale-dot" x="560" y="570" width="30" height="30" rx="4" transform="rotate(45 575 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="605" y="570" width="30" height="30" rx="4" transform="rotate(45 620 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="650" y="570" width="30" height="30" rx="4" transform="rotate(45 665 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="695" y="570" width="30" height="30" rx="4" transform="rotate(45 710 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="740" y="570" width="30" height="30" rx="4" transform="rotate(45 755 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="785" y="570" width="30" height="30" rx="4" transform="rotate(45 800 585)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="830" y="570" width="30" height="30" rx="4" transform="rotate(45 845 585)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=90 -->
+                  <rect class="scale-dot" x="605" y="615" width="30" height="30" rx="4" transform="rotate(45 620 630)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="650" y="615" width="30" height="30" rx="4" transform="rotate(45 665 630)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="695" y="615" width="30" height="30" rx="4" transform="rotate(45 710 630)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="740" y="615" width="30" height="30" rx="4" transform="rotate(45 755 630)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="785" y="615" width="30" height="30" rx="4" transform="rotate(45 800 630)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=135 -->
+                  <rect class="scale-dot" x="650" y="660" width="30" height="30" rx="4" transform="rotate(45 665 675)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="695" y="660" width="30" height="30" rx="4" transform="rotate(45 710 675)" fill="rgba(0,0,0,0.25)"/>
+                  <rect class="scale-dot" x="740" y="660" width="30" height="30" rx="4" transform="rotate(45 755 675)" fill="rgba(0,0,0,0.25)"/>
+                  <!-- row dy=180 -->
+                  <rect class="scale-dot" x="695" y="705" width="30" height="30" rx="4" transform="rotate(45 710 720)" fill="rgba(0,0,0,0.25)"/>
+                </g>
+              </svg>
+            </div>
           </div>
           <div class="sprint-block__content">
             <h3 class="sprint-block__word">Scale</h3>
@@ -2008,11 +2260,41 @@
         <p data-reveal class="faq__heading">( Frequently Asked )</p>
         <div data-faq-init class="faq__wrap">
           <ul class="faq__questions">
-            <li><button data-faq-q="0" type="button" class="faq__question">What does "agent ready" mean?</button></li>
-            <li><button data-faq-q="1" type="button" class="faq__question">How do agents work with my team?</button></li>
-            <li><button data-faq-q="2" type="button" class="faq__question">What industries do you work with?</button></li>
-            <li><button data-faq-q="3" type="button" class="faq__question">How long does it take?</button></li>
-            <li><button data-faq-q="4" type="button" class="faq__question">What makes UA different?</button></li>
+            <li>
+              <button data-faq-q="0" type="button" class="faq__question">What does "agent ready" mean?</button>
+              <div data-faq-a-mobile="0" class="faq__answer-mobile">
+                <p class="faq__answer-title">Agent readiness is a spectrum</p>
+                <p class="faq__answer-body">Most businesses use AI for simple tasks — chatbots, summaries, search. Agent readiness means going further: autonomous workflows, multi-step reasoning, and agents that can make decisions with guardrails. We assess where you are and build a path to where you want to be.</p>
+              </div>
+            </li>
+            <li>
+              <button data-faq-q="1" type="button" class="faq__question">How do agents work with my team?</button>
+              <div data-faq-a-mobile="1" class="faq__answer-mobile">
+                <p class="faq__answer-title">Augmentation, not replacement</p>
+                <p class="faq__answer-body">Think of agents like specialist teammates who never sleep. A media strategist might have an agent that monitors campaign performance 24/7 and drafts optimization recommendations. Your team stays in control — agents just multiply their output.</p>
+              </div>
+            </li>
+            <li>
+              <button data-faq-q="2" type="button" class="faq__question">What industries do you work with?</button>
+              <div data-faq-a-mobile="2" class="faq__answer-mobile">
+                <p class="faq__answer-title">Built for knowledge work</p>
+                <p class="faq__answer-body">Our sweet spot is teams that produce reports, analysis, creative briefs, and strategic recommendations. Agencies, consultancies, media companies, and in-house marketing teams. If your team's output is thinking — not widgets — agents can dramatically change your capacity.</p>
+              </div>
+            </li>
+            <li>
+              <button data-faq-q="3" type="button" class="faq__question">How long does it take?</button>
+              <div data-faq-a-mobile="3" class="faq__answer-mobile">
+                <p class="faq__answer-title">Fast to value, built to last</p>
+                <p class="faq__answer-body">Week 1-2: Discovery — we map your workflows and identify high-impact agent opportunities. Week 3-4: Build — working agent prototypes in your actual tools. Month 2+: Scale — refine, expand, and hand over ownership. You're never locked in. Everything we build, you own.</p>
+              </div>
+            </li>
+            <li>
+              <button data-faq-q="4" type="button" class="faq__question">What makes UA different?</button>
+              <div data-faq-a-mobile="4" class="faq__answer-mobile">
+                <p class="faq__answer-title">Agents designed with you</p>
+                <p class="faq__answer-body">Most AI consultancies hand you a platform and wish you luck. We sit with your team, understand the nuance of how you work, and build agent systems that feel like a natural extension of your process. The best agent is one your team actually uses — and that requires design thinking, not just engineering.</p>
+              </div>
+            </li>
           </ul>
           <div class="faq__answers">
             <div class="faq__placeholder">
@@ -2659,18 +2941,31 @@
 
       const buttons = wrap.querySelectorAll('[data-faq-q]');
       const answers = wrap.querySelectorAll('[data-faq-a]');
+      const mobileAnswers = wrap.querySelectorAll('[data-faq-a-mobile]');
       const placeholder = wrap.querySelector('.faq__placeholder');
 
       buttons.forEach(btn => {
         btn.addEventListener('click', () => {
           const idx = btn.getAttribute('data-faq-q');
+          const wasActive = btn.classList.contains('is--active');
 
           buttons.forEach(b => b.classList.remove('is--active'));
+          answers.forEach(a => a.classList.remove('is--active'));
+          mobileAnswers.forEach(a => a.classList.remove('is--active'));
+
+          // Toggle on mobile (tap to close), always open on desktop
+          if (wasActive && window.innerWidth <= 767) {
+            if (placeholder) placeholder.classList.remove('is--hidden');
+            return;
+          }
+
           btn.classList.add('is--active');
 
-          answers.forEach(a => a.classList.remove('is--active'));
           const answer = wrap.querySelector(`[data-faq-a="${idx}"]`);
           if (answer) answer.classList.add('is--active');
+
+          const mobileAnswer = wrap.querySelector(`[data-faq-a-mobile="${idx}"]`);
+          if (mobileAnswer) mobileAnswer.classList.add('is--active');
 
           if (placeholder) placeholder.classList.add('is--hidden');
         });
@@ -3135,6 +3430,313 @@
       step();
     }
 
+    /* ------------------------- Shape Block Animation ------------------------- */
+
+    function initShapeAnimation() {
+      const svg = document.getElementById('shape-svg');
+      if (!svg) return;
+
+      const diamond = document.getElementById('shape-diamond');
+      const center = document.getElementById('shape-center');
+      const dotRing = document.getElementById('shape-dot-ring');
+      const dots = document.querySelectorAll('.shape-dot');
+      if (!dots.length) return;
+
+      // Center point of the diamond
+      const cx = 710, cy = 540;
+
+      // Final positions for each dot (from SVG attributes)
+      const finalPositions = Array.from(dots).map(d => ({
+        x: parseFloat(d.getAttribute('x')),
+        y: parseFloat(d.getAttribute('y')),
+      }));
+
+      // Center position for rects (center minus half width)
+      const centerX = cx - 15, centerY = cy - 15;
+
+      // Initial state: everything hidden/at center
+      gsap.set(diamond, { scale: 0, svgOrigin: '710 540', opacity: 0 });
+      gsap.set(center, { scale: 0, svgOrigin: '710 540', opacity: 0 });
+      gsap.set(dotRing, { rotation: 0, svgOrigin: '710 540' });
+
+      dots.forEach(dot => {
+        gsap.set(dot, { attr: { x: centerX, y: centerY }, opacity: 0, scale: 0, svgOrigin: '710 540' });
+      });
+
+      // Build timeline
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: svg.closest('.sprint-block'),
+          start: 'top 70%',
+          once: true,
+        },
+      });
+
+      // 1. Large diamond scales up
+      tl.to(diamond, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power3.out',
+      });
+
+      // 2. Green center diamond pops in (overlaps slightly)
+      tl.to(center, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.4,
+        ease: 'back.out(2)',
+      }, '-=0.3');
+
+      // 3. Ring rotation — 1 full revolution, eases to stop
+      const dotSequenceDuration = dots.length * 0.12 + 0.5; // total time dots take to fly out + settle
+      tl.to(dotRing, {
+        rotation: 360,
+        duration: dotSequenceDuration + 0.3,
+        ease: 'power2.inOut',
+        svgOrigin: '710 540',
+      }, '-=0.1');
+
+      // 4. Dots fly out from center one by one (runs parallel with rotation)
+      dots.forEach((dot, i) => {
+        const fp = finalPositions[i];
+        tl.to(dot, {
+          attr: { x: fp.x, y: fp.y },
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: 'power3.out',
+        }, `-=${dotSequenceDuration + 0.3 - (i * 0.12)}`);
+      });
+
+      // 5. Dots turn green one by one — starts earlier, overlaps with fly-out
+      const greenStartLabel = '<-=0.8';
+      dots.forEach((dot, i) => {
+        const greenOffset = `-=${(dots.length - i) * 0.1 + 0.6}`;
+        // Flash radial glow then immediately swap to solid green
+        tl.to(dot, {
+          attr: { fill: 'url(#glow-green)' },
+          duration: 0.1,
+          ease: 'power1.in',
+        }, greenOffset)
+        .set(dot, { attr: { fill: '#65FFA3' } }, '>+=0.05');
+      });
+
+      // 6. Ring flex-scale — subtle pop as everything lands
+      tl.to(dotRing, {
+        scale: 1.08,
+        svgOrigin: '710 540',
+        duration: 0.25,
+        ease: 'power2.out',
+      }).to(dotRing, {
+        scale: 1,
+        svgOrigin: '710 540',
+        duration: 0.4,
+        ease: 'power2.inOut',
+      });
+    }
+
+    /* ------------------------- Share Block Animation ------------------------- */
+
+    function initShareAnimation() {
+      const svg = document.getElementById('share-svg');
+      if (!svg) return;
+
+      const diamond = document.getElementById('share-diamond');
+      const center = document.getElementById('share-center');
+      const dots = document.querySelectorAll('.share-dot');
+      if (!dots.length) return;
+
+      const cx = 710, cy = 540;
+
+      // Calculate distance from center for each dot (for ripple delay)
+      const dotData = Array.from(dots).map(dot => {
+        const x = parseFloat(dot.getAttribute('x')) + 15; // center of 30px rect
+        const y = parseFloat(dot.getAttribute('y')) + 15;
+        const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+        return { dot, dist };
+      });
+
+      // Sort by distance for ripple order
+      dotData.sort((a, b) => a.dist - b.dist);
+      const maxDist = dotData[dotData.length - 1].dist;
+
+      // Initial state
+      gsap.set(diamond, { scale: 0, svgOrigin: '710 540', opacity: 0 });
+      gsap.set(center, { scale: 0, svgOrigin: '710 540', opacity: 0 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: svg.closest('.sprint-block'),
+          start: 'top 70%',
+          once: true,
+        },
+      });
+
+      // 1. Diamond scales up
+      tl.to(diamond, {
+        scale: 1, opacity: 1, duration: 0.6, ease: 'power3.out',
+      });
+
+      // 2. Center diamond pops in
+      tl.to(center, {
+        scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)',
+      }, '-=0.3');
+
+      // 3. Ripple outward — each dot lights up based on distance from center
+      dotData.forEach(({ dot, dist }) => {
+        const delay = (dist / maxDist) * 1.2; // spread over 1.2s
+        // Flash glow
+        tl.to(dot, {
+          attr: { fill: 'url(#glow-green-share)' },
+          duration: 0.1,
+          ease: 'power1.in',
+        }, `ripple+=${delay}`);
+        // Immediate solid green
+        tl.set(dot, { attr: { fill: '#65FFA3' } }, '>+=0.05');
+      });
+
+      // 4. Flex scale on the whole grid once all lit
+      const grid = document.getElementById('share-grid');
+      tl.to(grid, {
+        scale: 1.06,
+        svgOrigin: '710 540',
+        duration: 0.25,
+        ease: 'power2.out',
+      }).to(grid, {
+        scale: 1,
+        svgOrigin: '710 540',
+        duration: 0.4,
+        ease: 'power2.inOut',
+      });
+    }
+
+    /* ------------------------- Scale Block Animation (Living Network) ------------------------- */
+
+    function initScaleAnimation() {
+      const svg = document.getElementById('scale-svg');
+      if (!svg) return;
+
+      const dots = Array.from(document.querySelectorAll('.scale-dot'));
+      if (!dots.length) return;
+
+      const cx = 710, cy = 540;
+
+      // Build adjacency — dots that are neighbors (within ~55px) form chains
+      const dotPositions = dots.map(d => ({
+        x: parseFloat(d.getAttribute('x')) + 15,
+        y: parseFloat(d.getAttribute('y')) + 15,
+      }));
+
+      function getNeighbors(idx) {
+        const p = dotPositions[idx];
+        const neighbors = [];
+        dotPositions.forEach((q, j) => {
+          if (j === idx) return;
+          const dist = Math.sqrt((p.x - q.x) ** 2 + (p.y - q.y) ** 2);
+          if (dist < 55) neighbors.push(j);
+        });
+        return neighbors;
+      }
+
+      // Generate a random chain of connected dots
+      // Chain types: short (3-5), medium (5-8), snake (10-15)
+      function randomChain(minLen, maxLen) {
+        const start = Math.floor(Math.random() * dots.length);
+        const chain = [start];
+        const visited = new Set([start]);
+        const length = minLen + Math.floor(Math.random() * (maxLen - minLen + 1));
+
+        let current = start;
+        for (let i = 0; i < length; i++) {
+          const neighbors = getNeighbors(current).filter(n => !visited.has(n));
+          if (!neighbors.length) break;
+          const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+          chain.push(next);
+          visited.add(next);
+          current = next;
+        }
+        return chain;
+      }
+
+      // Pulse a chain with configurable stagger
+      function pulseChain(minLen, maxLen, stagger) {
+        const chain = randomChain(minLen || 3, maxLen || 7);
+        const st = stagger || 0.08;
+        const tl = gsap.timeline();
+
+        chain.forEach((idx, i) => {
+          const dot = dots[idx];
+          tl.to(dot, {
+            attr: { fill: '#65FFA3' },
+            duration: 0.15,
+            ease: 'power1.in',
+          }, i * st);
+          tl.to(dot, {
+            attr: { fill: 'rgba(0,0,0,0.25)' },
+            duration: 0.6,
+            ease: 'power2.out',
+          }, i * st + 0.15);
+        });
+
+        return tl;
+      }
+
+      // Fire a burst — multiple short chains at once
+      function fireBurst() {
+        const count = 3 + Math.floor(Math.random() * 3); // 3-5 chains
+        for (let i = 0; i < count; i++) {
+          setTimeout(() => pulseChain(2, 5, 0.06), i * 80);
+        }
+      }
+
+      // Fire a snake — long trail through the grid
+      function fireSnake() {
+        pulseChain(10, 18, 0.05);
+      }
+
+      // Looping pulse cycle — varied rhythms
+      let pulseTimeout;
+
+      function schedulePulse() {
+        const roll = Math.random();
+
+        if (roll < 0.15) {
+          // 15% chance: burst of activity
+          fireBurst();
+        } else if (roll < 0.3) {
+          // 15% chance: long snake
+          fireSnake();
+        } else if (roll < 0.5) {
+          // 20% chance: single chain
+          pulseChain(3, 7);
+        } else {
+          // 50% chance: double chain
+          pulseChain(3, 7);
+          setTimeout(() => pulseChain(3, 7), 150);
+        }
+
+        // Vary interval: 600-1400ms
+        const nextDelay = 600 + Math.floor(Math.random() * 800);
+        pulseTimeout = setTimeout(schedulePulse, nextDelay);
+      }
+
+      function startPulsing() {
+        schedulePulse();
+      }
+
+      // Only start when section is visible, stop when not
+      ScrollTrigger.create({
+        trigger: svg.closest('.sprint-block'),
+        start: 'top 80%',
+        end: 'bottom 20%',
+        onEnter: startPulsing,
+        onEnterBack: startPulsing,
+        onLeave: () => clearTimeout(pulseTimeout),
+        onLeaveBack: () => clearTimeout(pulseTimeout),
+      });
+    }
+
     /* ------------------------- Init ------------------------- */
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -3182,6 +3784,9 @@
       initLogoWallCycle();
       initButtonCharacterStagger();
       init3dPerspectiveHover();
+      initShapeAnimation();
+      initShareAnimation();
+      initScaleAnimation();
 
       // Rebuild skeleton on width resize (text reflows)
       let prevWidth = window.innerWidth;
@@ -3513,6 +4118,99 @@
         if (ipVisible && !ipRafId) ipRafId = requestAnimationFrame(renderIp);
       }, { threshold: 0 }).observe(ipCvs);
     }
+  </script>
+
+  <!-- Sprint Diamonds reveal animation (GSAP + SVG) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const container = document.querySelector('.sprint-hero__visual');
+      if (!container) return;
+
+      const dShape = document.getElementById('diamond-shape');
+      const dShare = document.getElementById('diamond-share');
+      const dScale = document.getElementById('diamond-scale');
+      const lShape = document.getElementById('label-shape');
+      const lShare = document.getElementById('label-share');
+      const lScale = document.getElementById('label-scale');
+
+      // Set initial state — scale 0 from each diamond's center using svgOrigin
+      gsap.set(dShape, { scale: 0, svgOrigin: '710 540' });
+      gsap.set(dShare, { scale: 0, svgOrigin: '1210 540' });
+      gsap.set(dScale, { scale: 0, svgOrigin: '960 540' });
+
+      // Build reveal timeline
+      const tl = gsap.timeline({ paused: true });
+
+      // Helper: reveal one diamond + label
+      function addReveal(diamond, label, svgOrigin, {
+        duration = 0.8,
+        ease = 'back.out(1.4)',
+        mintColor = '#65FFA3',
+        mintFade = 0.3,
+      } = {}) {
+        const start = 'r_' + Math.random().toString(36).slice(2);
+        tl.addLabel(start);
+
+        // Flash mint stroke + fill, scale up from 0
+        tl.set(diamond, { stroke: mintColor, fill: 'rgba(101,255,163,0.12)' }, start);
+        tl.to(diamond, {
+          scale: 1,
+          svgOrigin,
+          duration,
+          ease,
+        }, start);
+
+        // Fade stroke back to resting color
+        tl.to(diamond, {
+          stroke: '#c6bfb9',
+          fill: 'rgba(0,0,0,0.24)',
+          duration: mintFade,
+          ease: 'power2.inOut',
+        }, `${start}+=${duration * 0.5}`);
+
+        // Label fades in near end of scale-up
+        tl.to(label, {
+          opacity: 1,
+          duration: 0.3,
+          ease: 'power2.out',
+        }, `${start}+=${duration * 0.7}`);
+
+        // Gap
+        tl.addLabel('gap', `${start}+=${duration + 0.1}`);
+      }
+
+      // Step 1: Shape — fast, punchy
+      addReveal(dShape, lShape, '710 540', {
+        duration: 0.8,
+        ease: 'back.out(1.4)',
+        mintFade: 0.3,
+      });
+
+      // Step 2: Share — same rhythm
+      addReveal(dShare, lShare, '1210 540', {
+        duration: 0.8,
+        ease: 'back.out(1.4)',
+        mintFade: 0.3,
+      });
+
+      // Step 3: Scale — slower, deliberate, green lingers
+      addReveal(dScale, lScale, '960 540', {
+        duration: 1.4,
+        ease: 'power2.out',
+        mintFade: 0.8,
+      });
+
+      // ScrollTrigger — play when section enters viewport
+      ScrollTrigger.create({
+        trigger: container,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => tl.play(),
+        onRefresh: (self) => {
+          if (self.progress > 0) tl.play();
+        },
+      });
+    });
   </script>
 
 </body>
