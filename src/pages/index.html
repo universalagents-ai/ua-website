@@ -3620,9 +3620,11 @@
     /* ------------------------- Init ------------------------- */
 
     document.addEventListener("DOMContentLoaded", () => {
-      const hasVisited = sessionStorage.getItem('ua-visited');
+      // Skip loader for internal navigation (referrer is our own domain), play for external/direct visits
+      const referrer = document.referrer;
+      const isInternalNav = referrer && new URL(referrer).hostname === location.hostname;
 
-      if (hasVisited) {
+      if (isInternalNav) {
         // Skip loader — show everything immediately
         gsap.registerPlugin(CustomEase, SplitText, ScrollTrigger);
         const wrap = document.querySelector('[data-load-wrap]');
@@ -3644,7 +3646,6 @@
         const revealLogomark = setupLogomarkReveal();
         document.fonts.ready.then(() => {
           initLoader(revealLogomark);
-          sessionStorage.setItem('ua-visited', '1');
         });
         // Skeleton text reveal — wait for fonts
         document.fonts.ready.then(initSkeletonTextEffects);

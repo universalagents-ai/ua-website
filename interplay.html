@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-11YS3SH6PC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-11YS3SH6PC');
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Interplay — Own your intelligence. A modular AI operating system built for how agencies actually work.">
@@ -8,10 +17,20 @@
   <meta name="color-scheme" content="light">
   <title>Interplay — Own Your Intelligence</title>
 
+  <link rel="canonical" href="https://universalagents.ai/interplay">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+
   <!-- Font preloading -->
   <link rel="preload" href="assets/fonts/GeistMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/Geist-Medium.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="assets/css/nav.css">
 
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
@@ -65,23 +84,40 @@
 
     /* Desktop */
     :root {
-      --ip-black: #0a0a0a;
+      /* UA Brand palette (shared across site) */
+      --ua-mint: #65FFA3;
+      --ua-pink: #FF69BA;
+      --ua-blue: #25B1FF;
+      --ua-black: #0a0a0a;
+      --ua-dark-gray: #333333;
+      --ua-gray: #b0b0b0;
+      --ua-white: #ffffff;
+      --ua-mint-dim: rgba(101, 255, 163, 0.15);
+      --ua-pink-dim: rgba(255, 105, 186, 0.15);
+      --ua-blue-dim: rgba(37, 177, 255, 0.15);
+
+      /* Interplay light-mode tokens (content sections only) */
       --ip-dark: #1a1a1a;
       --ip-gray: #555555;
       --ip-light-gray: #999999;
       --ip-border: rgba(0, 0, 0, 0.08);
-      --ip-white: #ffffff;
       --ip-bg: #f8f8f8;
-      --ip-pink: #FF69BA;
-      --ip-mint: #65FFA3;
 
+      /* Easing tokens */
       --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
+      /* Duration tokens */
       --duration-fast: 0.2s;
       --duration-normal: 0.4s;
       --duration-slow: 0.6s;
+      --duration-reveal: 0.6s;
 
+      /* Reveal defaults */
+      --reveal-distance: 20px;
+
+      /* Fluid scaling */
       --size-unit: 16;
       --size-container-ideal: 1440;
       --size-container-min: 992px;
@@ -89,17 +125,24 @@
       --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
       --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
 
+      /* Grid */
+      --grid-columns: 12;
+      --grid-gap: 1.5em;
       --grid-padding: 1.5em;
 
+      /* Type Scale */
       --text-display: 3em;
       --text-heading: 2.5em;
       --text-title: 1.25em;
       --text-body: 1.5em;
       --text-label: 0.8125em;
 
+      /* Font stacks */
+      --font-display: 'GeistMono', monospace;
       --font-body: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'GeistMono', monospace;
 
+      /* Section spacing */
       --section-padding: 8em;
     }
 
@@ -109,6 +152,8 @@
         --size-container-ideal: 834;
         --size-container-min: 768px;
         --size-container-max: 991px;
+        --grid-columns: 6;
+        --grid-gap: 1.25em;
         --grid-padding: 1.25em;
         --text-display: 2.5em;
         --text-heading: 2em;
@@ -123,6 +168,8 @@
         --size-container-ideal: 550;
         --size-container-min: 480px;
         --size-container-max: 767px;
+        --grid-columns: 4;
+        --grid-gap: 1em;
         --grid-padding: 1em;
         --text-display: 2.25em;
         --text-heading: 1.75em;
@@ -138,6 +185,8 @@
         --size-container-ideal: 390;
         --size-container-min: 320px;
         --size-container-max: 479px;
+        --grid-columns: 4;
+        --grid-gap: 0.75em;
         --grid-padding: 0.75em;
         --text-display: 1.45em;
         --text-heading: 1.25em;
@@ -154,6 +203,8 @@
         --duration-fast: 0s;
         --duration-normal: 0s;
         --duration-slow: 0s;
+        --duration-reveal: 0s;
+        --reveal-distance: 0px;
       }
 
       *, *::before, *::after {
@@ -224,7 +275,7 @@
     /* ------------------------- Chroma Ambient Background ------------------------- */
 
     .chroma {
-      position: fixed;
+      position: absolute;
       inset: 0;
       z-index: 0;
       overflow: hidden;
@@ -298,6 +349,82 @@
       z-index: 1;
     }
 
+    /* ------------------------- Dark Hero Wrapper ------------------------- */
+
+    .hero-dark {
+      position: relative;
+      z-index: 2;
+      background: var(--ua-black);
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+
+    .hero-dark__inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Dark chroma ambient (muted, dark-mode tinted) */
+    .hero-dark .chroma-dark {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .hero-dark .chroma-dark__blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.25;
+      will-change: transform;
+    }
+
+    .hero-dark .chroma-dark__blob--1 {
+      width: 50vw; height: 50vh;
+      top: -10%; left: -5%;
+      background: radial-gradient(circle, #FF69BA 0%, transparent 70%);
+      animation: chroma-drift-1 25s ease-in-out infinite alternate;
+    }
+    .hero-dark .chroma-dark__blob--2 {
+      width: 45vw; height: 45vh;
+      top: 10%; right: -10%;
+      background: radial-gradient(circle, #25B1FF 0%, transparent 70%);
+      animation: chroma-drift-2 30s ease-in-out infinite alternate;
+    }
+    .hero-dark .chroma-dark__blob--3 {
+      width: 40vw; height: 40vh;
+      bottom: 5%; left: 20%;
+      background: radial-gradient(circle, #65FFA3 0%, transparent 70%);
+      animation: chroma-drift-3 22s ease-in-out infinite alternate;
+    }
+
+    /* Light content card that reveals over the dark hero */
+    .content-card {
+      position: relative;
+      z-index: 3;
+      background: var(--ip-bg);
+      border-radius: 2em 2em 0 0;
+      margin-top: -4em;
+      padding-top: 2em;
+      overflow: hidden;
+    }
+
+    .content-card__chroma {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .content-card .section,
+    .content-card .container {
+      position: relative;
+      z-index: 1;
+    }
+
     /* ------------------------- Hero Section ------------------------- */
 
     .hero {
@@ -311,29 +438,29 @@
     }
 
     .hero__logo {
-      width: clamp(200px, 40vw, 480px);
+      width: clamp(400px, 80vw, 960px);
       height: auto;
       margin-bottom: 2em;
+      position: relative;
     }
 
-    .hero__logo svg {
+    .hero__logo-svg {
       width: 100%;
       height: auto;
       display: block;
     }
 
-    .hero__logo path[stroke="white"] {
-      stroke: var(--ip-dark);
+    .hero__cube-eye {
+      position: absolute;
+      pointer-events: none;
+      overflow: visible;
+      opacity: 0;
     }
 
-    .hero__cube-wrap {
-      margin-bottom: 2em;
-    }
-
-    .hero__cube-wrap canvas {
+    .hero__cube-eye canvas {
       display: block;
-      width: 120px;
-      height: 120px;
+      width: 100%;
+      height: 100%;
     }
 
     .hero__tagline {
@@ -342,18 +469,28 @@
       font-weight: 400;
       line-height: 1.15;
       letter-spacing: -0.02em;
-      color: var(--ip-dark);
+      color: var(--ua-white);
       margin: 0 0 0.5em;
+      opacity: 0;
     }
 
     .hero__sub {
       font-size: var(--text-body);
       font-weight: 400;
       line-height: 1.6;
-      color: var(--ip-gray);
+      color: var(--ip-light-gray);
       max-width: 38ch;
       margin: 0 auto;
       text-wrap: balance;
+      opacity: 0;
+    }
+
+    [data-logo="stem"] {
+      opacity: 0;
+    }
+
+    [data-logo="letter"] {
+      opacity: 0;
     }
 
     /* ------------------------- Section System ------------------------- */
@@ -407,6 +544,34 @@
       margin: 1.5em 0 0;
     }
 
+    /* ------------------------- UI Preview Card (3D) ------------------------- */
+
+    .ui-preview {
+      display: flex;
+      justify-content: center;
+      padding: 0.5em var(--grid-padding) 2em;
+    }
+
+    .ui-preview__video-wrap {
+      width: clamp(20em, 70vw, 55em);
+      border-radius: 0.75em;
+      overflow: hidden;
+      box-shadow: 0 4px 60px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--ip-border);
+    }
+
+    .ui-preview__video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media screen and (max-width: 767px) {
+      .ui-preview__video-wrap {
+        width: 100%;
+      }
+    }
+
     /* ------------------------- Divider ------------------------- */
 
     .divider {
@@ -414,6 +579,87 @@
       height: 1px;
       background: var(--ip-border);
       margin: 0;
+    }
+
+    /* ------------------------- Section Variants ------------------------- */
+
+    .section--intro {
+      padding-bottom: 1.5em;
+    }
+
+    .section--intro .section__heading {
+      margin-bottom: 0;
+    }
+
+    .section--flush-top {
+      padding-top: 0;
+    }
+
+    .section__icon {
+      display: block;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 0.75em;
+      margin-left: -10px;
+    }
+
+    /* ------------------------- Animated Button ------------------------- */
+
+    .btn-animate-chars {
+      color: var(--ip-dark);
+      cursor: pointer;
+      border-radius: 0.5em;
+      justify-content: center;
+      align-items: center;
+      padding: 0.8em 2em;
+      font-family: var(--font-mono);
+      font-size: var(--text-body);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      display: inline-flex;
+      position: relative;
+    }
+
+    .btn-animate-chars__text {
+      white-space: nowrap;
+      line-height: 1.3;
+    }
+
+    .btn-animate-chars [data-button-animate-chars] {
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+    }
+
+    .btn-animate-chars [data-button-animate-chars] span {
+      display: inline-block;
+      position: relative;
+      text-shadow: 0px 1.3em currentColor;
+      transform: translateY(0em) rotate(0.001deg);
+      transition: transform 0.6s cubic-bezier(0.625, 0.05, 0, 1);
+    }
+
+    .btn-animate-chars:hover [data-button-animate-chars] span {
+      transform: translateY(-1.3em) rotate(0.001deg);
+    }
+
+    .btn-animate-chars__bg {
+      border: 1px solid var(--ip-border);
+      border-radius: 0.5em;
+      position: absolute;
+      inset: 0;
+      transition: inset 0.6s cubic-bezier(0.625, 0.05, 0, 1), border-color 0.3s;
+    }
+
+    .btn-animate-chars:hover .btn-animate-chars__bg {
+      inset: -0.125em;
+      border-color: var(--ip-dark);
+    }
+
+    .section__cta-wrap {
+      margin-top: 1.5em;
     }
 
     /* ------------------------- CTA Section ------------------------- */
@@ -450,307 +696,12 @@
       opacity: 0.6;
     }
 
-    /* ------------------------- Navigation (Bold Full) ------------------------- */
-
-    .bold-nav-full {
-      z-index: 100;
-      pointer-events: none;
-      position: fixed;
-      inset: 0;
-    }
-
-    .bold-nav-full__bar {
-      z-index: 1;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: var(--grid-padding);
-      display: flex;
-      position: absolute;
-    }
-
-    .bold-nav-full__logo {
-      pointer-events: auto;
-      color: var(--ip-dark);
-      width: clamp(36px, 2.5em, 2.5em);
-      display: flex;
-    }
-
-    .bold-nav-full__logo svg {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .bold-nav-full__hamburger {
-      pointer-events: auto;
-      color: var(--ip-dark);
-      cursor: pointer;
-      background: none;
-      border: none;
-      justify-content: center;
-      align-items: center;
-      width: 2.5em;
-      height: 2.5em;
-      display: flex;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar {
-      background-color: currentColor;
-      width: 1.8em;
-      height: 1.5px;
-      position: absolute;
-      transform: translate(0, 0) rotate(0.001deg);
-      transition: transform 0.5s cubic-bezier(.7, 0, .3, 1);
-    }
-
-    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar:nth-child(1) {
-      transform: translate(0, -.35em) scale(1, 1) rotate(0.001deg);
-    }
-
-    .bold-nav-full__hamburger .bold-nav-full__hamburger-bar:nth-child(3) {
-      transform: translate(0, .35em) scale(1, 1) rotate(0.001deg);
-    }
-
-    .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(1) {
-      transform: translate(0, -.35em) scale(.5, 1) rotate(0.001deg);
-    }
-
-    .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(3) {
-      transform: translate(0, .35em) scale(.5, 1) rotate(0.001deg);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(1) {
-      transform: translate(0, 0) rotate(45deg) scale(1, 1);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(2) {
-      transform: translate(-150%, 0) rotate(0.001deg) scale(1, 1);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__hamburger-bar:nth-child(3) {
-      transform: translate(0, 0) rotate(-45deg) scale(1, 1);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(1) {
-      transform: translate(0, 0) rotate(45deg) scale(.7, 1);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__hamburger:hover .bold-nav-full__hamburger-bar:nth-child(3) {
-      transform: translate(0, 0) rotate(-45deg) scale(.7, 1);
-    }
-
-    .bold-nav-full__tile {
-      pointer-events: auto;
-      background-color: var(--ip-black);
-      flex-flow: column;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: clip-path 1s cubic-bezier(.9, 0, .1, 1);
-      clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__tile {
-      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__hamburger {
-      color: var(--ip-white);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__logo {
-      color: var(--ip-white);
-    }
-
-    .bold-nav-full__ul {
-      flex-flow: column;
-      align-items: center;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: flex;
-    }
-
-    .bold-nav-full__li {
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      padding: 0 0 0.15em;
-      display: flex;
-      position: relative;
-      overflow: hidden;
-      transition: opacity 0.5s cubic-bezier(.7, 0, .3, 1);
-    }
-
-    .bold-nav-full__ul:has(.bold-nav-full__li:hover) .bold-nav-full__li {
-      opacity: 0.15;
-    }
-
-    .bold-nav-full__ul:has(.bold-nav-full__li:hover) .bold-nav-full__li:hover {
-      opacity: 1;
-    }
-
-    .bold-nav-full__link {
-      color: var(--ip-white);
-      font-family: var(--font-mono);
-      font-size: clamp(2.5em, calc(4vw + 3vh), 6em);
-      font-weight: 400;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      text-decoration: none;
-      position: relative;
-      transform: translateY(100%) rotate(5deg);
-      transition: transform 0.75s cubic-bezier(.7, 0, .3, 1);
-    }
-
-    .bold-nav-full__link.is--current {
-      color: var(--ip-pink);
-    }
-
-    .bold-nav-full__li:nth-child(1) .bold-nav-full__link { transition-delay: 0.15s; }
-    .bold-nav-full__li:nth-child(2) .bold-nav-full__link { transition-delay: 0.1s; }
-    .bold-nav-full__li:nth-child(3) .bold-nav-full__link { transition-delay: 0.05s; }
-
-    [data-navigation-status="active"] .bold-nav-full__link {
-      transform: translateY(0%) rotate(0.001deg);
-    }
-
-    [data-navigation-status="active"] .bold-nav-full__li:nth-child(1) .bold-nav-full__link { transition-delay: 0.3s; }
-    [data-navigation-status="active"] .bold-nav-full__li:nth-child(2) .bold-nav-full__link { transition-delay: 0.35s; }
-    [data-navigation-status="active"] .bold-nav-full__li:nth-child(3) .bold-nav-full__link { transition-delay: 0.4s; }
-
-    .bold-nav-full__link-text {
-      text-shadow: 0 1.1em 0;
-      display: block;
-      position: relative;
-    }
-
-    .bold-nav-full__link .bold-nav-full__link-text {
-      transition: transform 0.5s cubic-bezier(.7, 0, .3, 1);
-      transform: translateY(0%) rotate(0.001deg);
-    }
-
-    .bold-nav-full__link:hover .bold-nav-full__link-text {
-      transform: translateY(-100%) rotate(0.001deg);
-    }
-
-    .bold-nav-full__link::before {
-      content: "";
-      position: absolute;
-      bottom: -0.0625em;
-      left: 0;
-      width: 100%;
-      height: 0.06em;
-      background-color: var(--ip-white);
-      transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
-      transform-origin: right;
-      transform: scaleX(0) rotate(0.001deg);
-    }
-
-    .bold-nav-full__link.is--current::before {
-      background-color: var(--ip-pink);
-    }
-
-    .bold-nav-full__link:hover::before {
-      transform-origin: left;
-      transform: scaleX(1) rotate(0.001deg);
-    }
-
-    .bold-nav__bottom {
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: var(--grid-padding);
-      display: flex;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    .bold-nav__word {
-      font-family: var(--font-mono);
-      font-size: var(--text-label);
-      color: var(--ip-light-gray);
-      margin: 0;
-      text-decoration: none;
-      position: relative;
-    }
-
-    .bold-nav__word::before {
-      content: "";
-      position: absolute;
-      bottom: -0.0625em;
-      left: 0;
-      width: 100%;
-      height: 0.08em;
-      background-color: var(--ip-light-gray);
-      transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
-      transform-origin: right;
-      transform: scaleX(0) rotate(0.001deg);
-    }
-
-    .bold-nav__word:hover::before {
-      transform-origin: left;
-      transform: scaleX(1) rotate(0.001deg);
-    }
-
-    /* ------------------------- Cursor Trail (nav overlay) ------------------------- */
-
-    .cursor-wrap {
-      position: fixed;
-      inset: 0;
-      z-index: 101;
-      pointer-events: none;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .cursor-wrap.is--active {
-      opacity: 1;
-    }
-
-    .cursor-dot {
-      width: 2em;
-      height: 2em;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 2;
-    }
-
-    .cursor-canvas {
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      position: absolute;
-    }
-
-    @media (max-width: 991px), (prefers-reduced-motion: reduce) {
-      .cursor-wrap {
-        display: none;
-      }
-    }
-
     /* ------------------------- Footer ------------------------- */
 
     .footer-wrap {
       position: relative;
       overflow: hidden;
-      background: var(--ip-pink);
+      background: var(--ua-pink);
       z-index: 1;
     }
 
@@ -782,7 +733,7 @@
       font-weight: 400;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--ip-black);
+      color: var(--ua-black);
       margin: 0;
     }
 
@@ -794,7 +745,7 @@
     }
 
     .footer__a {
-      color: var(--ip-white);
+      color: var(--ua-white);
       font-size: var(--text-body);
       font-weight: 400;
       line-height: 1.1;
@@ -810,7 +761,7 @@
       left: 0;
       width: 100%;
       height: 0.08em;
-      background-color: var(--ip-white);
+      background-color: var(--ua-white);
       transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
       transform-origin: right;
       transform: scaleX(0) rotate(0.001deg);
@@ -831,7 +782,7 @@
 
     .footer__wordmark {
       width: 100%;
-      color: var(--ip-white);
+      color: var(--ua-white);
     }
 
     .footer__wordmark svg {
@@ -849,14 +800,14 @@
 
     .footer__copyright {
       font-size: var(--text-label);
-      color: var(--ip-black);
+      color: var(--ua-black);
       margin: 0;
     }
 
     .footer-wrap__dark {
       opacity: 0;
       pointer-events: none;
-      background-color: var(--ip-black);
+      background-color: var(--ua-black);
       width: 100%;
       height: 100%;
       position: absolute;
@@ -883,19 +834,6 @@
       }
     }
 
-    /* ------------------------- Scroll Progress Bar ------------------------- */
-
-    .progress-bar {
-      z-index: 50;
-      position: fixed;
-      inset: 0 0 auto 0;
-      width: 100%;
-      height: 3px;
-      transform-origin: 0%;
-      transform: scale3d(0, 1, 1);
-      background-color: var(--ip-pink);
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
@@ -903,39 +841,38 @@
   <!-- Scroll Progress Bar -->
   <div class="progress-bar"></div>
 
-  <!-- Navigation -->
   <nav data-navigation-status="not-active" class="bold-nav-full">
-    <div class="bold-nav-full__bar">
-      <a href="/" class="bold-nav-full__logo" aria-label="Universal Agents — home">
-        <svg viewBox="0 0 375 212" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M139.559 206.539V171.457L125.292 196.903C109.101 208.47 94.0662 211.938 73.6319 211.938C31.2262 211.938 6.5552 188.036 1.92469 159.897C0.381189 149.486 0 140.237 0 123.659V1.83467H42.0183V115.173C42.0183 121.728 42.4057 132.907 43.5618 143.312C46.6425 165.671 61.2964 180.319 87.511 180.319C117.194 180.319 139.553 157.572 139.553 98.2067V1.83467H181.571V206.539H139.553H139.559Z" fill="currentColor"/>
-          <path d="M251.01 206.267V192.513H223.508V178.765H209.754V151.263H196V55.0037H209.754V27.5018H223.508V13.754H251.01V0.00624914H306.014V13.754H319.761V27.5018H333.515V0H374.765V206.261H333.515V178.759H319.761V192.507H306.014V206.261H251.01V206.267ZM306.014 165.011V151.257H319.761V137.509H333.515V68.7577H319.761V55.0099H306.014V41.2621H251.01V55.0099H237.256V151.263H251.01V165.017H306.014V165.011Z" fill="currentColor"/>
-        </svg>
-      </a>
-      <button data-navigation-toggle="toggle" class="bold-nav-full__hamburger" aria-label="Menu">
-        <div class="bold-nav-full__hamburger-bar"></div>
-        <div class="bold-nav-full__hamburger-bar"></div>
-        <div class="bold-nav-full__hamburger-bar"></div>
-      </button>
+  <div class="bold-nav-full__bar">
+    <a href="/" class="bold-nav-full__logo logomark" data-load-reset aria-label="Universal Agents — home">
+      <svg viewBox="0 0 375 212" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M139.559 206.539V171.457L125.292 196.903C109.101 208.47 94.0662 211.938 73.6319 211.938C31.2262 211.938 6.5552 188.036 1.92469 159.897C0.381189 149.486 0 140.237 0 123.659V1.83467H42.0183V115.173C42.0183 121.728 42.4057 132.907 43.5618 143.312C46.6425 165.671 61.2964 180.319 87.511 180.319C117.194 180.319 139.553 157.572 139.553 98.2067V1.83467H181.571V206.539H139.553H139.559Z" fill="currentColor"/>
+        <path d="M251.01 206.267V192.513H223.508V178.765H209.754V151.263H196V55.0037H209.754V27.5018H223.508V13.754H251.01V0.00624914H306.014V13.754H319.761V27.5018H333.515V0H374.765V206.261H333.515V178.759H319.761V192.507H306.014V206.261H251.01V206.267ZM306.014 165.011V151.257H319.761V137.509H333.515V68.7577H319.761V55.0099H306.014V41.2621H251.01V55.0099H237.256V151.263H251.01V165.017H306.014V165.011Z" fill="currentColor"/>
+      </svg>
+    </a>
+    <button data-navigation-toggle="toggle" class="bold-nav-full__hamburger" aria-label="Menu">
+      <div class="bold-nav-full__hamburger-bar"></div>
+      <div class="bold-nav-full__hamburger-bar"></div>
+      <div class="bold-nav-full__hamburger-bar"></div>
+    </button>
+  </div>
+  <div class="bold-nav-full__tile">
+    <ul class="bold-nav-full__ul">
+      <li class="bold-nav-full__li">
+        <a href="/" class="bold-nav-full__link " data-navigation-toggle="close"><span class="bold-nav-full__link-text">Home</span></a>
+      </li>
+      <li class="bold-nav-full__li">
+        <a href="/interplay.html" class="bold-nav-full__link is--current" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Interplay</span></a>
+      </li>
+      <li class="bold-nav-full__li">
+        <a href="https://www.linkedin.com/company/universal-agents/" target="_blank" rel="noopener" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">LinkedIn</span></a>
+      </li>
+    </ul>
+    <div class="bold-nav__bottom">
+      <a href="/" class="bold-nav__word" data-navigation-toggle="close">Universal Agents</a>
+      <a href="mailto:hello@universalagents.ai" class="bold-nav__word">hello@universalagents.ai</a>
     </div>
-    <div class="bold-nav-full__tile">
-      <ul class="bold-nav-full__ul">
-        <li class="bold-nav-full__li">
-          <a href="/" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Home</span></a>
-        </li>
-        <li class="bold-nav-full__li">
-          <a href="/interplay.html" class="bold-nav-full__link is--current" data-navigation-toggle="close"><span class="bold-nav-full__link-text">Interplay</span></a>
-        </li>
-        <li class="bold-nav-full__li">
-          <a href="https://www.linkedin.com/company/universal-agents/" target="_blank" rel="noopener" class="bold-nav-full__link" data-navigation-toggle="close"><span class="bold-nav-full__link-text">LinkedIn</span></a>
-        </li>
-      </ul>
-      <div class="bold-nav__bottom">
-        <a href="/" class="bold-nav__word" data-navigation-toggle="close">Universal Agents</a>
-        <a href="mailto:hello@universalagents.ai" class="bold-nav__word">hello@universalagents.ai</a>
-      </div>
-    </div>
-  </nav>
+  </div>
+</nav>
 
   <!-- Cursor trail (active during nav overlay) -->
   <div class="cursor-wrap">
@@ -943,50 +880,94 @@
     <canvas data-cursor-canvas class="cursor-canvas"></canvas>
   </div>
 
-  <!-- Chroma Ambient Background -->
-  <div class="chroma">
-    <div class="chroma__blob chroma__blob--1"></div>
-    <div class="chroma__blob chroma__blob--2"></div>
-    <div class="chroma__blob chroma__blob--3"></div>
-    <div class="chroma__blob chroma__blob--4"></div>
-    <div class="chroma__diffusion"></div>
-  </div>
 
   <!-- Shared SVG definitions -->
-  <svg style="display: none;">
-    <symbol id="wordmark" viewBox="0 0 1143 165" fill="none">
-      <path d="M61.714 125.306V109.79L55.4096 121.04C48.2506 126.153 41.6029 127.687 32.5664 127.687C13.8141 127.687 2.90015 117.117 0.854703 104.676C0.175324 100.074 0 95.983 0 88.6486V34.7804H18.5843V84.901C18.5843 87.8012 18.7523 92.7395 19.2637 97.349C20.6298 107.24 27.1021 113.713 38.6954 113.713C51.8228 113.713 61.7067 103.653 61.7067 77.3986V34.7804H80.291V125.306H61.7067H61.714Z" fill="currentColor"/>
-      <path d="M176.272 74.3301V125.305H157.519V76.3755C157.519 72.1166 157.519 68.1937 157.176 63.5915C156.321 53.3643 150.872 46.2052 138.08 46.2052C125.289 46.2052 114.55 56.4324 114.55 84.7326V125.305H95.7981V34.78H114.55V49.7847L120.687 39.3822C127.846 33.9252 134.494 32.3912 143.53 32.3912C162.962 32.3912 174.044 42.4504 175.753 58.3026C176.096 62.9048 176.264 66.9957 176.264 74.3301H176.272Z" fill="currentColor"/>
-      <path d="M190.585 3.23634H209.505V24.8888H190.585V3.23634ZM190.585 34.78H209.337V125.305H190.585V34.78Z" fill="currentColor"/>
-      <path d="M247.863 125.306L213.259 34.7804H233.888L259.288 111.499L284.345 34.7804H304.288L269.684 125.306H247.863Z" fill="currentColor"/>
-      <path d="M383.398 85.2368H318.448C319.982 106.889 329.866 114.048 342.145 114.048C353.059 114.048 361.577 107.401 363.455 95.9754H382.375C378.452 117.453 361.234 127.687 341.459 127.687C317.25 127.687 299.009 112.346 299.009 80.2912C299.009 51.6477 317.25 32.384 343.336 32.384C369.423 32.384 383.741 52.1591 383.741 77.7344C383.741 79.4365 383.741 81.9933 383.398 85.2368ZM364.47 72.1095C363.104 55.4026 355.777 46.0227 342.65 46.0227C329.522 46.0227 320.661 54.7159 318.616 72.1095H364.477H364.47Z" fill="currentColor"/>
-      <path d="M439.821 33.5817V48.2432C422.603 47.0524 411.865 55.9136 411.865 78.2454V125.298H393.112V34.7798H411.865V50.1206L419.535 37.6726C423.626 34.4364 428.908 32.559 433.517 32.559C436.074 32.559 437.951 32.9023 439.821 33.5817Z" fill="currentColor"/>
-      <path d="M508.35 60.6915H489.254C487.377 51.1437 481.752 45.5187 472.548 45.5187C463.343 45.5187 459.42 50.4643 459.42 57.28C459.42 65.4618 466.068 68.8733 479.539 72.4528C499.314 77.5664 509.716 85.4121 509.716 101.432C509.716 118.994 494.2 127.687 474.425 127.687C454.65 127.687 439.477 118.651 436.92 98.1962H455.841C458.054 109.789 465.732 114.392 475.104 114.392C483.797 114.392 490.789 110.644 490.789 102.798C490.789 94.9527 484.652 90.6938 469.311 86.6029C452.772 82.344 440.5 75.3529 440.5 59.4935C440.5 42.6185 453.795 32.384 473.914 32.384C494.032 32.384 506.305 44.1453 508.35 60.6842V60.6915Z" fill="currentColor"/>
-      <path d="M540.736 127.687C524.708 127.687 511.581 118.483 511.581 101.6C511.581 81.482 527.608 70.5754 561.87 70.5754H567.663V68.3619C567.663 64.9504 567.662 61.8822 567.319 58.4707C566.808 51.1364 562.206 46.0227 551.467 46.0227C540.728 46.0227 534.928 52.1591 533.905 63.409H515.153C516.344 43.634 531.181 32.384 551.803 32.384C575.158 32.384 584.362 42.2752 585.896 57.616C586.24 61.3636 586.408 66.1411 586.408 70.4001V102.28C586.408 109.103 586.751 115.239 588.11 125.298H569.525L567.823 112.171L563.221 121.887C557.085 126.146 549.239 127.68 540.721 127.68L540.736 127.687ZM547.559 114.048C559.32 114.048 567.677 106.035 567.677 91.3732V83.0234C545.689 81.3213 531.363 86.2595 531.363 100.074C531.363 109.621 537.668 114.056 547.559 114.056V114.048Z" fill="currentColor"/>
-      <path d="M620.003 106.21C620.346 111.323 622.728 113.025 630.742 112.346V125.473C626.994 125.985 622.728 126.328 618.469 126.328C608.578 126.328 601.93 122.749 601.251 111.155C601.083 107.744 601.083 103.653 601.083 98.1959V0H619.835V97.6846C619.835 100.753 619.835 103.485 620.003 106.21Z" fill="currentColor"/>
-      <path d="M696.848 127.475V121.222H684.341V114.969H678.088V102.462H671.835V58.6897H678.088V46.1833H684.341V39.9301H696.848V33.6768H721.861V39.9301H728.114V46.1833H734.367V33.6768H753.127V127.475H734.367V114.969H728.114V121.222H721.861V127.475H696.848ZM721.861 108.715V102.462H728.114V96.209H734.367V64.9429H728.114V58.6897H721.861V52.4365H696.848V58.6897H690.595V102.462H696.848V108.715H721.861Z" fill="currentColor"/>
-      <path d="M786.898 164.994V158.741H774.392V152.488H768.139V146.235H761.885V139.981H768.139V133.728H780.645V139.981H786.898V146.235H818.164V139.981H824.418V114.969H818.164V121.222H811.911V127.475H786.898V121.222H774.392V114.969H768.139V102.462H761.885V58.6897H768.139V46.1833H774.392V39.9301H786.898V33.6768H811.911V39.9301H818.164V46.1833H824.418V33.6768H843.177V146.235H836.924V152.488H830.671V158.741H818.164V164.994H786.898ZM811.911 108.715V102.462H818.164V96.209H824.418V64.9429H818.164V58.6897H811.911V52.4365H786.898V58.6897H780.645V102.462H786.898V108.715H811.911Z" fill="currentColor"/>
-      <path d="M877.526 127.475V121.222H865.019V114.969H858.766V102.462H852.513V58.6897H858.766V46.1833H865.019V39.9301H877.526V33.6768H902.539V39.9301H915.045V46.1833H921.298V58.6897H927.552V83.7026H871.273V102.462H877.526V108.715H902.539V102.462H908.792V96.209H927.552V108.715H921.298V114.969H915.045V121.222H902.539V127.475H877.526ZM908.792 71.1961V58.6897H902.539V52.4365H877.526V58.6897H871.273V71.1961H908.792Z" fill="currentColor"/>
-      <path d="M936.113 127.475V33.6768H954.872V46.1833H961.126V39.9301H967.379V33.6768H986.139V39.9301H998.645V46.1833H1004.9V58.6897H1011.15V127.475H992.392V58.6897H986.139V52.4365H967.379V58.6897H961.126V64.9429H954.872V127.475H936.113Z" fill="currentColor"/>
-      <path d="M1030.85 127.475V52.4369H1018.34V33.6773H1030.85V8.6644H1049.61V33.6773H1074.62V52.4369H1049.61V127.475H1030.85Z" fill="currentColor"/>
-      <path d="M1092.95 127.475V121.222H1086.69V114.969H1080.44V102.462H1086.69V96.209H1092.95V102.462H1099.2V108.715H1105.45V114.969H1117.96V108.715H1124.21V96.209H1117.96V89.9558H1111.71V83.7026H1099.2V77.4493H1092.95V71.1961H1086.69V64.9429H1080.44V46.1833H1086.69V39.9301H1092.95V33.6768H1130.47V39.9301H1136.72V58.6897H1124.21V52.4365H1117.96V46.1833H1105.45V52.4365H1099.2V58.6897H1105.45V64.9429H1111.71V71.1961H1124.21V77.4493H1130.47V83.7026H1136.72V89.9558H1142.97V114.969H1136.72V121.222H1130.47V127.475H1092.95Z" fill="currentColor"/>
-    </symbol>
-  </svg>
+<svg style="display: none;">
+  <symbol id="wordmark" viewBox="0 0 1143 165" fill="none">
+    <path d="M61.714 125.306V109.79L55.4096 121.04C48.2506 126.153 41.6029 127.687 32.5664 127.687C13.8141 127.687 2.90015 117.117 0.854703 104.676C0.175324 100.074 0 95.983 0 88.6486V34.7804H18.5843V84.901C18.5843 87.8012 18.7523 92.7395 19.2637 97.349C20.6298 107.24 27.1021 113.713 38.6954 113.713C51.8228 113.713 61.7067 103.653 61.7067 77.3986V34.7804H80.291V125.306H61.7067H61.714Z" fill="currentColor"/>
+    <path d="M176.272 74.3301V125.305H157.519V76.3755C157.519 72.1166 157.519 68.1937 157.176 63.5915C156.321 53.3643 150.872 46.2052 138.08 46.2052C125.289 46.2052 114.55 56.4324 114.55 84.7326V125.305H95.7981V34.78H114.55V49.7847L120.687 39.3822C127.846 33.9252 134.494 32.3912 143.53 32.3912C162.962 32.3912 174.044 42.4504 175.753 58.3026C176.096 62.9048 176.264 66.9957 176.264 74.3301H176.272Z" fill="currentColor"/>
+    <path d="M190.585 3.23634H209.505V24.8888H190.585V3.23634ZM190.585 34.78H209.337V125.305H190.585V34.78Z" fill="currentColor"/>
+    <path d="M247.863 125.306L213.259 34.7804H233.888L259.288 111.499L284.345 34.7804H304.288L269.684 125.306H247.863Z" fill="currentColor"/>
+    <path d="M383.398 85.2368H318.448C319.982 106.889 329.866 114.048 342.145 114.048C353.059 114.048 361.577 107.401 363.455 95.9754H382.375C378.452 117.453 361.234 127.687 341.459 127.687C317.25 127.687 299.009 112.346 299.009 80.2912C299.009 51.6477 317.25 32.384 343.336 32.384C369.423 32.384 383.741 52.1591 383.741 77.7344C383.741 79.4365 383.741 81.9933 383.398 85.2368ZM364.47 72.1095C363.104 55.4026 355.777 46.0227 342.65 46.0227C329.522 46.0227 320.661 54.7159 318.616 72.1095H364.477H364.47Z" fill="currentColor"/>
+    <path d="M439.821 33.5817V48.2432C422.603 47.0524 411.865 55.9136 411.865 78.2454V125.298H393.112V34.7798H411.865V50.1206L419.535 37.6726C423.626 34.4364 428.908 32.559 433.517 32.559C436.074 32.559 437.951 32.9023 439.821 33.5817Z" fill="currentColor"/>
+    <path d="M508.35 60.6915H489.254C487.377 51.1437 481.752 45.5187 472.548 45.5187C463.343 45.5187 459.42 50.4643 459.42 57.28C459.42 65.4618 466.068 68.8733 479.539 72.4528C499.314 77.5664 509.716 85.4121 509.716 101.432C509.716 118.994 494.2 127.687 474.425 127.687C454.65 127.687 439.477 118.651 436.92 98.1962H455.841C458.054 109.789 465.732 114.392 475.104 114.392C483.797 114.392 490.789 110.644 490.789 102.798C490.789 94.9527 484.652 90.6938 469.311 86.6029C452.772 82.344 440.5 75.3529 440.5 59.4935C440.5 42.6185 453.795 32.384 473.914 32.384C494.032 32.384 506.305 44.1453 508.35 60.6842V60.6915Z" fill="currentColor"/>
+    <path d="M540.736 127.687C524.708 127.687 511.581 118.483 511.581 101.6C511.581 81.482 527.608 70.5754 561.87 70.5754H567.663V68.3619C567.663 64.9504 567.662 61.8822 567.319 58.4707C566.808 51.1364 562.206 46.0227 551.467 46.0227C540.728 46.0227 534.928 52.1591 533.905 63.409H515.153C516.344 43.634 531.181 32.384 551.803 32.384C575.158 32.384 584.362 42.2752 585.896 57.616C586.24 61.3636 586.408 66.1411 586.408 70.4001V102.28C586.408 109.103 586.751 115.239 588.11 125.298H569.525L567.823 112.171L563.221 121.887C557.085 126.146 549.239 127.68 540.721 127.68L540.736 127.687ZM547.559 114.048C559.32 114.048 567.677 106.035 567.677 91.3732V83.0234C545.689 81.3213 531.363 86.2595 531.363 100.074C531.363 109.621 537.668 114.056 547.559 114.056V114.048Z" fill="currentColor"/>
+    <path d="M620.003 106.21C620.346 111.323 622.728 113.025 630.742 112.346V125.473C626.994 125.985 622.728 126.328 618.469 126.328C608.578 126.328 601.93 122.749 601.251 111.155C601.083 107.744 601.083 103.653 601.083 98.1959V0H619.835V97.6846C619.835 100.753 619.835 103.485 620.003 106.21Z" fill="currentColor"/>
+    <path d="M696.848 127.475V121.222H684.341V114.969H678.088V102.462H671.835V58.6897H678.088V46.1833H684.341V39.9301H696.848V33.6768H721.861V39.9301H728.114V46.1833H734.367V33.6768H753.127V127.475H734.367V114.969H728.114V121.222H721.861V127.475H696.848ZM721.861 108.715V102.462H728.114V96.209H734.367V64.9429H728.114V58.6897H721.861V52.4365H696.848V58.6897H690.595V102.462H696.848V108.715H721.861Z" fill="currentColor"/>
+    <path d="M786.898 164.994V158.741H774.392V152.488H768.139V146.235H761.885V139.981H768.139V133.728H780.645V139.981H786.898V146.235H818.164V139.981H824.418V114.969H818.164V121.222H811.911V127.475H786.898V121.222H774.392V114.969H768.139V102.462H761.885V58.6897H768.139V46.1833H774.392V39.9301H786.898V33.6768H811.911V39.9301H818.164V46.1833H824.418V33.6768H843.177V146.235H836.924V152.488H830.671V158.741H818.164V164.994H786.898ZM811.911 108.715V102.462H818.164V96.209H824.418V64.9429H818.164V58.6897H811.911V52.4365H786.898V58.6897H780.645V102.462H786.898V108.715H811.911Z" fill="currentColor"/>
+    <path d="M877.526 127.475V121.222H865.019V114.969H858.766V102.462H852.513V58.6897H858.766V46.1833H865.019V39.9301H877.526V33.6768H902.539V39.9301H915.045V46.1833H921.298V58.6897H927.552V83.7026H871.273V102.462H877.526V108.715H902.539V102.462H908.792V96.209H927.552V108.715H921.298V114.969H915.045V121.222H902.539V127.475H877.526ZM908.792 71.1961V58.6897H902.539V52.4365H877.526V58.6897H871.273V71.1961H908.792Z" fill="currentColor"/>
+    <path d="M936.113 127.475V33.6768H954.872V46.1833H961.126V39.9301H967.379V33.6768H986.139V39.9301H998.645V46.1833H1004.9V58.6897H1011.15V127.475H992.392V58.6897H986.139V52.4365H967.379V58.6897H961.126V64.9429H954.872V127.475H936.113Z" fill="currentColor"/>
+    <path d="M1030.85 127.475V52.4369H1018.34V33.6773H1030.85V8.6644H1049.61V33.6773H1074.62V52.4369H1049.61V127.475H1030.85Z" fill="currentColor"/>
+    <path d="M1092.95 127.475V121.222H1086.69V114.969H1080.44V102.462H1086.69V96.209H1092.95V102.462H1099.2V108.715H1105.45V114.969H1117.96V108.715H1124.21V96.209H1117.96V89.9558H1111.71V83.7026H1099.2V77.4493H1092.95V71.1961H1086.69V64.9429H1080.44V46.1833H1086.69V39.9301H1092.95V33.6768H1130.47V39.9301H1136.72V58.6897H1124.21V52.4365H1117.96V46.1833H1105.45V52.4365H1099.2V58.6897H1105.45V64.9429H1111.71V71.1961H1124.21V77.4493H1130.47V83.7026H1136.72V89.9558H1142.97V114.969H1136.72V121.222H1130.47V127.475H1092.95Z" fill="currentColor"/>
+  </symbol>
+</svg>
 
   <!-- Page Content -->
   <main class="page">
 
-    <!-- Hero -->
-    <section class="hero">
-      <div data-reveal class="hero__cube-wrap">
-        <canvas id="hero-cube" width="480" height="480" style="width:120px;height:120px;display:block;"></canvas>
+    <!-- Dark Hero -->
+    <div class="hero-dark">
+      <div class="chroma-dark">
+        <div class="chroma-dark__blob chroma-dark__blob--1"></div>
+        <div class="chroma-dark__blob chroma-dark__blob--2"></div>
+        <div class="chroma-dark__blob chroma-dark__blob--3"></div>
       </div>
-      <div data-reveal class="hero__logo">
-        <img src="assets/svg/interplay-logo.svg" alt="Interplay" style="width:100%;height:auto;display:block;">
+      <div class="hero-dark__inner">
+        <section class="hero">
+          <div class="hero__logo">
+            <svg class="hero__logo-svg" width="1088" height="319" viewBox="0 0 1088 319" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="ip-stem-grad" x1="32.39" y1="222.6" x2="22.49" y2="212.7" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#FF69BA"/><stop offset="1" stop-color="#D35997"/>
+                </linearGradient>
+                <clipPath id="ip-clip"><rect width="1087.85" height="318.49" fill="white"/></clipPath>
+              </defs>
+              <g clip-path="url(#ip-clip)">
+                <!-- i stem (pink) -->
+                <path data-logo="stem" d="M92.71 165.81C92.71 159.67 87.73 154.68 81.58 154.68H11.13C4.99 154.68 0 159.66 0 165.81V236.27C0 236.37 0 236.46 0 236.56C0 236.66 0 236.75 0 236.85V307.31C0 313.45 4.98 318.44 11.13 318.44H81.59C87.73 318.44 92.72 313.46 92.72 307.31V236.85C92.72 236.75 92.72 236.66 92.72 236.56C92.72 236.46 92.72 236.37 92.72 236.27V165.81H92.71Z" fill="url(#ip-stem-grad)"/>
+                <!-- n -->
+                <path data-logo="letter" data-order="1" d="M230.37 305.27V215.48C230.37 191.05 210.57 171.25 186.14 171.25H185.48C161.05 171.25 141.25 191.05 141.25 215.48V305.27" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- t vertical -->
+                <path data-logo="letter" data-order="2" d="M301.83 171.25V305.27" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- t crossbar -->
+                <path data-logo="letter" data-order="2" d="M332.771 171.25H270.881" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- e -->
+                <path data-logo="letter" data-order="3" d="M417.509 238.26H451.009C457.299 238.26 462.399 233.16 462.399 226.87V216.14C462.399 191.35 442.299 171.25 417.509 171.25C393.079 171.25 373.279 191.05 373.279 215.48V265.59C373.279 287.5 391.039 305.26 412.949 305.26H444.099" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- r -->
+                <path data-logo="letter" data-order="4" d="M557.909 171.25H557.25C532.82 171.25 513.02 191.05 513.02 215.48V305.27V171.25" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- p -->
+                <path data-logo="letter" data-order="5" d="M649.211 238.26H658.671C677.171 238.26 692.171 223.26 692.171 204.76C692.171 186.26 677.171 171.26 658.671 171.26H640.211C621.711 171.26 606.711 186.26 606.711 204.76V305.27V171.25" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- l -->
+                <path data-logo="letter" data-order="6" d="M741.869 171.25V282.22C741.869 294.95 752.189 305.27 764.919 305.27H802.609" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- a arch -->
+                <path data-logo="letter" data-order="7" d="M939.989 305.27V215.48C939.989 191.05 920.189 171.25 895.759 171.25H895.099C870.669 171.25 850.869 191.05 850.869 215.48V305.27" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- a crossbar -->
+                <path data-logo="letter" data-order="7" d="M895.099 238.26H857.379" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- y cup -->
+                <path data-logo="letter" data-order="8" d="M985.51 171.25V194.03C985.51 218.46 1005.31 238.26 1029.74 238.26H1030.4C1054.83 238.26 1074.63 218.46 1074.63 194.03V171.25" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- y descender -->
+                <path data-logo="letter" data-order="8" d="M1030.07 238.26V305.27" stroke="white" stroke-width="26.45" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+            </svg>
+            <div class="hero__cube-eye">
+              <canvas id="eye-cube"></canvas>
+            </div>
+          </div>
+          <h1 class="hero__tagline">Own your intelligence.</h1>
+          <p class="hero__sub">A modular AI operating system built for how agencies actually work.</p>
+        </section>
       </div>
-      <h1 data-reveal class="hero__tagline">Own your intelligence.</h1>
-      <p data-reveal class="hero__sub">A modular AI operating system built for how agencies actually work.</p>
-    </section>
+    </div>
+
+    <!-- Light Content Card (scrolls up over dark hero) -->
+    <div class="content-card">
+      <div class="content-card__chroma">
+        <div class="chroma__blob chroma__blob--1"></div>
+        <div class="chroma__blob chroma__blob--2"></div>
+        <div class="chroma__blob chroma__blob--3"></div>
+        <div class="chroma__blob chroma__blob--4"></div>
+        <div class="chroma__diffusion"></div>
+      </div>
 
     <!-- Problem Section -->
     <section class="section">
@@ -995,18 +976,34 @@
         <h2 data-reveal class="section__heading">If your AI strategy is a subscription, it's not a strategy.</h2>
         <p data-reveal class="section__body">When every agency runs AI through ChatGPT, Claude, Copilot and Perplexity, an uncomfortable truth emerges: everyone has the same models, the same prompts, the same outputs. Differentiation gets harder every day.</p>
         <p data-reveal class="section__body">Worse, current AI is built for individuals, not teams. No way to share, combine, compound or retain intelligence across people. Just siloed thinking and wasted expertise.</p>
-        <p data-reveal class="section__body">Holding companies have poured <strong>$12 billion+</strong> into proprietary AI platforms. For indie agencies, building something proprietary has felt impossible. Until now.</p>
+        <p data-reveal class="section__body">Holding companies have poured <strong>$12 billion+</strong> into proprietary AI platforms. We believe independent agencies deserve the same power, without the same price tag.</p>
       </div>
     </section>
 
     <div class="container is--narrow"><div data-reveal class="divider"></div></div>
 
     <!-- Solution Section -->
-    <section class="section">
+    <section class="section section--intro">
       <div class="container is--narrow">
         <p data-reveal class="section__label">Introducing</p>
         <h2 data-reveal class="section__heading">Interplay.</h2>
-        <p data-reveal class="section__body">A dynamic, agentic AI operating system built for how agencies actually work. Cross-model, cross-platform infrastructure designed for <strong>total human ownership</strong>, with greater customization, flexibility, and more differentiated outcomes.</p>
+      </div>
+    </section>
+
+    <!-- Interplay Video Preview -->
+    <div class="ui-preview">
+      <div data-reveal>
+        <div class="ui-preview__video-wrap">
+          <video autoplay loop muted playsinline class="ui-preview__video">
+            <source src="assets/video/interplay-preview.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+
+    <section class="section section--flush-top">
+      <div class="container is--narrow">
+        <p data-reveal class="section__body">A modular AI operating system built for how agencies actually work. Cross-model, cross-platform infrastructure designed for <strong>total human ownership</strong>. More customization, more flexibility, more differentiated outcomes.</p>
         <p data-reveal class="section__body">Interplay lets teams <strong>shape, share and scale</strong> their expertise through self-contained units of customized intelligence called <strong>Living Blocks</strong>. Think modular building blocks meets distributed AI agents.</p>
       </div>
     </section>
@@ -1016,46 +1013,52 @@
     <!-- Available Section -->
     <section class="section">
       <div class="container is--narrow">
-        <h2 data-reveal class="section__heading">Available to All Indies.</h2>
-        <p data-reveal class="section__body">We've spent a year building and iterating on Interplay, perfecting infrastructure, interface and experience. Strategists have built better brand strategies. Growth teams have identified perfect prospects. Media planners have sharpened audience targeting and channel mixes. Creatives have pressure-tested ideas.</p>
-        <p data-reveal class="section__body">We're now seeking additional <strong>Alpha-phase agency partners</strong> to push Interplay through more complex use cases.</p>
+        <canvas data-reveal id="section-cube" class="section__icon" width="360" height="360"></canvas>
+        <h2 data-reveal class="section__heading">Interplay is available to all indies.</h2>
+        <p data-reveal class="section__body">Universal Agents and Laughlin Constable have spent a year building and pressure-testing Interplay on real agency work. Shaping the platform, learning what actually matters when you put a more connected AI system in the hands of all agency thinkers and makers. We built it for independents because independent thinking is what makes Interplay different.</p>
+        <p data-reveal class="section__body">We're now looking for <strong>Alpha-phase agency partners</strong> to push Interplay through new, more varied and more complex agency use cases. You bring the expertise. We bring the infrastructure and process. Your team's intelligence becomes the system.</p>
+        <div data-reveal class="section__cta-wrap">
+          <a href="mailto:hello@universalagents.ai" aria-label="Get in touch" class="btn-animate-chars">
+            <div class="btn-animate-chars__bg"></div>
+            <span data-button-animate-chars class="btn-animate-chars__text">Get in touch →</span>
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="section section--cta">
-      <div class="container is--narrow">
-        <h3 data-reveal class="cta__heading">Get in Touch</h3>
-        <p data-reveal class="cta__body">To get involved, reach out to Stu Amos at <a href="mailto:stu@universalagents.ai">stu@universalagents.ai</a></p>
-      </div>
-    </section>
+    </div><!-- /.content-card -->
 
   </main>
 
-  <!-- Footer -->
-  <div data-footer-parallax class="footer-wrap">
-    <footer data-footer-parallax-inner class="footer">
-      <div class="footer__links-row">
-        <div class="footer__col">
-          <p class="footer__eyebrow">( Connect )</p>
-          <div class="footer__links">
-            <a href="https://www.linkedin.com/company/universal-agents" target="_blank" rel="noopener noreferrer" class="footer__a">LinkedIn</a>
-            <a href="mailto:hello@universalagents.ai" class="footer__a">hello@universalagents.ai</a>
-          </div>
+  <!-- Footer with Parallax -->
+<div data-footer-parallax class="footer-wrap">
+  <footer data-footer-parallax-inner class="footer">
+    <div class="footer__links-row">
+      <div class="footer__col">
+        <p class="footer__eyebrow">( Get in Touch )</p>
+        <div class="footer__links">
+          <a href="mailto:hello@universalagents.ai" class="footer__a">hello@universalagents.ai</a>
         </div>
       </div>
-      <div class="footer__logo-row">
-        <div class="footer__bottom">
-          <p class="footer__eyebrow">Every business, agent ready</p>
-          <p class="footer__copyright">&copy; 2026 Universal Agents</p>
-        </div>
-        <div class="footer__wordmark">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1143 165" fill="none"><use href="#wordmark"/></svg>
+      <div class="footer__col">
+        <p class="footer__eyebrow">( Follow )</p>
+        <div class="footer__links">
+          <a href="https://www.linkedin.com/company/universal-agents" target="_blank" rel="noopener noreferrer" class="footer__a">LinkedIn</a>
         </div>
       </div>
-    </footer>
-    <div data-footer-parallax-dark class="footer-wrap__dark"></div>
-  </div>
+    </div>
+    <div class="footer__logo-row">
+      <div class="footer__bottom">
+        <p class="footer__eyebrow">Every business, agent ready</p>
+        <p class="footer__copyright">&copy; 2026 Universal Agents</p>
+      </div>
+      <div class="footer__wordmark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1143 165" fill="none"><use href="#wordmark"/></svg>
+      </div>
+    </div>
+  </footer>
+  <div data-footer-parallax-dark class="footer-wrap__dark"></div>
+</div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -1225,26 +1228,76 @@
         });
       }
 
-      /* ------------------------- Scroll Reveal ------------------------- */
+      /* ------------------------- "Born from the Cube" Logo Reveal ----------- */
 
-      document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+      const stem = document.querySelector('[data-logo="stem"]');
+      const letters = document.querySelectorAll('[data-logo="letter"]');
+      const cubeEye = document.querySelector('.hero__cube-eye');
+      const tagline = document.querySelector('.hero__tagline');
+      const sub = document.querySelector('.hero__sub');
+
+      if (!prefersReduced && stem) {
+        // Set initial hidden states
+        gsap.set(stem, { opacity: 0, scaleY: 0, transformOrigin: 'top center' });
+        gsap.set(letters, { opacity: 0, y: 30 });
+        gsap.set(cubeEye, { opacity: 0, scale: 0.3 });
+        gsap.set(tagline, { opacity: 0, y: 20 });
+        gsap.set(sub, { opacity: 0, y: 20 });
+
+        const tl = gsap.timeline({ delay: 0.3 });
+
+        // 1. Cube drops in with bounce
+        tl.to(cubeEye, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.7,
+          ease: 'back.out(2.5)',
+        })
+
+        // 2. Stem grows downward from cube
+        .to(stem, {
+          opacity: 1,
+          scaleY: 1,
+          duration: 0.5,
+          ease: 'power3.out',
+        }, '-=0.2')
+
+        // 3. Letters reveal left-to-right by order
+        .to(letters, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          ease: 'power3.out',
+          stagger: {
+            amount: 0.6,
+          },
+        }, '-=0.2')
+
+        // 4. Tagline fades in
+        .to(tagline, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+        }, '-=0.15')
+
+        // 5. Subtitle fades in
+        .to(sub, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+        }, '-=0.35');
+      } else {
+        // Reduced motion: show everything immediately
+        gsap.set([stem, letters, cubeEye, tagline, sub], { opacity: 1, y: 0, scale: 1, scaleY: 1 });
+      }
+
+      /* ------------------------- Scroll Reveal (content sections) ----------- */
+
+      document.querySelectorAll('[data-reveal]').forEach(el => {
         if (prefersReduced) {
           gsap.set(el, { opacity: 1, y: 0 });
-          return;
-        }
-
-        // Hero elements: animate on load with stagger
-        if (el.closest('.hero')) {
-          gsap.fromTo(el,
-            { opacity: 0, y: 20 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              ease: 'power3.out',
-              delay: 0.3 + i * 0.15,
-            }
-          );
           return;
         }
 
@@ -1263,6 +1316,61 @@
           }
         );
       });
+
+      /* ------------------------- Button Character Stagger ------------------------- */
+
+      document.querySelectorAll('[data-button-animate-chars]').forEach(button => {
+        const text = button.textContent;
+        while (button.firstChild) button.removeChild(button.firstChild);
+        [...text].forEach((char, index) => {
+          const span = document.createElement('span');
+          span.textContent = char;
+          span.style.transitionDelay = index * 0.01 + 's';
+          if (char === ' ') span.style.whiteSpace = 'pre';
+          button.appendChild(span);
+        });
+      });
+
+      /* ------------------------- Nav Color Toggle (dark hero → light content) ----------- */
+
+      const nav = document.querySelector('.bold-nav-full');
+      if (nav) {
+        // Start white on dark hero, switch to dark on light content
+        ScrollTrigger.create({
+          trigger: '.content-card',
+          start: 'top 10%',
+          onEnter: () => nav.classList.add('nav--dark'),
+          onLeaveBack: () => nav.classList.remove('nav--dark'),
+        });
+      }
+
+      /* ------------------------- Hero → Content Parallax ------------------------- */
+
+      const heroDark = document.querySelector('.hero-dark');
+      const contentCard = document.querySelector('.content-card');
+      if (heroDark && contentCard) {
+        // Pin the dark hero so the light card scrolls up over it
+        ScrollTrigger.create({
+          trigger: heroDark,
+          start: 'top top',
+          end: 'bottom top',
+          pin: true,
+          pinSpacing: false,
+        });
+
+        // Subtle scale-down + fade on the hero as you scroll away
+        gsap.to('.hero-dark__inner', {
+          scale: 0.95,
+          opacity: 0.6,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: contentCard,
+            start: 'top bottom',
+            end: 'top 20%',
+            scrub: true,
+          },
+        });
+      }
 
       /* ------------------------- Footer Parallax ------------------------- */
 
@@ -1301,32 +1409,60 @@
     });
   </script>
 
-  <!-- Spectrum Cube (Three.js) -->
+
+  <!-- Pink Cube on Logo Eye (Three.js) -->
   <script type="module">
     import * as THREE from 'three';
 
-    const cvs = document.getElementById('hero-cube');
+    const cvs = document.getElementById('eye-cube');
     if (cvs) {
+      const wrap = cvs.parentElement;
+      const logoSvg = document.querySelector('.hero__logo-svg');
+      const stemPath = document.querySelector('[data-logo="stem"]');
       const renderer = new THREE.WebGLRenderer({ canvas: cvs, antialias: true, alpha: true });
       renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(480, 480);
       renderer.toneMapping = THREE.NoToneMapping;
 
+      function positionCube() {
+        if (!logoSvg || !stemPath) return;
+        const logoRect = logoSvg.getBoundingClientRect();
+        const stemRect = stemPath.getBoundingClientRect();
+        // Container is 1.8× stem width to give room for 3D shear/depth
+        const stemW = stemRect.width;
+        const canvasSize = stemW * 1.8;
+        const offset = (canvasSize - stemW) / 2;
+        const left = (stemRect.left - logoRect.left) - offset + (stemW * 0.32) - 5;
+        const top = stemRect.top - logoRect.top - canvasSize + offset * 0.3 - 10;
+        wrap.style.left = left + 'px';
+        wrap.style.top = top + 'px';
+        wrap.style.width = canvasSize + 'px';
+        wrap.style.height = canvasSize + 'px';
+        renderer.setSize(canvasSize, canvasSize);
+      }
+      positionCube();
+      new ResizeObserver(positionCube).observe(logoSvg);
+
       const scene = new THREE.Scene();
-      const F = 2.2;
+      const F = 0.7;
       const cam = new THREE.OrthographicCamera(-F, F, F, -F, -10, 10);
       cam.position.set(0, 0, 5);
 
       scene.add(new THREE.AmbientLight(0xffffff, 1.8));
 
-      // Spectrum side texture
+      // Pink gradient side texture
       const sideCanvas = document.createElement('canvas');
       sideCanvas.width = 256; sideCanvas.height = 256;
       const sideCtx = sideCanvas.getContext('2d');
       const sideTex = new THREE.CanvasTexture(sideCanvas);
       sideTex.colorSpace = THREE.SRGBColorSpace;
+      const sg = sideCtx.createLinearGradient(0, 256, 256, 0);
+      sg.addColorStop(0, '#D35997');
+      sg.addColorStop(1, '#FF69BA');
+      sideCtx.fillStyle = sg;
+      sideCtx.fillRect(0, 0, 256, 256);
+      sideTex.needsUpdate = true;
 
-      // Face texture (white gradient)
+      // Face texture (white gradient — matches original)
       const faceCanvas = document.createElement('canvas');
       faceCanvas.width = 256; faceCanvas.height = 256;
       const faceCtx = faceCanvas.getContext('2d');
@@ -1340,6 +1476,7 @@
       const faceMat = new THREE.MeshBasicMaterial({ map: faceTex, side: THREE.DoubleSide });
       const sideMat = new THREE.MeshBasicMaterial({ map: sideTex, side: THREE.DoubleSide });
 
+      // Rounded cube geometry
       const s = 1.6, cr = 0.12 * s, x0 = -s / 2, y0 = -s / 2;
       const shape = new THREE.Shape();
       shape.moveTo(x0 + cr, y0);
@@ -1380,23 +1517,7 @@
         mesh.matrixWorldNeedsUpdate = true;
       }
 
-      function paintSpectrum(t) {
-        const w = 256, h = 256, angle = t * 0.25, cx = w / 2, cy = h / 2, phase = t * 0.18;
-        const grad = sideCtx.createLinearGradient(
-          cx + Math.cos(angle) * w, cy + Math.sin(angle) * h,
-          cx - Math.cos(angle) * w, cy - Math.sin(angle) * h
-        );
-        for (let i = 0; i <= 1; i += 0.1) grad.addColorStop(i, 'hsl(' + (((i + phase) % 1) * 360) + ', 92%, 48%)');
-        sideCtx.fillStyle = grad; sideCtx.fillRect(0, 0, w, h);
-        const grad2 = sideCtx.createLinearGradient(
-          cx + Math.sin(angle * 0.7) * w * 0.6, 0,
-          cx - Math.sin(angle * 0.7) * w * 0.6, h
-        );
-        for (let i = 0; i <= 1; i += 0.2) grad2.addColorStop(i, 'hsla(' + (((i + phase + 0.5) % 1) * 360) + ', 85%, 42%, 0.3)');
-        sideCtx.fillStyle = grad2; sideCtx.fillRect(0, 0, w, h);
-        sideTex.needsUpdate = true;
-      }
-
+      // Flip animation loop (same as original, pink-colored)
       const land = 'back.out(2.0)';
       const upd = () => update();
       function flip() {
@@ -1414,9 +1535,8 @@
       let visible = true;
       let rafId = null;
 
-      function render(time) {
+      function render() {
         if (!visible) { rafId = null; return; }
-        paintSpectrum((time || 0) * 0.001);
         update();
         renderer.render(scene, cam);
         rafId = requestAnimationFrame(render);
@@ -1428,7 +1548,87 @@
         if (visible && !rafId) rafId = requestAnimationFrame(render);
       }, { threshold: 0 }).observe(cvs);
     }
+
+    // Section cube (spectrum — above "Available to All Indies")
+    const sCvs = document.getElementById('section-cube');
+    if (sCvs) {
+      const sR = new THREE.WebGLRenderer({ canvas: sCvs, antialias: true, alpha: true });
+      sR.setPixelRatio(window.devicePixelRatio); sR.setSize(360, 360); sR.toneMapping = THREE.NoToneMapping;
+      const sScene = new THREE.Scene();
+      const sF = 2.2, sCam = new THREE.OrthographicCamera(-sF, sF, sF, -sF, -10, 10);
+      sCam.position.set(0, 0, 5); sScene.add(new THREE.AmbientLight(0xffffff, 1.8));
+
+      const sSC = document.createElement('canvas'); sSC.width = sSC.height = 256;
+      const sSCtx = sSC.getContext('2d');
+      const sSTex = new THREE.CanvasTexture(sSC); sSTex.colorSpace = THREE.SRGBColorSpace;
+
+      const sFC = document.createElement('canvas'); sFC.width = sFC.height = 256;
+      const sFCtx = sFC.getContext('2d');
+      const sFTex = new THREE.CanvasTexture(sFC); sFTex.colorSpace = THREE.SRGBColorSpace;
+      const fg2 = sFCtx.createLinearGradient(0, 256, 256, 0);
+      fg2.addColorStop(0, '#ffffff'); fg2.addColorStop(1, '#dadada');
+      sFCtx.fillStyle = fg2; sFCtx.fillRect(0, 0, 256, 256); sFTex.needsUpdate = true;
+
+      const s2 = 1.6, cr2 = 0.12 * s2, x2 = -s2/2, y2 = -s2/2;
+      const sh2 = new THREE.Shape();
+      sh2.moveTo(x2+cr2,y2); sh2.lineTo(x2+s2-cr2,y2);
+      sh2.quadraticCurveTo(x2+s2,y2,x2+s2,y2+cr2); sh2.lineTo(x2+s2,y2+s2-cr2);
+      sh2.quadraticCurveTo(x2+s2,y2+s2,x2+s2-cr2,y2+s2); sh2.lineTo(x2+cr2,y2+s2);
+      sh2.quadraticCurveTo(x2,y2+s2,x2,y2+s2-cr2); sh2.lineTo(x2,y2+cr2);
+      sh2.quadraticCurveTo(x2,y2,x2+cr2,y2);
+      const g2 = new THREE.ExtrudeGeometry(sh2, { depth:1.42, bevelEnabled:true, bevelThickness:0.008, bevelSize:0.008, bevelSegments:1 });
+      g2.computeBoundingBox(); const bb2 = g2.boundingBox;
+      g2.translate(0, 0, -(bb2.min.z + (bb2.max.z - bb2.min.z) * 0.5));
+
+      const m2 = new THREE.Mesh(g2, [
+        new THREE.MeshBasicMaterial({ map: sFTex, side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ map: sSTex, side: THREE.DoubleSide })
+      ]);
+      m2.matrixAutoUpdate = false; sScene.add(m2);
+
+      const sc2 = 0.48;
+      const st2 = { shearX:0.55, shearY:0.55, rotX:0, rotY:0, scaleAnim:1, squash:1 };
+
+      function u2() {
+        const sm = new THREE.Matrix4();
+        sm.set(1,0,st2.shearX,0, 0,1,st2.shearY,0, 0,0,1,0, 0,0,0,1);
+        const sqY = st2.squash, sqXZ = 1/Math.sqrt(Math.max(0.01,st2.squash));
+        const sqm = new THREE.Matrix4(); sqm.makeScale(sqXZ,sqY,sqXZ);
+        const rot = new THREE.Matrix4(); rot.makeRotationFromEuler(new THREE.Euler(st2.rotX,st2.rotY,0,'XYZ'));
+        const sv = sc2 * st2.scaleAnim;
+        const scM = new THREE.Matrix4(); scM.makeScale(sv,sv,sv);
+        m2.matrix.identity().multiply(scM).multiply(rot).multiply(sqm).multiply(sm);
+        m2.matrixWorldNeedsUpdate = true;
+      }
+
+      function ps2(t) {
+        const w=256,h=256,a=t*0.25,cx=w/2,cy=h/2,ph=t*0.18;
+        const gr = sSCtx.createLinearGradient(cx+Math.cos(a)*w,cy+Math.sin(a)*h,cx-Math.cos(a)*w,cy-Math.sin(a)*h);
+        for(let i=0;i<=1;i+=0.1) gr.addColorStop(i,'hsl('+(((i+ph)%1)*360)+', 92%, 48%)');
+        sSCtx.fillStyle=gr; sSCtx.fillRect(0,0,w,h); sSTex.needsUpdate=true;
+      }
+
+      const land2='back.out(2.0)', upd2=()=>u2();
+      function flip2() {
+        st2.shearX=0.55;st2.shearY=0.55;st2.rotX=0;st2.rotY=0;st2.scaleAnim=1;st2.squash=1;
+        const tl=gsap.timeline({onComplete:flip2});
+        tl.to(st2,{rotY:Math.PI,shearX:0,shearY:0,squash:0.92,duration:0.5,ease:'power2.in',onUpdate:upd2})
+          .to(st2,{rotY:Math.PI,shearX:0.55,shearY:0.55,squash:1,duration:0.4,ease:land2,onUpdate:upd2})
+          .to(st2,{duration:1.5})
+          .to(st2,{rotY:Math.PI*2,shearX:0,shearY:0,squash:0.92,duration:0.5,ease:'power2.in',onUpdate:upd2})
+          .to(st2,{rotY:Math.PI*2,shearX:0.55,shearY:0.55,squash:1,duration:0.4,ease:land2,onUpdate:upd2});
+      }
+      flip2();
+
+      let sv2=true, sr2=null;
+      function rr2(t){if(!sv2){sr2=null;return;} ps2((t||0)*0.001); u2(); sR.render(sScene,sCam); sr2=requestAnimationFrame(rr2);}
+      sr2=requestAnimationFrame(rr2);
+      new IntersectionObserver(([e])=>{sv2=e.isIntersecting;if(sv2&&!sr2)sr2=requestAnimationFrame(rr2);},{threshold:0}).observe(sCvs);
+    }
   </script>
+
+  <!-- Vercel Analytics -->
+  <script defer src="https://va.vercel-scripts.com/v1/script.debug.js" data-endpoint="/_vercel/insights"></script>
 
 </body>
 </html>
