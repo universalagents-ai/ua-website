@@ -213,6 +213,11 @@
       box-sizing: border-box;
     }
 
+    html, body {
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
     html {
       font-size: var(--size-font);
       color-scheme: dark;
@@ -220,6 +225,8 @@
 
     body {
       margin: 0;
+      position: relative;
+      width: 100%;
       background: var(--ua-mint);
       font-family: var(--font-body);
       font-size: 1em;
@@ -317,6 +324,18 @@
       font-weight: 400;
       line-height: 1;
       letter-spacing: -0.02em;
+    }
+
+    .hero__subtitle {
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: 1.6;
+      color: var(--ua-gray);
+      text-align: center;
+      max-width: 38ch;
+      margin: 1.5em auto 0;
+      position: relative;
+      z-index: 1;
     }
 
     .hero__cube-wrap {
@@ -428,8 +447,9 @@
       line-height: 1.2;
       letter-spacing: -0.015em;
       margin: 0 auto 1.5em;
-      max-width: 20ch;
+      max-width: 26ch;
       color: var(--ua-mint);
+      text-wrap: balance;
     }
 
     .section__body {
@@ -484,6 +504,13 @@
       .sprint-hero__title {
         font-size: 3.5em;
       }
+
+      .sprint-hero__visual {
+        max-width: none;
+        width: calc(100% - 2em);
+        aspect-ratio: 1 / 1;
+        margin: 1.5em auto;
+      }
     }
 
     /* ------------------------- Sprint Blocks (Shape/Share/Scale) ------------------------- */
@@ -492,16 +519,21 @@
       display: flex;
       flex-direction: column;
       margin-top: var(--section-padding);
+      margin-bottom: calc(var(--section-padding) * -0.5);
     }
 
     .sprint-block {
       display: flex;
       align-items: stretch;
-      min-height: 100vh;
+      min-height: 70vh;
     }
 
     .sprint-block:nth-child(even) {
       flex-direction: row-reverse;
+    }
+
+    .sprint-block:nth-child(even) .sprint-block__content {
+      padding-left: calc(var(--grid-padding) * 6);
     }
 
     .sprint-block__visual {
@@ -563,13 +595,17 @@
       }
 
       .sprint-block__visual {
-        min-height: 50vh;
+        min-height: 70vw;
       }
 
       .sprint-block__content {
-        padding: 2em var(--grid-padding) var(--section-padding);
+        padding: 1em var(--grid-padding) 3em;
         text-align: center;
         align-items: center;
+      }
+
+      .sprint-block:nth-child(even) .sprint-block__content {
+        padding-left: var(--grid-padding);
       }
     }
 
@@ -763,7 +799,7 @@
       font-size: 1.4em;
       font-weight: 300;
       color: rgba(0, 0, 0, 0.7);
-      margin: 0;
+      margin: -1.5em 0 0;
       letter-spacing: -0.02em;
     }
 
@@ -1868,18 +1904,18 @@
       <div class="container">
         <p class="mission__label" style="opacity: 0; transform: translateY(20px);" id="mission-label">Our Mission</p>
         <h2 data-load-skeleton="mint" data-skeleton-stream data-skeleton-wait class="mission__statement">Help every business become an agent.</h2>
-        <p data-reveal-after-skeleton class="mission__body">The world now moves at agent speed. Decisions made in minutes, not months. Insights assembled in seconds, not sprints. If your business can't think, respond, and act like an agent — you're already behind.</p>
-        <p data-reveal-after-skeleton class="mission__kicker">We make sure you're not.</p>
+        <p data-reveal-after-skeleton class="mission__body">Agent speed changes everything. Decisions and insights in minutes, not weeks. We've spent the last two years learning how to build agentic systems so we can help companies harness their intelligence.</p>
+        <p data-reveal-after-skeleton class="mission__kicker">We've learned what works. And what doesn't.</p>
       </div>
     </section>
 
     <!-- Agent Sprint -->
     <section id="agent-sprint" class="section">
-      <div class="container">
-        <p data-reveal class="section__label">Introducing</p>
-        <h2 data-reveal class="sprint-hero__title">Agent Sprint</h2>
+      <div data-reveal-group data-stagger="150" class="container">
+        <p class="section__label">Introducing</p>
+        <h2 class="sprint-hero__title">Agent Sprint</h2>
         <div class="sprint-hero__visual">
-          <svg viewBox="0 -30 1920 1140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg id="sprint-hero-svg" viewBox="0 -30 1920 1140" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Scale diamond: center (960,540), R=560 -->
             <polygon id="diamond-scale" points="960,-20 1520,540 960,1100 400,540"
                      fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
@@ -1901,13 +1937,13 @@
                   letter-spacing="0.15em" opacity="0">SHARE</text>
           </svg>
         </div>
-        <p data-reveal class="section__heading">Your intelligence, structured in weeks — not quarters.</p>
-        <p data-reveal class="section__body">A time-bound engagement that maps your people, encodes your expertise, and delivers a working agentic system. Not a strategy deck. A living brain.</p>
+        <p class="section__heading">Your intelligence, in one agentic brain.</p>
+        <p class="section__body">A structured sprint to encode your expertise. The output is not a strategy deck — it's an agentic brain that understands how your business operates. A single source of intelligence to power every system you run.</p>
       </div>
 
       <!-- Shape / Share / Scale -->
       <div class="sprint-blocks">
-        <div class="sprint-block" data-reveal>
+        <div class="sprint-block" data-reveal-group>
           <div class="sprint-block__visual">
             <div class="sprint-block__visual-inner">
               <svg id="shape-svg" viewBox="160 -10 1100 1100" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1948,11 +1984,11 @@
           </div>
           <div class="sprint-block__content">
             <h3 class="sprint-block__word">Shape</h3>
-            <p class="sprint-block__text">We map your team's expertise into Living Blocks — proprietary skills tied to the people who built them. Your methods. Your judgment. Your taste. Encoded.</p>
+            <p class="sprint-block__text">We learn how your team is organized and how they work. Your identity, methods, and domain knowledge. We shape a roadmap and define the architecture of your agentic brain.</p>
           </div>
         </div>
 
-        <div class="sprint-block" data-reveal>
+        <div class="sprint-block" data-reveal-group>
           <div class="sprint-block__visual">
             <div class="sprint-block__visual-inner">
               <svg id="share-svg" viewBox="160 -10 1100 1100" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2026,11 +2062,11 @@
           </div>
           <div class="sprint-block__content">
             <h3 class="sprint-block__word">Share</h3>
-            <p class="sprint-block__text">Your blocks become collaborative surfaces. Team members talk to crystallized expertise, not generic AI. The org chart becomes an intelligence network.</p>
+            <p class="sprint-block__text">Your team shares their expertise to create the skills that power your AI. We call these Living Blocks. Each one built on the structure we shaped together, each one tethered to the person who knows the work best.</p>
           </div>
         </div>
 
-        <div class="sprint-block" data-reveal>
+        <div class="sprint-block" data-reveal-group>
           <div class="sprint-block__visual">
             <div class="sprint-block__visual-inner">
               <svg id="scale-svg" viewBox="160 -10 1100 1100" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2097,7 +2133,7 @@
           </div>
           <div class="sprint-block__content">
             <h3 class="sprint-block__word">Scale</h3>
-            <p class="sprint-block__text">Multiply your best thinking across every engagement without diluting what makes it yours. Agent speed, human signature.</p>
+            <p class="sprint-block__text">Your agents are live. Every client engagement now carries the quality your reputation was built on. Agent speed. Human agency. And every engagement makes them smarter.</p>
           </div>
         </div>
       </div>
@@ -2105,15 +2141,15 @@
 
     <!-- Our Stack — trust & security -->
     <section id="our-stack" class="section">
-      <div class="container">
-        <p data-reveal class="section__label">Our Stack</p>
-        <h2 data-reveal class="section__heading">Built on Claude</h2>
+      <div data-reveal-group data-stagger="120" class="container">
+        <p class="section__label">Our Stack</p>
+        <h2 class="section__heading">Built on Claude</h2>
 
-        <div data-reveal class="claude-partner">
+        <div class="claude-partner">
           <div class="claude-partner__logo-wrap">
             <span class="claude-sparkle" id="claude-spinner" aria-label="Claude">·</span>
           </div>
-          <p class="claude-partner__text">We build on Anthropic's Claude — the model we trust most for safety, reasoning, and creative collaboration. But we're independent by design, and we track every frontier lab and platform shaping what agents can do — so you don't have to.</p>
+          <p class="claude-partner__text">We build on Anthropic's Claude, the model we trust most for safety, reasoning, and creative collaboration. But we're independent by design, and we track every frontier lab and platform shaping what agents can do, so you don't have to.</p>
         </div>
       </div>
       <div data-logo-wall-shuffle="false" data-logo-wall-cycle-init class="logo-wall">
@@ -2256,43 +2292,57 @@
 
     <!-- FAQ Section -->
     <section class="faq">
-      <div class="container">
-        <p data-reveal class="faq__heading">( Frequently Asked )</p>
+      <div data-reveal-group class="container">
+        <p class="faq__heading">( Frequently Asked )</p>
         <div data-faq-init class="faq__wrap">
           <ul class="faq__questions">
             <li>
               <button data-faq-q="0" type="button" class="faq__question">What does "agent ready" mean?</button>
               <div data-faq-a-mobile="0" class="faq__answer-mobile">
                 <p class="faq__answer-title">Agent readiness is a spectrum</p>
-                <p class="faq__answer-body">Most businesses use AI for simple tasks — chatbots, summaries, search. Agent readiness means going further: autonomous workflows, multi-step reasoning, and agents that can make decisions with guardrails. We assess where you are and build a path to where you want to be.</p>
+                <p class="faq__answer-body">Most businesses use AI for simple tasks like research, synthesizing data or drafting communications. Agent readiness means going further — multi-step reasoning and agents that act with guardrails you've designed. We assess where you are and build a path to where you want to be.</p>
               </div>
             </li>
             <li>
               <button data-faq-q="1" type="button" class="faq__question">How do agents work with my team?</button>
               <div data-faq-a-mobile="1" class="faq__answer-mobile">
                 <p class="faq__answer-title">Augmentation, not replacement</p>
-                <p class="faq__answer-body">Think of agents like specialist teammates who never sleep. A media strategist might have an agent that monitors campaign performance 24/7 and drafts optimization recommendations. Your team stays in control — agents just multiply their output.</p>
+                <p class="faq__answer-body">Think of agents like specialist teammates who do heavy lifting, provide thought starters or watch for market signals 24/7. Your team stays in control, agents simply multiply their output.</p>
               </div>
             </li>
             <li>
               <button data-faq-q="2" type="button" class="faq__question">What industries do you work with?</button>
               <div data-faq-a-mobile="2" class="faq__answer-mobile">
                 <p class="faq__answer-title">Built for knowledge work</p>
-                <p class="faq__answer-body">Our sweet spot is teams that produce reports, analysis, creative briefs, and strategic recommendations. Agencies, consultancies, media companies, and in-house marketing teams. If your team's output is thinking — not widgets — agents can dramatically change your capacity.</p>
+                <p class="faq__answer-body">Our experience is building for creative teams that perform routine deep analysis, own client creative briefs, provide strategic market insights and reporting. Agencies, media companies, and in-house marketing teams. And because we've trained for this industry, we can easily support teams that execute in regulation-based industries.</p>
               </div>
             </li>
             <li>
               <button data-faq-q="3" type="button" class="faq__question">How long does it take?</button>
               <div data-faq-a-mobile="3" class="faq__answer-mobile">
-                <p class="faq__answer-title">Fast to value, built to last</p>
-                <p class="faq__answer-body">Week 1-2: Discovery — we map your workflows and identify high-impact agent opportunities. Week 3-4: Build — working agent prototypes in your actual tools. Month 2+: Scale — refine, expand, and hand over ownership. You're never locked in. Everything we build, you own.</p>
+                <p class="faq__answer-title">A complete change within a quarter</p>
+                <p class="faq__answer-body">We start with a four to six week engagement to assess the value we can create and start building. Following that, our engagement typically continues as we collaboratively execute against your AI roadmap. Then we support the transition to your team.</p>
               </div>
             </li>
             <li>
               <button data-faq-q="4" type="button" class="faq__question">What makes UA different?</button>
               <div data-faq-a-mobile="4" class="faq__answer-mobile">
                 <p class="faq__answer-title">Agents designed with you</p>
-                <p class="faq__answer-body">Most AI consultancies hand you a platform and wish you luck. We sit with your team, understand the nuance of how you work, and build agent systems that feel like a natural extension of your process. The best agent is one your team actually uses — and that requires design thinking, not just engineering.</p>
+                <p class="faq__answer-body">Most AI companies either build custom solutions or sell out-of-the-box products you adapt to. Instead we customize our systems to you. Through our Agent Sprint, we quickly understand the nuance of how you work and build agent systems that feel like a natural extension of your process.</p>
+              </div>
+            </li>
+            <li>
+              <button data-faq-q="5" type="button" class="faq__question">What happens to our proprietary thinking inside these systems?</button>
+              <div data-faq-a-mobile="5" class="faq__answer-mobile">
+                <p class="faq__answer-title">Your data is safe.</p>
+                <p class="faq__answer-body">AI models process and return your data. They don't use it for training or retain it. All data at rest is encrypted to healthcare-grade compliance standards, with enterprise zero-retention options available.</p>
+              </div>
+            </li>
+            <li>
+              <button data-faq-q="6" type="button" class="faq__question">Our teams are at different levels with AI. How do we bring everyone along?</button>
+              <div data-faq-a-mobile="6" class="faq__answer-mobile">
+                <p class="faq__answer-title">Adoption is a change problem, not a technology problem.</p>
+                <p class="faq__answer-body">In the Agent Sprint, we plan how to bring your team along. We design rollout sequencing and communications from the start. Our team stays engaged through this process.</p>
               </div>
             </li>
           </ul>
@@ -2302,23 +2352,31 @@
             </div>
             <div data-faq-a="0" class="faq__answer">
               <p class="faq__answer-title">Agent readiness is a spectrum</p>
-              <p class="faq__answer-body">Most businesses use AI for simple tasks — chatbots, summaries, search. Agent readiness means going further: autonomous workflows, multi-step reasoning, and agents that can make decisions with guardrails. We assess where you are and build a path to where you want to be.</p>
+              <p class="faq__answer-body">Most businesses use AI for simple tasks like research, synthesizing data or drafting communications. Agent readiness means going further — multi-step reasoning and agents that act with guardrails you've designed. We assess where you are and build a path to where you want to be.</p>
             </div>
             <div data-faq-a="1" class="faq__answer">
               <p class="faq__answer-title">Augmentation, not replacement</p>
-              <p class="faq__answer-body">Think of agents like specialist teammates who never sleep. A media strategist might have an agent that monitors campaign performance 24/7 and drafts optimization recommendations. Your team stays in control — agents just multiply their output.</p>
+              <p class="faq__answer-body">Think of agents like specialist teammates who do heavy lifting, provide thought starters or watch for market signals 24/7. Your team stays in control, agents simply multiply their output.</p>
             </div>
             <div data-faq-a="2" class="faq__answer">
               <p class="faq__answer-title">Built for knowledge work</p>
-              <p class="faq__answer-body">Our sweet spot is teams that produce reports, analysis, creative briefs, and strategic recommendations. Agencies, consultancies, media companies, and in-house marketing teams. If your team's output is thinking — not widgets — agents can dramatically change your capacity.</p>
+              <p class="faq__answer-body">Our experience is building for creative teams that perform routine deep analysis, own client creative briefs, provide strategic market insights and reporting. Agencies, media companies, and in-house marketing teams. And because we've trained for this industry, we can easily support teams that execute in regulation-based industries.</p>
             </div>
             <div data-faq-a="3" class="faq__answer">
-              <p class="faq__answer-title">Fast to value, built to last</p>
-              <p class="faq__answer-body">Week 1-2: Discovery — we map your workflows and identify high-impact agent opportunities. Week 3-4: Build — working agent prototypes in your actual tools. Month 2+: Scale — refine, expand, and hand over ownership. You're never locked in. Everything we build, you own.</p>
+              <p class="faq__answer-title">A complete change within a quarter</p>
+              <p class="faq__answer-body">We start with a four to six week engagement to assess the value we can create and start building. Following that, our engagement typically continues as we collaboratively execute against your AI roadmap. Then we support the transition to your team.</p>
             </div>
             <div data-faq-a="4" class="faq__answer">
               <p class="faq__answer-title">Agents designed with you</p>
-              <p class="faq__answer-body">Most AI consultancies hand you a platform and wish you luck. We sit with your team, understand the nuance of how you work, and build agent systems that feel like a natural extension of your process. The best agent is one your team actually uses — and that requires design thinking, not just engineering.</p>
+              <p class="faq__answer-body">Most AI companies either build custom solutions or sell out-of-the-box products you adapt to. Instead we customize our systems to you. Through our Agent Sprint, we quickly understand the nuance of how you work and build agent systems that feel like a natural extension of your process.</p>
+            </div>
+            <div data-faq-a="5" class="faq__answer">
+              <p class="faq__answer-title">Your data is safe.</p>
+              <p class="faq__answer-body">AI models process and return your data. They don't use it for training or retain it. All data at rest is encrypted to healthcare-grade compliance standards, with enterprise zero-retention options available.</p>
+            </div>
+            <div data-faq-a="6" class="faq__answer">
+              <p class="faq__answer-title">Adoption is a change problem, not a technology problem.</p>
+              <p class="faq__answer-body">In the Agent Sprint, we plan how to bring your team along. We design rollout sequencing and communications from the start. Our team stays engaged through this process.</p>
             </div>
           </div>
         </div>
@@ -2328,13 +2386,12 @@
     <!-- Interplay — product section -->
     <section id="interplay" class="section section--interplay">
       <div class="container">
-        <div data-reveal class="interplay__badge-wrap">
-          <span class="interplay__badge">Coming Soon</span>
+        <div data-reveal-group data-stagger="150">
+          <div class="interplay__logo-wrap">
+            <img src="assets/svg/interplay-logo.svg" alt="Interplay" class="interplay__logo">
+          </div>
+          <p class="interplay__text">Our modular intelligence platform. Interplay gives your team an interface to centralize your expertise, custom to your company. It's where your Living Blocks live, grow, and connect.</p>
         </div>
-        <div data-reveal class="interplay__logo-wrap">
-          <img src="assets/svg/interplay-logo.svg" alt="Interplay" class="interplay__logo">
-        </div>
-        <p data-reveal class="interplay__text">Our modular intelligence platform. Interplay gives your team living blocks — authored, governed AI workspaces that turn your best thinking into reusable agent infrastructure.</p>
 
         <div data-reveal class="perspective__wrap">
           <div data-3d-hover-target data-max-rotate="12" class="perspective__item interplay__preview">
@@ -2369,11 +2426,11 @@
 
     <!-- Partners -->
     <section id="partners" class="section">
-      <div class="container">
-        <p data-reveal class="section__label">How We Build</p>
-        <h2 data-reveal class="section__heading">Human in the loop. By design.</h2>
-        <div data-reveal>
-          <p class="partners__text">The companies shaping AI today are making decisions that will outlast the technology itself. Universal Agents and our partners are aligned on the one that matters most: <span class="partners__text--strong">we build for human agency and amplification, and nothing less.</span></p>
+      <div data-reveal-group data-stagger="120" class="container">
+        <p class="section__label">HOW WE BUILD</p>
+        <h2 class="section__heading">Human in the loop. By design.</h2>
+        <div>
+          <p class="partners__text">The companies shaping AI today are making decisions that will evolve with the technology itself. Universal Agents and our partners are aligned on the one that matters most: <span class="partners__text--strong">we build for human agency and amplification, nothing less.</span></p>
           <div class="partners__logos">
             <a href="https://www.laughlin.com/" target="_blank" rel="noopener" class="partners__logo-item">
               <div class="partners__logo-before"></div>
@@ -2594,6 +2651,109 @@
       gsap.ticker.lagSmoothing(0);
 
       return lenis;
+    }
+
+    /* ------------------------- Content Reveal on Scroll [Osmo] ------------------------- */
+
+    function initContentRevealScroll() {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const ctx = gsap.context(() => {
+        document.querySelectorAll('[data-reveal-group]').forEach(groupEl => {
+          const groupStaggerSec = (parseFloat(groupEl.getAttribute('data-stagger')) || 100) / 1000;
+          const groupDistance = groupEl.getAttribute('data-distance') || '2em';
+          const triggerStart = groupEl.getAttribute('data-start') || 'top 80%';
+          const animDuration = 0.8;
+          const animEase = "power4.inOut";
+
+          if (prefersReduced) {
+            gsap.set(groupEl, { clearProps: 'all', y: 0, autoAlpha: 1 });
+            return;
+          }
+
+          const directChildren = Array.from(groupEl.children).filter(el => el.nodeType === 1);
+          if (!directChildren.length) {
+            gsap.set(groupEl, { y: groupDistance, autoAlpha: 0 });
+            ScrollTrigger.create({
+              trigger: groupEl,
+              start: triggerStart,
+              once: true,
+              onEnter: () => gsap.to(groupEl, {
+                y: 0, autoAlpha: 1, duration: animDuration, ease: animEase,
+                onComplete: () => gsap.set(groupEl, { clearProps: 'all' })
+              })
+            });
+            return;
+          }
+
+          const slots = [];
+          directChildren.forEach(child => {
+            const nestedGroup = child.matches('[data-reveal-group-nested]')
+              ? child
+              : child.querySelector(':scope [data-reveal-group-nested]');
+
+            if (nestedGroup) {
+              const includeParent = child.getAttribute('data-ignore') === 'false' || nestedGroup.getAttribute('data-ignore') === 'false';
+              slots.push({ type: 'nested', parentEl: child, nestedEl: nestedGroup, includeParent });
+            } else {
+              slots.push({ type: 'item', el: child });
+            }
+          });
+
+          slots.forEach(slot => {
+            if (slot.type === 'item') {
+              const isNestedSelf = slot.el.matches('[data-reveal-group-nested]');
+              const d = isNestedSelf ? groupDistance : (slot.el.getAttribute('data-distance') || groupDistance);
+              gsap.set(slot.el, { y: d, autoAlpha: 0 });
+            } else {
+              if (slot.includeParent) gsap.set(slot.parentEl, { y: groupDistance, autoAlpha: 0 });
+              const nestedD = slot.nestedEl.getAttribute('data-distance') || groupDistance;
+              Array.from(slot.nestedEl.children).forEach(target => gsap.set(target, { y: nestedD, autoAlpha: 0 }));
+            }
+          });
+
+          slots.forEach(slot => {
+            if (slot.type === 'nested' && slot.includeParent) {
+              gsap.set(slot.parentEl, { y: groupDistance });
+            }
+          });
+
+          ScrollTrigger.create({
+            trigger: groupEl,
+            start: triggerStart,
+            once: true,
+            onEnter: () => {
+              const tl = gsap.timeline();
+              slots.forEach((slot, slotIndex) => {
+                const slotTime = slotIndex * groupStaggerSec;
+                if (slot.type === 'item') {
+                  tl.to(slot.el, {
+                    y: 0, autoAlpha: 1, duration: animDuration, ease: animEase,
+                    onComplete: () => gsap.set(slot.el, { clearProps: 'all' })
+                  }, slotTime);
+                } else {
+                  if (slot.includeParent) {
+                    tl.to(slot.parentEl, {
+                      y: 0, autoAlpha: 1, duration: animDuration, ease: animEase,
+                      onComplete: () => gsap.set(slot.parentEl, { clearProps: 'all' })
+                    }, slotTime);
+                  }
+                  const nestedMs = parseFloat(slot.nestedEl.getAttribute('data-stagger'));
+                  const nestedStaggerSec = isNaN(nestedMs) ? groupStaggerSec : nestedMs / 1000;
+                  Array.from(slot.nestedEl.children).forEach((nestedChild, nestedIndex) => {
+                    tl.to(nestedChild, {
+                      y: 0, autoAlpha: 1, duration: animDuration, ease: animEase,
+                      onComplete: () => gsap.set(nestedChild, { clearProps: 'all' })
+                    }, slotTime + nestedIndex * nestedStaggerSec);
+                  });
+                }
+              });
+            }
+          });
+        });
+      });
+
+      return () => ctx.revert();
     }
 
     /* ------------------------- Scroll Reveal System ------------------------- */
@@ -3413,7 +3573,7 @@
       if (!el) return;
 
       // Characters from Claude Code's thinking animation
-      const chars = ['·', '✻', '✽', '✶', '✳', '✢'];
+      const chars = ['·', '\u2733\uFE0E', '\u273B\uFE0E', '\u2736\uFE0E', '\u2733\uFE0E', '\u2722\uFE0E'];
       // Eased timing: first and last hold longer (in ms)
       const holds = [180, 100, 100, 100, 100, 180];
       let i = 0;
@@ -3431,6 +3591,35 @@
     }
 
     /* ------------------------- Shape Block Animation ------------------------- */
+
+    /* ------------------------- Sprint Hero Responsive ViewBox ------------------------- */
+
+    function initSprintHeroResponsive() {
+      const svg = document.getElementById('sprint-hero-svg');
+      if (!svg) return;
+
+      const desktopVB = '0 -30 1920 1140';
+      const mobileVB = '350 -30 1220 1140';
+
+      const labels = svg.querySelectorAll('#label-scale, #label-shape, #label-share');
+
+      // Beat SVGs — zoom in on mobile
+      const beatSvgs = ['shape-svg', 'share-svg', 'scale-svg']
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+      const beatDesktopVB = '160 -10 1100 1100';
+      const beatMobileVB = '385 215 650 650';
+
+      function update() {
+        const isMobile = window.innerWidth <= 767;
+        svg.setAttribute('viewBox', isMobile ? mobileVB : desktopVB);
+        labels.forEach(l => l.setAttribute('font-size', isMobile ? '42' : '30'));
+        beatSvgs.forEach(s => s.setAttribute('viewBox', isMobile ? beatMobileVB : beatDesktopVB));
+      }
+
+      update();
+      window.addEventListener('resize', update);
+    }
 
     function initShapeAnimation() {
       const svg = document.getElementById('shape-svg');
@@ -3565,6 +3754,12 @@
       gsap.set(diamond, { scale: 0, svgOrigin: '710 540', opacity: 0 });
       gsap.set(center, { scale: 0, svgOrigin: '710 540', opacity: 0 });
 
+      const grid = document.getElementById('share-grid');
+
+      // Initial state
+      gsap.set(diamond, { scale: 0, svgOrigin: '710 540', opacity: 0 });
+      gsap.set(center, { scale: 0, svgOrigin: '710 540', opacity: 0 });
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: svg.closest('.sprint-block'),
@@ -3585,19 +3780,16 @@
 
       // 3. Ripple outward — each dot lights up based on distance from center
       dotData.forEach(({ dot, dist }) => {
-        const delay = (dist / maxDist) * 1.2; // spread over 1.2s
-        // Flash glow
+        const delay = (dist / maxDist) * 1.2;
         tl.to(dot, {
           attr: { fill: 'url(#glow-green-share)' },
           duration: 0.1,
           ease: 'power1.in',
         }, `ripple+=${delay}`);
-        // Immediate solid green
         tl.set(dot, { attr: { fill: '#65FFA3' } }, '>+=0.05');
       });
 
       // 4. Flex scale on the whole grid once all lit
-      const grid = document.getElementById('share-grid');
       tl.to(grid, {
         scale: 1.06,
         svgOrigin: '710 540',
@@ -3682,42 +3874,45 @@
         return tl;
       }
 
-      // Fire a burst — multiple short chains at once
+      // Fire a burst — multiple chains at once
       function fireBurst() {
-        const count = 3 + Math.floor(Math.random() * 3); // 3-5 chains
+        const count = 4 + Math.floor(Math.random() * 3); // 4-6 chains
         for (let i = 0; i < count; i++) {
-          setTimeout(() => pulseChain(2, 5, 0.06), i * 80);
+          setTimeout(() => pulseChain(3, 6, 0.06), i * 70);
         }
       }
 
       // Fire a snake — long trail through the grid
       function fireSnake() {
-        pulseChain(10, 18, 0.05);
+        pulseChain(12, 20, 0.045);
       }
 
-      // Looping pulse cycle — varied rhythms
+      // Looping pulse cycle — medium-high intensity
       let pulseTimeout;
 
       function schedulePulse() {
         const roll = Math.random();
 
         if (roll < 0.15) {
-          // 15% chance: burst of activity
+          // 15% chance: burst
           fireBurst();
         } else if (roll < 0.3) {
-          // 15% chance: long snake
+          // 15% chance: snake + a chain
           fireSnake();
-        } else if (roll < 0.5) {
-          // 20% chance: single chain
-          pulseChain(3, 7);
+          setTimeout(() => pulseChain(3, 7), 200);
+        } else if (roll < 0.45) {
+          // 15% chance: triple chain
+          pulseChain(4, 7);
+          setTimeout(() => pulseChain(3, 7), 120);
+          setTimeout(() => pulseChain(3, 6), 280);
         } else {
-          // 50% chance: double chain
-          pulseChain(3, 7);
-          setTimeout(() => pulseChain(3, 7), 150);
+          // 55% chance: double chain
+          pulseChain(4, 8);
+          setTimeout(() => pulseChain(4, 8), 130);
         }
 
-        // Vary interval: 600-1400ms
-        const nextDelay = 600 + Math.floor(Math.random() * 800);
+        // Interval: 450-1000ms
+        const nextDelay = 450 + Math.floor(Math.random() * 550);
         pulseTimeout = setTimeout(schedulePulse, nextDelay);
       }
 
@@ -3774,6 +3969,7 @@
       initLenis();
       initGlobalParallax();
       initScrollReveal();
+      initContentRevealScroll();
       initFaqPills();
       initHeroFade();
       initScrollCube();
@@ -3784,6 +3980,7 @@
       initLogoWallCycle();
       initButtonCharacterStagger();
       init3dPerspectiveHover();
+      initSprintHeroResponsive();
       initShapeAnimation();
       initShareAnimation();
       initScaleAnimation();
