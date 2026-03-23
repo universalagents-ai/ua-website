@@ -305,6 +305,17 @@
 
     [data-load-reset] { opacity: 0; }
 
+    /* Fallback: if GSAP fails (e.g. WhatsApp in-app browser), reveal content + hide loader after 4s */
+    @keyframes fallback-reveal { to { opacity: 1; } }
+    @keyframes fallback-hide   { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+    [data-load-reset] {
+      animation: fallback-reveal 0.3s ease 4s forwards;
+    }
+    .loader {
+      animation: fallback-hide 0.3s ease 4s forwards;
+    }
+    /* GSAP overrides opacity inline before these fire on normal browsers */
+
     /* ------------------------- Container System ------------------------- */
 
     .container {
@@ -3697,7 +3708,7 @@
 
     /* ------------------------- Init ------------------------- */
 
-    document.addEventListener("DOMContentLoaded", () => {
+    function boot() {
       // Skip loader for internal navigation (referrer is our own domain), play for external/direct visits
       const referrer = document.referrer;
       const isInternalNav = referrer && new URL(referrer).hostname === location.hostname;
@@ -3757,6 +3768,17 @@
           initSkeletonTextEffects();
         }
       }, 250));
+    }
+
+    // GSAP loads via defer — may not be ready at DOMContentLoaded in some WebViews (WhatsApp, etc.)
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof gsap !== 'undefined') { boot(); return; }
+      // Poll for GSAP (defer script still loading)
+      const t = setInterval(() => {
+        if (typeof gsap !== 'undefined') { clearInterval(t); boot(); }
+      }, 50);
+      // Give up after 8s — CSS fallback will reveal content
+      setTimeout(() => clearInterval(t), 8000);
     });
   </script>
 
@@ -4083,7 +4105,7 @@
 
   <!-- Sprint Diamonds reveal animation (GSAP + SVG) -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function initDiamonds() {
       const container = document.querySelector('.sprint-hero__visual');
       if (!container) return;
 
@@ -4171,7 +4193,16 @@
           if (self.progress > 0) tl.play();
         },
       });
-    });
+    }
+    // Wait for GSAP — defer scripts may load after DOMContentLoaded in some WebViews
+    if (typeof gsap !== 'undefined') {
+      document.addEventListener('DOMContentLoaded', initDiamonds);
+    } else {
+      document.addEventListener('DOMContentLoaded', function check() {
+        if (typeof gsap !== 'undefined') { initDiamonds(); return; }
+        setTimeout(check, 50);
+      });
+    }
   </script>
 
   <!-- Vercel Analytics -->
