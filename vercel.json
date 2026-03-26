@@ -1,0 +1,23 @@
+{
+  "buildCommand": "node build.mjs",
+  "outputDirectory": ".",
+  "redirects": [
+    {
+      "source": "/:path(.*)",
+      "has": [{ "type": "host", "value": "www.universalagents.ai" }],
+      "destination": "https://universalagents.ai/:path",
+      "permanent": true
+    },
+    {
+      "source": "/interplay.html",
+      "destination": "/interplay",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/interplay",
+      "destination": "/interplay.html"
+    }
+  ]
+}
