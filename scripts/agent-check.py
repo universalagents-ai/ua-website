@@ -15,7 +15,7 @@ import sys
 import urllib.error
 import urllib.request
 import urllib.robotparser
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 AGENTS = {
     "ClaudeBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)",
@@ -46,6 +46,15 @@ def fetch(url, agent="ClaudeBot", accept="*/*"):
     except Exception as e:  # network, TLS, timeout
         return None, None, str(e)
 
+
+def final_url(url, agent):
+    """Where a fetch actually lands after redirects, or None if it failed."""
+    req = urllib.request.Request(url, headers={"User-Agent": AGENTS[agent]})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return r.geturl()
+    except Exception:
+        return None
 
 def mcp_probe(url):
     """Talk to an MCP endpoint the way an agent would: initialize, list tools, call one.
@@ -116,8 +125,11 @@ def check_site(base):
     home, blocked, unreachable = None, [], []
     for agent in AGENTS:
         status, _, body = fetch(base, agent)
+        landed = final_url(base, agent)
         if status is None:
             unreachable.append(agent)
+        elif landed and urlparse(landed).netloc.removeprefix("www.") != urlparse(base).netloc.removeprefix("www."):
+            blocked.append(f"{agent}=redirected to {urlparse(landed).netloc}")  # a login wall is not the site
         elif status >= 400 or CHALLENGE.search(body[:20000]):
             blocked.append(f"{agent}={status}")
         elif home is None:

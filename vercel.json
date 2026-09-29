@@ -25,28 +25,6 @@
       "destination": "/api/mcp"
     },
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "header",
-          "key": "accept",
-          "value": "(.*)text/markdown(.*)"
-        }
-      ],
-      "destination": "/index.md"
-    },
-    {
-      "source": "/interplay",
-      "has": [
-        {
-          "type": "header",
-          "key": "accept",
-          "value": "(.*)text/markdown(.*)"
-        }
-      ],
-      "destination": "/interplay.md"
-    },
-    {
       "source": "/interplay",
       "destination": "/interplay.html"
     }
