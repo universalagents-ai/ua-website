@@ -14,8 +14,48 @@
   "toolsDigest": {
     "algorithm": "sha-256",
     "of": "the tools/list result as JSON, keys sorted, no whitespace",
-    "value": "53db3f4c2108134ded48299ec4fe8afd29ad55de5a5aae085d0d01c503e5c06f"
+    "value": "44be8278388af89ad52765fab04653bf96b2c6c0bc01357273aaf0ade12844bc"
   },
   "contact": "hello@universalagents.ai",
-  "registryName": "ai.universalagents/universal-agents"
+  "registryName": "ai.universalagents/universal-agents",
+  "trust": {
+    "operator": {
+      "name": "Universal Agents",
+      "legal_entity": "The legal entity name is not stated here.",
+      "website": "https://universalagents.ai"
+    },
+    "accountable": {
+      "name": "Stu Amos",
+      "title": "Founder, CEO",
+      "contact": "hello@universalagents.ai"
+    },
+    "code_authors": [
+      {
+        "name": "Stu Amos",
+        "title": "Founder, CEO"
+      },
+      {
+        "name": "Mathew Wendell",
+        "title": "Co-founder, COO"
+      },
+      {
+        "name": "Ingo Eichhorst",
+        "title": "CTO"
+      },
+      {
+        "name": "Mario Jembrih",
+        "title": "Systems Architect"
+      }
+    ],
+    "data_reach": {
+      "reads": "Public marketing information only: https://universalagents.ai/llms.txt.",
+      "stores": "Nothing a caller sends is stored, except one line per tools/call in the runtime log: the tool name, the client name and version given at initialize, the outcome and the time.",
+      "request_intro": "Its arguments are never logged. The server drafts the email and sends nothing."
+    },
+    "auth": "none — public information only, by design",
+    "attestations": {
+      "held": [],
+      "statement": "None held: no SOC 2, ISO 27001 or similar certification or audit."
+    }
+  }
 }
