@@ -1,0 +1,80 @@
+# Universal Agents
+
+> Your agency in your pocket. Universal Agents builds Interplay for independent creative agencies: your agency's living library and playbook, with one universal agent that understands your business. Models like Claude or ChatGPT are rented. Your brain is owned.
+
+This file is the source for our MCP server too: its answers are read from here.
+
+## What we sell
+
+Interplay is your agency's living library and playbook. Its gatekeeper is one universal agent that understands your business. It runs requests through your playbook to put your people's best work in everyone's hands, actively updating your knowledge library which gets smarter through use.
+
+- **The brain**: your agency's own private, living knowledge library, plain markdown in a repository you control. It holds judgment, not data: client material stays where its access control lives.
+- **The playbook**: what the universal agent orients through on every turn, your brand system plus your plays (how your agency works: jobs by department, organic growth, business development, pitches). It's the reason Interplay behaves like your agency and not like a general-purpose chat tool.
+- **Living Blocks**: a Living Block is your skill, packaged so a coworker can do it the way you do. Your pro moves, credited to you, and it only learns when someone approves the lesson.
+- **The universal agent**: one orchestrator for every channel. It reads the playbook, picks the right Living Blocks for the job, flags what needs a person and leaves the decision to them.
+- **Client spaces**: a space per client, so the account team hears where the next piece of growth is before the client asks.
+
+Interplay is the controller you plug into your existing stack: it connects and converts, it does not replace. Fewer tools, not another tool. Built on Anthropic's Claude and open standards (MCP, Skills).
+
+Built for agencies. Shaped by an 80-person independent agency. Shaped with a 10-person boutique.
+
+## How it starts
+
+A pilot, not a platform bet. One quarter, measured, then expand. Every engagement starts as a paid pilot of 8 to 10 weeks inside one budget quarter: the Agent Sprint sets up your brain, then we build out and roll out with your team.
+
+## Pricing
+
+A paid pilot: 8 to 10 weeks for $24–28K. After the pilot, an optimized cost to continue rollout. Eventually licensing and support costs $4–7K depending on team size, token costs, infrastructure requirements.
+
+- Paid pilot: $24–28K for 8 to 10 weeks, depending on team size and speed of rollout. 50% at pilot start, the rest trailed monthly.
+- After the pilot: $12–18K per month, typically for another quarter of work once the pilot has delivered value.
+- Licensing and support: $4–7K per month once the agency is up and running, depending on team size, token costs and infrastructure requirements.
+
+Anything else (design-partner terms, contracts, a quote for your agency) is a conversation: hello@universalagents.ai.
+
+## Who it is for
+
+Independent creative agencies committed to a transformation: a C-suite leader who sets the tone, a small core team of senior leaders, a named champion (a power user, not a project manager, the person everyone already goes to with "how do I do this?"), and roughly two hours per person per week.
+
+## FAQ
+
+### What does "agent ready" mean?
+
+Agent readiness is a spectrum. Most businesses use AI for simple tasks like research, synthesizing data or drafting communications. Agent readiness means going further: multi-step reasoning and agents that act with guardrails you have designed.
+
+### Will agents replace my team?
+
+No. Your people are the one thing nobody can copy. Interplay puts your best strategist's method in the hands of a junior on a Tuesday afternoon. People stay in control: the universal agent flags what needs a person and leaves the decision to them.
+
+### How long does it take?
+
+The paid pilot runs 8 to 10 weeks, inside one budget quarter. After that, rollout continues department by department with your team building alongside us.
+
+### What makes Universal Agents different?
+
+You own what we build. Your brain, your playbook and your Living Blocks live in your own repository, on open standards, portable to anything. Your independence is the thing we're amplifying, not something you trade away to get this.
+
+### What happens to our data and proprietary thinking?
+
+AI models process and return your data. They do not use it for training or retain it. All data at rest is encrypted to healthcare-grade compliance standards, with enterprise zero-retention options available. The brain holds judgment, not client data: client material stays where its access control lives.
+
+### How do we bring everyone along?
+
+Adoption is a change problem, not a technology problem. The Agent Sprint plans how to bring your team along, with rollout sequencing and communications designed from the start.
+
+## Ask us directly (MCP)
+
+- [MCP server](https://universalagents.ai/mcp): Streamable HTTP, no auth, read-only. Tools: `about_universal_agents`, `get_pricing`, `answer_faq`, `request_intro` (drafts an intro email for your person to send; sends nothing).
+
+## Next step
+
+- [Email us to book an intro call](mailto:hello@universalagents.ai): say who you are, your agency's size, and what you want AI to change.
+
+## Pages
+
+- [Home](https://universalagents.ai/index.md): mission, the Agent Sprint, our stack, FAQ
+- [Interplay](https://universalagents.ai/interplay.md): the platform, and alpha-phase agency partners
+
+## Optional
+
+- [LinkedIn](https://www.linkedin.com/company/universal-agents)

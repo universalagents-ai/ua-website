@@ -1,0 +1,10 @@
+{
+  "name": "universal-agents",
+  "title": "Universal Agents",
+  "description": "Ask Universal Agents what we sell, our pricing, and common questions; draft an intro email. Read-only.",
+  "url": "https://universalagents.ai/mcp",
+  "transport": "streamable-http",
+  "authentication": "none",
+  "tools": ["about_universal_agents", "get_pricing", "answer_faq", "request_intro"],
+  "contact": "hello@universalagents.ai"
+}
