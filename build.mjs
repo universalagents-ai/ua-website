@@ -52,3 +52,9 @@ for (const page of pages) {
 }
 
 console.log(`\nBuilt ${pages.length} pages.`);
+
+// The server card's trust block is made from provenance.json. Its tools digest stays pinned by hand.
+const CARD = '.well-known/mcp.json';
+const { TRUST } = await import('./api/mcp.mjs');
+writeFileSync(CARD, JSON.stringify({ ...JSON.parse(readFileSync(CARD, 'utf-8')), trust: TRUST }, null, 2) + '\n');
+console.log(`  ✓ ${CARD} trust block`);

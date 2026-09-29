@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
-import handler from '../api/mcp.mjs';
+import handler, { TRUST } from '../api/mcp.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = path => readFileSync(new URL(path, root), 'utf-8');
@@ -52,7 +52,7 @@ function validate(schema, value, at = '$') {
   if (unknown.length) return [`${at}: schema keyword(s) not checked: ${unknown}`];
   const is = {
     object: v => v !== null && typeof v === 'object' && !Array.isArray(v),
-    array: Array.isArray, string: v => typeof v === 'string', boolean: v => typeof v === 'boolean',
+    array: Array.isArray, string: v => typeof v === 'string', boolean: v => typeof v === 'boolean', integer: Number.isInteger,
   };
   if (schema.type && !is[schema.type]?.(value)) return [`${at}: expected ${schema.type}`];
   const errors = [];
@@ -110,7 +110,7 @@ test('every tool declares an outputSchema, and every call returns structuredCont
 test('request_intro returns data only, with no instruction to the agent', async () => {
   for (const args of [{}, { name: 'Sam Example', agency: 'Example & Co' }]) {
     const { structuredContent: data, content } = await call('request_intro', args);
-    assert.deepEqual(Object.keys(data).sort(), ['body', 'mailto', 'sent', 'subject', 'to']);
+    assert.deepEqual(Object.keys(data).sort(), ['agent_may', 'body', 'mailto', 'provenance', 'sent', 'subject', 'to']);
     assert.equal(data.sent, false);
     assert.equal(data.to, 'hello@universalagents.ai');
     assert.ok(data.mailto.startsWith('mailto:hello@universalagents.ai?'));
@@ -171,4 +171,125 @@ test('.well-known/security.txt exists with Contact and a future Expires', () => 
   assert.ok(Date.parse(fields.Expires) > Date.now(), `Expires is not in the future: ${fields.Expires}`);
   assert.equal(fields.Canonical, 'https://universalagents.ai/.well-known/security.txt');
   assert.equal(fields['Preferred-Languages'], 'en');
+});
+
+// U2: the humans behind every answer. The ruling (Stu, 2026-09-28) is held here, so provenance.json
+// cannot drift from it; the server and the card must then equal provenance.json.
+const P = JSON.parse(read('provenance.json'));
+const CONTACT = 'hello@universalagents.ai';
+const BRAIN = 'universalagents-ai/ua-brain';
+const STU = { name: 'Stu Amos', title: 'Founder, CEO' };
+const MATHEW = { name: 'Mathew Wendell', title: 'Co-founder, COO' };
+const INGO = { name: 'Ingo Eichhorst', title: 'CTO' };
+const MARIO = { name: 'Mario Jembrih', title: 'Systems Architect' };
+const RULING = {
+  code: { authors: [STU, MATHEW, INGO, MARIO], accountable: STU, level: [3, 'Consult'] },
+  pricing: { authors: [MATHEW], accountable: MATHEW, level: [1, 'Tell'], source: 'governance/pricing-rules.md', effective: '2026-09-28' },
+  product: { authors: [STU, MATHEW], accountable: STU, level: [1, 'Tell'], source: 'knowledge/01-products-commercial/interplay-lexicon.md' },
+};
+// The answer type of each reply. An FAQ answer that quotes a price is a pricing answer.
+const priced = answer => /\$\d/.test(answer);
+const typeOf = (name, data) => ({ about_universal_agents: 'product', get_pricing: 'pricing', request_intro: 'code' })[name]
+  ?? (data.answers.some(a => priced(a.answer)) ? 'pricing' : 'product');
+const resolve = id => ({ name: P.people[id].name, title: P.people[id].title });
+
+// Every {name, title} and every {repo, path} anywhere in a value.
+function named(value, found = { people: [], sources: [] }) {
+  if (Array.isArray(value)) value.forEach(v => named(v, found));
+  else if (value && typeof value === 'object') {
+    if ('name' in value && 'title' in value) found.people.push({ name: value.name, title: value.title });
+    if ('repo' in value && 'path' in value) found.sources.push(value);
+    Object.values(value).forEach(v => named(v, found));
+  }
+  return found;
+}
+
+test('provenance.json holds the ruling: four people, one accountable person, and each answer type\'s authors, source and level', () => {
+  assert.deepEqual(Object.keys(P.people).map(resolve), [STU, MATHEW, INGO, MARIO], 'exactly the four people, with their titles');
+  for (const [id, who] of Object.entries(P.people)) assert.ok(who.role?.trim(), `${id} has no role in this server`);
+  assert.deepEqual(resolve(P.server.accountable), STU);
+  assert.equal(P.server.contact, CONTACT);
+  assert.deepEqual(Object.keys(P.answers).sort(), Object.keys(RULING).sort());
+  for (const [type, rule] of Object.entries(RULING)) {
+    const a = P.answers[type];
+    assert.deepEqual(a.authors.map(resolve), rule.authors, `${type} authors`);
+    assert.deepEqual(resolve(a.accountable), rule.accountable, `${type} accountable`);
+    assert.deepEqual([a.agent_may.level, a.agent_may.label], rule.level, `${type} agent_may level`);
+    assert.ok(a.agent_may.note?.trim(), `${type} agent_may has no note`);
+    assert.equal(a.source, rule.source, `${type} source`);
+    if (rule.source) assert.match(a.effective, /^\d{4}-\d{2}-\d{2}$/, `${type} has no effective date`);
+    if (rule.effective) assert.equal(a.effective, rule.effective, `${type} effective date`);
+  }
+  assert.equal(P.ua_brain.repo, BRAIN);
+  assert.deepEqual(P.ua_brain.paths.toSorted(), Object.values(RULING).map(r => r.source).filter(Boolean).sort(), 'the listed ua-brain paths are the sources, no more');
+  const json = read('provenance.json');
+  assert.deepEqual([...new Set(json.match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g))], [CONTACT], 'no email but the contact');
+  assert.doesNotMatch(json, /\+\d|\(\d{3}\)|\d{3}[\s.-]\d{3}[\s.-]\d{4}/, 'no phone number');
+});
+
+test('the server card carries a trust block built from provenance.json', () => {
+  const { trust } = JSON.parse(read('.well-known/mcp.json'));
+  assert.deepEqual(trust, TRUST, 'the trust block is stale: run node build.mjs');
+  assert.equal(trust.operator.name, 'Universal Agents');
+  assert.match(trust.operator.legal_entity, /not stated here/);
+  assert.deepEqual(trust.accountable, { ...STU, contact: CONTACT });
+  assert.deepEqual(trust.code_authors, [STU, MATHEW, INGO, MARIO]);
+  assert.match(trust.data_reach.reads, /public marketing information only/i);
+  assert.match(trust.data_reach.stores, /^Nothing a caller sends is stored/);
+  assert.match(trust.data_reach.request_intro, /arguments are never logged/);
+  assert.equal(trust.auth, 'none — public information only, by design');
+  assert.deepEqual(trust.attestations.held, [], 'no attestation is held');
+  assert.match(trust.attestations.statement, /^None held: no SOC 2, ISO 27001 or similar/);
+  assert.doesNotMatch(JSON.stringify(trust), /\b(aligned|compliant|certified|accredited)\b/i, 'no compliance posture beyond "none held"');
+});
+
+test('every tools/call reply names the humans behind its answer type and what an agent may do', async () => {
+  const check = (stamp, type, at) => {
+    const rule = RULING[type];
+    assert.equal(stamp.provenance?.answer_type, type, `${at}: answer type`);
+    assert.deepEqual(stamp.provenance.authors, rule.authors, `${at}: authors`);
+    assert.deepEqual(stamp.provenance.accountable, { ...rule.accountable, contact: CONTACT }, `${at}: accountable`);
+    if (rule.source) {
+      assert.deepEqual(stamp.provenance.source, { repo: BRAIN, path: rule.source }, `${at}: source`);
+      assert.equal(stamp.provenance.effective, P.answers[type].effective, `${at}: effective date`);
+    } else assert.ok(!('source' in stamp.provenance), `${at}: the code has no ua-brain source`);
+    assert.deepEqual(stamp.agent_may, P.answers[type].agent_may, `${at}: agent_may`);
+    assert.deepEqual([stamp.agent_may.level, stamp.agent_may.label], rule.level, `${at}: Delegation-Map level`);
+  };
+  for (const [name, args] of CALLS) {
+    const data = (await call(name, args)).structuredContent;
+    check(data, typeOf(name, data), name);
+    data.answers?.forEach((a, i) => check(a, priced(a.answer) ? 'pricing' : 'product', `${name}.answers[${i}]`));
+  }
+});
+
+test('every name, title and source path in a reply or the card is one provenance.json lists', async () => {
+  const people = Object.keys(P.people).map(resolve);
+  const found = named([JSON.parse(read('.well-known/mcp.json')).trust, ...await Promise.all(CALLS.map(([name, args]) => call(name, args)))]);
+  assert.ok(found.people.length && found.sources.length);
+  for (const who of found.people) assert.ok(people.some(p => p.name === who.name && p.title === who.title), `not in provenance.json: ${JSON.stringify(who)}`);
+  for (const source of found.sources) {
+    assert.equal(source.repo, BRAIN);
+    assert.ok(P.ua_brain.paths.includes(source.path), `not a listed ua-brain path: ${source.path}`);
+  }
+});
+
+test('every outputSchema declares provenance and agent_may', async () => {
+  const declares = (schema, at) => {
+    for (const key of ['provenance', 'agent_may']) {
+      assert.ok(schema.required.includes(key), `${at}: ${key} not required`);
+      assert.equal(schema.properties[key]?.type, 'object', `${at}: ${key} not declared`);
+    }
+    assert.deepEqual(Object.keys(schema.properties.agent_may.properties), ['level', 'label', 'note'], `${at}: agent_may shape`);
+  };
+  for (const tool of await listed()) {
+    declares(tool.outputSchema, tool.name);
+    if (tool.outputSchema.properties.answers) declares(tool.outputSchema.properties.answers.items, `${tool.name}.answers`);
+  }
+});
+
+test('the server names no one: people and the contact live only in provenance.json', () => {
+  const code = read('api/mcp.mjs') + read('build.mjs');
+  for (const who of Object.values(P.people)) assert.ok(!code.includes(who.name), `hard-coded name: ${who.name}`);
+  assert.ok(!code.includes(CONTACT), 'hard-coded contact');
 });

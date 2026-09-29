@@ -1,0 +1,87 @@
+{
+  "about": "Who stands behind the Universal Agents MCP server and each kind of answer it gives. The single source: api/mcp.mjs and .well-known/mcp.json read their names from here.",
+  "people": {
+    "stu-amos": {
+      "name": "Stu Amos",
+      "title": "Founder, CEO",
+      "role": "Accountable for the server, its code and its product answers; code author; product answer author."
+    },
+    "mathew-wendell": {
+      "name": "Mathew Wendell",
+      "title": "Co-founder, COO",
+      "role": "Author of, and accountable for, pricing answers; product answer author; code author."
+    },
+    "ingo-eichhorst": {
+      "name": "Ingo Eichhorst",
+      "title": "CTO",
+      "role": "Code author."
+    },
+    "mario-jembrih": {
+      "name": "Mario Jembrih",
+      "title": "Systems Architect",
+      "role": "Code author."
+    }
+  },
+  "server": {
+    "operator": {
+      "name": "Universal Agents",
+      "legal_entity": "The legal entity name is not stated here.",
+      "website": "https://universalagents.ai"
+    },
+    "accountable": "stu-amos",
+    "contact": "hello@universalagents.ai",
+    "data_reach": {
+      "reads": "Public marketing information only: https://universalagents.ai/llms.txt.",
+      "stores": "Nothing a caller sends is stored, except one line per tools/call in the runtime log: the tool name, the client name and version given at initialize, the outcome and the time.",
+      "request_intro": "Its arguments are never logged. The server drafts the email and sends nothing."
+    },
+    "auth": "none — public information only, by design",
+    "attestations": {
+      "held": [],
+      "statement": "None held: no SOC 2, ISO 27001 or similar certification or audit."
+    }
+  },
+  "ua_brain": {
+    "repo": "universalagents-ai/ua-brain",
+    "paths": [
+      "governance/pricing-rules.md",
+      "knowledge/01-products-commercial/interplay-lexicon.md"
+    ]
+  },
+  "answers": {
+    "code": {
+      "what": "The server and its code, and what the code makes itself: the request_intro draft.",
+      "authors": ["stu-amos", "mathew-wendell", "ingo-eichhorst", "mario-jembrih"],
+      "accountable": "stu-amos",
+      "agent_may": {
+        "level": 3,
+        "label": "Consult",
+        "note": "The draft is for the person: the agent proposes it and the person sends it. The server never sends."
+      }
+    },
+    "pricing": {
+      "what": "get_pricing, and FAQ answers that quote a price.",
+      "authors": ["mathew-wendell"],
+      "accountable": "mathew-wendell",
+      "source": "governance/pricing-rules.md",
+      "effective": "2026-09-28",
+      "agent_may": {
+        "level": 1,
+        "label": "Tell",
+        "note": "Quote as stated, with the ranges and what they depend on. Any discount, custom quote, design-partner or contract term is level 7, Hands Off: it goes to the accountable person via the contact."
+      }
+    },
+    "product": {
+      "what": "about_universal_agents, and FAQ answers that quote no price.",
+      "authors": ["stu-amos", "mathew-wendell"],
+      "accountable": "stu-amos",
+      "source": "knowledge/01-products-commercial/interplay-lexicon.md",
+      "effective": "2026-09-28",
+      "agent_may": {
+        "level": 1,
+        "label": "Tell",
+        "note": "Restate as given. Nothing is presented as shipping unless the answer states it."
+      }
+    }
+  }
+}

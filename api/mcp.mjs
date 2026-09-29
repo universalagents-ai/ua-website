@@ -3,16 +3,17 @@
  *
  * Read-only. Stateless Streamable HTTP (JSON responses, no SSE stream).
  * Served at https://universalagents.ai/mcp (rewrite in vercel.json).
- * Every answer is read from llms.txt; edit that file, not this one.
+ * Every answer is read from llms.txt, and who stands behind it from provenance.json; edit those, not this file.
  * Changing a tool changes the tools/list digest pinned in .well-known/mcp.json; tests/ fails until it is updated.
  */
 
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import PROVENANCE from '../provenance.json' with { type: 'json' };
 
-const SERVER = { name: 'universal-agents', title: 'Universal Agents', version: '1.2.0' };
+const SERVER = { name: 'universal-agents', title: 'Universal Agents', version: '1.3.0' };
 const PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
-const CONTACT = 'hello@universalagents.ai';
+const CONTACT = PROVENANCE.server.contact;
 
 // llms.txt is the single source: every answer is read from its sections, so the site
 // summary and this server cannot drift apart (they did once, on a price change).
@@ -45,13 +46,54 @@ const ABOUT = {
   source: 'https://universalagents.ai/llms.txt',
 };
 const PRICING = { pricing: need('Pricing') };
-const FAQ = Object.entries(sections(need('FAQ'), 3));
+// An FAQ answer that quotes a price is a pricing answer; the rest are product answers.
+const FAQ = Object.entries(sections(need('FAQ'), 3)).map(([ask, answer]) => [ask, answer, /\$\d/.test(answer) ? 'pricing' : 'product']);
 const STOP = new Set('a an and are can do does for how i if in is it me my of on or our the to we what when who why will with you your'.split(' '));
+
+// provenance.json is the single source of who and where: every answer carries its authors, the one
+// person accountable for it, its ua-brain source, and what an agent may do with it (a Delegation-Map level).
+const person = id => {
+  const who = PROVENANCE.people[id];
+  if (!who) throw new Error(`provenance.json has no person "${id}"`);
+  return { name: who.name, title: who.title };
+};
+const accountable = id => ({ ...person(id), contact: CONTACT });
+
+const STAMP = Object.fromEntries(Object.entries(PROVENANCE.answers).map(([type, a]) => {
+  if (a.source && !PROVENANCE.ua_brain.paths.includes(a.source)) throw new Error(`provenance.json: ${a.source} is not a listed ua-brain path`);
+  const source = a.source ? { source: { repo: PROVENANCE.ua_brain.repo, path: a.source }, effective: a.effective } : {};
+  const provenance = { answer_type: type, authors: a.authors.map(person), accountable: accountable(a.accountable), ...source };
+  return [type, { provenance, agent_may: a.agent_may }];
+}));
+
+// The server card's trust block; build.mjs writes it into .well-known/mcp.json.
+export const TRUST = {
+  operator: PROVENANCE.server.operator,
+  accountable: accountable(PROVENANCE.server.accountable),
+  code_authors: STAMP.code.provenance.authors,
+  data_reach: PROVENANCE.server.data_reach,
+  auth: PROVENANCE.server.auth,
+  attestations: PROVENANCE.server.attestations,
+};
 
 // Replies are data: every tool declares the shape of what it returns, and no field carries
 // an instruction to the agent reading it.
 const text = { type: 'string' };
 const object = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
+const who = object({ name: text, title: text });
+// The provenance and agent_may fields of a reply whose answers are of these types.
+const stamped = (...types) => ({
+  provenance: object({
+    answer_type: { type: 'string', enum: types },
+    authors: { type: 'array', items: who },
+    accountable: object({ name: text, title: text, contact: text }),
+    ...('source' in STAMP[types[0]].provenance && { source: object({ repo: text, path: text }), effective: text }),
+  }),
+  agent_may: {
+    ...object({ level: { type: 'integer' }, label: text, note: text }),
+    description: 'What an agent may do with this answer unsupervised: a level on the Universal Agents Delegation Map, 1 Tell to 7 Hands Off.',
+  },
+});
 
 const TOOLS = [
   {
@@ -59,7 +101,7 @@ const TOOLS = [
     title: 'About Universal Agents',
     description: 'What Universal Agents sells (Interplay: the brain, the playbook, Living Blocks, the universal agent), how an engagement starts, and who it is for.',
     inputSchema: { type: 'object', properties: {} },
-    outputSchema: object({ summary: text, what_we_sell: text, how_it_starts: text, who_it_is_for: text, source: text }),
+    outputSchema: object({ summary: text, what_we_sell: text, how_it_starts: text, who_it_is_for: text, source: text, ...stamped('product') }),
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
   {
@@ -67,7 +109,7 @@ const TOOLS = [
     title: 'Get pricing',
     description: 'Universal Agents pricing: the paid pilot, the cost to continue rollout, and licensing and support.',
     inputSchema: { type: 'object', properties: {} },
-    outputSchema: object({ pricing: text }),
+    outputSchema: object({ pricing: text, ...stamped('pricing') }),
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
   {
@@ -80,7 +122,9 @@ const TOOLS = [
     },
     outputSchema: object({
       match: { type: 'string', enum: ['all', 'best', 'none'], description: 'all: no question given; best: the closest answers; none: no match, so all of them.' },
-      answers: { type: 'array', items: object({ question: text, answer: text }) },
+      answers: { type: 'array', items: object({ question: text, answer: text, ...stamped('pricing', 'product') }) },
+      // For the reply as a whole: pricing if any answer quotes a price. Each answer carries its own.
+      ...stamped('pricing', 'product'),
     }),
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
@@ -103,22 +147,27 @@ const TOOLS = [
       subject: text,
       body: text,
       mailto: text,
+      ...stamped('code'),
     }),
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
 ];
 
 function answerFaq({ question } = {}) {
-  const answers = entries => entries.map(([ask, answer]) => ({ question: ask, answer }));
+  const reply = (match, entries) => ({
+    match,
+    answers: entries.map(([ask, answer, type]) => ({ question: ask, answer, ...STAMP[type] })),
+    ...STAMP[entries.some(([, , type]) => type === 'pricing') ? 'pricing' : 'product'],
+  });
   const words = String(question || '').toLowerCase().split(/[^a-z]+/).filter(w => w && !STOP.has(w));
-  if (!words.length) return { match: 'all', answers: answers(FAQ) };
+  if (!words.length) return reply('all', FAQ);
   // Words in the question count double; answers still count, so "training" finds the data answer.
   const score = ([ask, answer]) => words.reduce((n, w) =>
     n + (ask.toLowerCase().includes(w) ? 2 : 0) + (answer.toLowerCase().includes(w) ? 1 : 0), 0);
   const scored = FAQ.map(entry => [score(entry), entry]);
   const best = Math.max(...scored.map(([n]) => n));
-  if (!best) return { match: 'none', answers: answers(FAQ) };
-  return { match: 'best', answers: answers(scored.filter(([n]) => n === best).map(([, entry]) => entry)) };
+  if (!best) return reply('none', FAQ);
+  return reply('best', scored.filter(([n]) => n === best).map(([, entry]) => entry));
 }
 
 function requestIntro({ name, agency, size, goal } = {}) {
@@ -136,10 +185,10 @@ function requestIntro({ name, agency, size, goal } = {}) {
 }
 
 const CALLS = {
-  about_universal_agents: () => ABOUT,
-  get_pricing: () => PRICING,
+  about_universal_agents: () => ({ ...ABOUT, ...STAMP.product }),
+  get_pricing: () => ({ ...PRICING, ...STAMP.pricing }),
   answer_faq: answerFaq,
-  request_intro: requestIntro,
+  request_intro: args => ({ ...requestIntro(args), ...STAMP.code }),
 };
 
 // The server keeps no state, so the client named in initialize rides back to us in the
