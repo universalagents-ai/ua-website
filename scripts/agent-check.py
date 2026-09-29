@@ -6,6 +6,8 @@ pass, fail, or couldnt-check. An unrunnable check never passes.
 
 Checks 1-5: can an agent use the site cold. Checks 6-8 (numbered 8-10 in the
 roadmap): structured data, a published agent-traffic report, an MCP registry listing.
+Check 11: the MCP server's instructions, tools and replies carry no hidden instructions,
+invisible Unicode or terminal controls.
 
 Usage: python3 scripts/agent-check.py [https://universalagents.ai ...]
 Exit:  0 all pass · 1 any fail · 2 no fail, but something couldn't be checked
@@ -74,6 +76,28 @@ def final_url(url, agent):
     except Exception:
         return None
 
+def mcp_rpc(url, session, payload):
+    """POST one JSON-RPC message to an MCP endpoint. Returns (status, reply or None)."""
+    headers = {"User-Agent": AGENTS["Claude-User"], "Content-Type": "application/json",
+               "Accept": "application/json, text/event-stream", **SELF, **session}
+    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            if r.headers.get("Mcp-Session-Id"):
+                session["Mcp-Session-Id"] = r.headers["Mcp-Session-Id"]
+            text = r.read(1_000_000).decode("utf-8", "replace")
+            if r.status == 202 or not text.strip():
+                return r.status, None
+            if "event-stream" in (r.headers.get("Content-Type") or ""):
+                data = [l[5:].strip() for l in text.splitlines() if l.startswith("data:")]
+                text = data[-1] if data else "null"
+            return r.status, json.loads(text)
+    except urllib.error.HTTPError as e:
+        return e.code, None
+    except (ValueError, json.JSONDecodeError):
+        return 200, None
+
+
 def mcp_probe(url):
     """Talk to an MCP endpoint the way an agent would: initialize, list tools, call one.
 
@@ -82,24 +106,7 @@ def mcp_probe(url):
     session = {}
 
     def rpc(payload):
-        headers = {"User-Agent": AGENTS["Claude-User"], "Content-Type": "application/json",
-                   "Accept": "application/json, text/event-stream", **SELF, **session}
-        req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers, method="POST")
-        try:
-            with urllib.request.urlopen(req, timeout=20) as r:
-                if r.headers.get("Mcp-Session-Id"):
-                    session["Mcp-Session-Id"] = r.headers["Mcp-Session-Id"]
-                text = r.read(1_000_000).decode("utf-8", "replace")
-                if r.status == 202 or not text.strip():
-                    return r.status, None
-                if "event-stream" in (r.headers.get("Content-Type") or ""):
-                    data = [l[5:].strip() for l in text.splitlines() if l.startswith("data:")]
-                    text = data[-1] if data else "null"
-                return r.status, json.loads(text)
-        except urllib.error.HTTPError as e:
-            return e.code, None
-        except (ValueError, json.JSONDecodeError):
-            return 200, None
+        return mcp_rpc(url, session, payload)
 
     try:
         status, init = rpc({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
@@ -125,6 +132,81 @@ def mcp_probe(url):
     if result.get("isError") or not result.get("content"):
         return FAIL, f"{url}: {len(tools)} tools, but calling {tool} returned no content"
     return PASS, f"{url}: {len(tools)} tools; called {tool} and got an answer"
+
+
+# Check 11's rules: phrasing aimed at a model, invisible or bidirectional Unicode, and
+# terminal controls (everything below U+0020 except tab, newline and return; DEL; C1).
+# tests/mcp-island.test.mjs reads this JSON from here, so the two scans cannot drift apart.
+SCAN_RULES = json.loads(r"""{
+  "phrases": [
+    "(ignore|disregard|forget) (all |any )?(the |your )?(previous|prior|above|earlier)",
+    "(do not|don[’']?t|never) (mention|tell|reveal|disclose)",
+    "without (telling|informing) the user",
+    "\\binvisible\\b",
+    "system prompt",
+    "<\\s*/?\\s*(system|important|instructions?)\\s*>",
+    "(new|hidden|secret) instructions",
+    "\\byou are now\\b"
+  ],
+  "invisible": ["00AD", "061C", "180E", "200B-200F", "202A-202E", "2060-2064", "2066-2069", "FEFF", "E0000-E007F"],
+  "control": ["0000-0008", "000B-000C", "000E-001F", "007F-009F"]
+}""")
+SCAN_PHRASES = [re.compile(p, re.I) for p in SCAN_RULES["phrases"]]
+
+
+def code_span(rule):
+    """'200B-200F' -> (0x200B, 0x200F); 'FEFF' -> (0xFEFF, 0xFEFF)."""
+    lo, _, hi = rule.partition("-")
+    return int(lo, 16), int(hi or lo, 16)
+
+
+SCAN_CHARS = {kind: [code_span(r) for r in SCAN_RULES[kind]] for kind in ("invisible", "control")}
+
+
+def scan_findings(value, where="$"):
+    """Every rule hit in the keys and strings of a JSON value."""
+    found = []
+    if isinstance(value, dict):
+        for k, v in value.items():
+            found += scan_findings(k, where) + scan_findings(v, f"{where}.{k}")
+    elif isinstance(value, list):
+        for i, v in enumerate(value):
+            found += scan_findings(v, f"{where}[{i}]")
+    elif isinstance(value, str):
+        found += [f"{where}: /{p.pattern}/" for p in SCAN_PHRASES if p.search(value)]
+        for kind, ranges in SCAN_CHARS.items():
+            hits = sorted({f"U+{ord(c):04X}" for c in value if any(lo <= ord(c) <= hi for lo, hi in ranges)})
+            if hits:
+                found.append(f"{where}: {kind} {' '.join(hits)}")
+    return found
+
+
+def mcp_scan(url):
+    """Scan what an MCP server tells an agent: its instructions, tools/list, and one call of
+    each tool that needs no arguments. Returns (verdict, detail)."""
+    session = {}
+    try:
+        _, init = mcp_rpc(url, session, {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
+            "protocolVersion": "2025-06-18", "capabilities": {},
+            "clientInfo": {"name": "ua-agent-check", "version": "1.0"}}})
+        if not (init or {}).get("result"):
+            return GREY, f"{url} did not answer initialize; nothing to scan (see 4)"
+        mcp_rpc(url, session, {"jsonrpc": "2.0", "method": "notifications/initialized"})
+        _, listed = mcp_rpc(url, session, {"jsonrpc": "2.0", "id": 2, "method": "tools/list"})
+        tools = (listed or {}).get("result", {}).get("tools") or []
+        if not tools:
+            return GREY, f"{url} lists no tools; nothing to scan (see 4)"
+        found = scan_findings(init["result"].get("instructions", ""), "instructions") + scan_findings(tools, "tools")
+        called = [t.get("name") for t in tools if not (t.get("inputSchema") or {}).get("required")]
+        for i, name in enumerate(called):
+            _, reply = mcp_rpc(url, session, {"jsonrpc": "2.0", "id": 3 + i, "method": "tools/call",
+                                              "params": {"name": name, "arguments": {}}})
+            found += scan_findings((reply or {}).get("result"), str(name))
+    except Exception as e:  # network, TLS, timeout
+        return GREY, f"{url} unreachable: {e}"
+    if found:
+        return FAIL, f"{len(found)} hits: " + "; ".join(found[:5])
+    return PASS, f"{len(tools)} tools and {len(called)} calls scanned: no hidden instructions, invisible Unicode or terminal controls"
 
 
 REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers"
@@ -335,6 +417,13 @@ def check_site(base):
                 record("10 MCP registry", PASS, f"{listed[0]} lists {candidates[0]}")
             else:
                 record("10 MCP registry", FAIL, f"no registry entry under {ns} lists {candidates[0]}")
+
+    # 11. MCP scan — nothing the server tells an agent hides an instruction (Island's manipulation risk).
+    if not candidates:
+        record("11 MCP scan", GREY, "no MCP endpoint advertised (see 4)")
+    else:
+        verdict, detail = mcp_scan(candidates[0])
+        record("11 MCP scan", verdict, detail)
 
     return results
 

@@ -1,0 +1,4 @@
+Contact: mailto:hello@universalagents.ai
+Expires: 2027-09-28T00:00:00.000Z
+Canonical: https://universalagents.ai/.well-known/security.txt
+Preferred-Languages: en
