@@ -8,21 +8,21 @@ Contact: [hello@universalagents.ai](mailto:hello@universalagents.ai) · [LinkedI
 
 ### Our mission
 
-Scale your agency's expertise from a few to everyone.
+Help every business become an agent.
 
-Agent speed changes everything. Decisions and insights in minutes, not weeks. We've spent the last two years learning how to build agentic systems so we can help agencies harness their intelligence.
+Agent speed changes everything. Decisions and insights in minutes, not weeks. We've spent the last two years learning how to build agentic systems so we can help companies harness their intelligence.
 
 We've learned what works. And what doesn't.
 
-## Introducing the paid pilot
+## Introducing Agent Sprint
 
-A pilot, not a platform bet.
+Your intelligence, in one agentic brain.
 
-One quarter, measured, then expand. Every engagement starts as a paid pilot of 8 to 10 weeks. The output is an agentic brain that understands how your business operates. A single source of truth to power every system you run.
+A structured sprint to encode your expertise. The output is not a strategy deck — it's an agentic brain that understands how your business operates. A single source of intelligence to power every system you run.
 
-- **Sprint.** The Agent Sprint sets up your brain. We learn how your agency works and write down your playbook: your brand system and your plays. We set a baseline, so December is a number and not a feeling.
-- **Build.** We build Living Blocks with the people who know the work. A Living Block is your skill, packaged so a coworker can do it the way you do: your pro moves, credited to you.
-- **Roll out.** Your team works with it on live jobs. The universal agent runs requests through your playbook: your best strategist's method in the hands of a junior on a Tuesday afternoon.
+- **Shape.** We learn how your team is organized and how they work. Your identity, methods, and domain knowledge. We shape a roadmap and define the architecture of your agentic brain.
+- **Share.** Your team shares their expertise to create the skills that power your AI. We call these Living Blocks. Each one built on the structure we shaped together, each one tethered to the person who knows the work best.
+- **Scale.** Your agents are live. Every client engagement now carries the quality your reputation was built on. Agent speed. Human agency. And every engagement makes them smarter.
 
 ## Our stack
 
