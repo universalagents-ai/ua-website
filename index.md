@@ -36,19 +36,19 @@ Agent readiness is a spectrum. Most businesses use AI for simple tasks like rese
 
 ### How do agents work with my team?
 
-Augmentation, not replacement. Think of agents like specialist teammates who do heavy lifting, provide thought starters or watch for market signals 24/7. Your team stays in control, agents simply multiply their output.
+Augmentation, not replacement. Your people are the one thing nobody can copy. Agents do the heavy lifting; the universal agent flags what needs a person and leaves the decision to them.
 
 ### What industries do you work with?
 
-Built for knowledge work. Our experience is building for creative teams that perform routine deep analysis, own client creative briefs, provide strategic market insights and reporting. Agencies, media companies, and in-house marketing teams. And because we've trained for this industry, we can easily support teams that execute in regulation-based industries.
+Built for agencies. Independent creative agencies. Shaped by an 80-person independent agency. Shaped with a 10-person boutique.
 
 ### How long does it take?
 
-A complete change within a quarter. We start with a four to six week engagement to assess the value we can create and start building. Following that, our engagement typically continues as we collaboratively execute against your AI roadmap. Then we support the transition to your team.
+A pilot, not a platform bet. A paid pilot of 8 to 10 weeks, inside one budget quarter. The Agent Sprint sets up your brain, then we build out and roll out with your team. After that, rollout continues and we support the transition to your team.
 
 ### What makes UA different?
 
-Agents designed with you. Most AI companies either build custom solutions or sell out-of-the-box products you adapt to. Instead we customize our systems to you. Through our Agent Sprint, we quickly understand the nuance of how you work and build agent systems that feel like a natural extension of your process.
+Your brain is owned. Models like Claude or ChatGPT are rented. Your brain is owned: your playbook and your Living Blocks live in your own repository, on open standards, portable to anything. Your independence is the thing we're amplifying, not something you trade away to get this.
 
 ### What happens to our proprietary thinking inside these systems?
 
@@ -60,7 +60,7 @@ Adoption is a change problem, not a technology problem. In the Agent Sprint, we 
 
 ## Interplay
 
-Our modular intelligence platform. Interplay gives your team an interface to centralize your expertise, custom to your company. It's where your Living Blocks live, grow, and connect. [Explore Interplay](https://universalagents.ai/interplay.md)
+Your agency in your pocket. Interplay is your agency's living library and playbook, with one universal agent that understands your business. [Explore Interplay](https://universalagents.ai/interplay.md)
 
 ## How we build
 
