@@ -74,6 +74,16 @@ export const TRUST = {
   data_reach: PROVENANCE.server.data_reach,
   auth: PROVENANCE.server.auth,
   attestations: PROVENANCE.server.attestations,
+  signed: PROVENANCE.server.signed,
+  // The provenance and agent_may fields every reply carries, as a versioned field set: a change to
+  // their shape is a new provenance_schema number.
+  provenance_schema: 1,
+  fields: {
+    provenance: 'answer_type (code, pricing or product); authors, each with name and title; the one accountable person, with name, title and contact; for pricing and product answers, the ua-brain source (repo, path) and the date it took effect. answer_faq carries it on the reply and on each answer.',
+    agent_may: 'What an agent may do with the answer unsupervised: level, label and note, a level on the Delegation Map Trust Scale, 1 Tell to 7 Hands Off.',
+    levels: PROVENANCE.delegation_map.levels,
+  },
+  page: `${PROVENANCE.server.operator.website}/trust`,
 };
 
 // Replies are data: every tool declares the shape of what it returns, and no field carries
@@ -95,7 +105,7 @@ const stamped = (...types) => ({
   },
 });
 
-const TOOLS = [
+export const TOOLS = [
   {
     name: 'about_universal_agents',
     title: 'About Universal Agents',
