@@ -7,7 +7,8 @@ pass, fail, or couldnt-check. An unrunnable check never passes.
 Checks 1-5: can an agent use the site cold. Checks 6-8 (numbered 8-10 in the
 roadmap): structured data, a published agent-traffic report, an MCP registry listing.
 Check 11: the MCP server's instructions, tools and replies carry no hidden instructions,
-invisible Unicode or terminal controls.
+invisible Unicode or terminal controls. Check 12: /.well-known/ard.json passes the official
+ARD conformance tester (vendored in scripts/vendor/ard-conformance/) with no errors or warnings.
 
 Usage: python3 scripts/agent-check.py [https://universalagents.ai ...]
 Exit:  0 all pass · 1 any fail · 2 no fail, but something couldn't be checked
@@ -15,8 +16,11 @@ Stdlib only, to match the site's no-npm stance.
 """
 import html
 import json
+import os
 import re
+import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.request
 import urllib.robotparser
@@ -207,6 +211,42 @@ def mcp_scan(url):
     if found:
         return FAIL, f"{len(found)} hits: " + "; ".join(found[:5])
     return PASS, f"{len(tools)} tools and {len(called)} calls scanned: no hidden instructions, invisible Unicode or terminal controls"
+
+
+ARD_TESTER = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "vendor", "ard-conformance", "conformance", "bin", "conformance-test")
+# The tester exits 0 with warnings too, so its summary line is what says "no warnings".
+ARD_SUMMARY = re.compile(r"Validated with (\d+) critical specification errors and (\d+) warnings")
+
+
+def ard_check(base, tester=ARD_TESTER):
+    """Fetch /.well-known/ard.json and run the vendored ARD tester on it in manifest mode.
+    Returns (verdict, detail). No tester, or no network, is couldnt-check, never pass."""
+    if not os.path.isfile(tester):
+        return GREY, f"ARD conformance tester not found at {tester}"
+    url = urljoin(base.rstrip("/") + "/", ".well-known/ard.json")
+    status, _, body = fetch(url)
+    if status is None:
+        return GREY, f"{url} unreachable: {body}"
+    if status != 200:
+        return FAIL, f"{url}: status {status}"
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
+        f.write(body)
+    try:
+        run = subprocess.run([sys.executable, tester, "manifest", f.name], capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.SubprocessError) as e:
+        return GREY, f"ARD conformance tester did not run: {e}"
+    finally:
+        os.unlink(f.name)
+    summary = ARD_SUMMARY.search(run.stdout)
+    if run.returncode == 0 and summary and summary.group(2) == "0":
+        return PASS, f"{url}: 0 errors, 0 warnings (ARD tester, spec v0.91)"
+    if run.returncode == 0 and summary:
+        return FAIL, f"{url}: conformant, but {summary.group(2)} warnings"
+    errors = re.search(r"Found (\d+) critical specification errors", run.stdout)
+    if run.returncode == 1 and errors:
+        return FAIL, f"{url}: {errors.group(1)} errors"
+    return GREY, f"ARD conformance tester gave no verdict (exit {run.returncode})"
 
 
 REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers"
@@ -424,6 +464,10 @@ def check_site(base):
     else:
         verdict, detail = mcp_scan(candidates[0])
         record("11 MCP scan", verdict, detail)
+
+    # 12. ARD — the site's catalog of agentic resources passes the official conformance tester.
+    verdict, detail = ard_check(base)
+    record("12 ARD manifest", verdict, detail)
 
     return results
 

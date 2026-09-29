@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Who stands behind the Universal Agents MCP server and each answer it gives, what its provenance and agent_may fields mean, and what we do and do not hold.">
+  <meta name="theme-color" content="#f8f8f8">
+  <meta name="color-scheme" content="light">
+  <title>Trust — Universal Agents</title>
+
+  <link rel="canonical" href="https://universalagents.ai/trust">
+  <link rel="ard" href="/.well-known/ard.json">
+  <link rel="alternate" type="text/markdown" href="/trust.md">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+
+  <style>
+    @font-face {
+      font-family: 'GeistMono';
+      src: url('assets/fonts/GeistMono-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'GeistMono';
+      src: url('assets/fonts/GeistMono-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --ua-mint: #3FFF8C;
+      --ua-black: #0a0a0a;
+      --ua-gray: #787878;
+      --ip-dark: #1a1a1a;
+      --ip-border: rgba(0, 0, 0, 0.08);
+      --ip-bg: #f8f8f8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--ip-bg);
+      color: var(--ip-dark);
+      font-family: 'GeistMono', monospace;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    .skip-link { position: absolute; left: -9999px; }
+    .skip-link:focus { left: 1rem; top: 1rem; background: var(--ua-mint); color: var(--ua-black); padding: 0.5rem; }
+
+    .trust__bar, .trust, .trust__footer { max-width: 46rem; margin: 0 auto; padding: 0 1.5rem; }
+    .trust__bar { padding-block: 1.5rem; }
+    .trust__home { color: var(--ua-black); font-weight: 700; text-decoration: none; }
+
+    .trust h1 { font-size: 1.75rem; line-height: 1.2; margin: 2rem 0 1rem; }
+    .trust h2 { font-size: 1.125rem; margin: 2.5rem 0 0.75rem; padding-top: 1.5rem; border-top: 1px solid var(--ip-border); }
+    .trust h3 { font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+    .trust__lede { color: var(--ua-gray); }
+    .trust ul { padding-left: 1.25rem; }
+    .trust li { margin-bottom: 0.4rem; }
+    .trust a { color: inherit; text-underline-offset: 0.2em; }
+    .trust code { background: rgba(63, 255, 140, 0.25); padding: 0 0.2em; }
+
+    .trust__footer { color: var(--ua-gray); padding-block: 3rem; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="trust__bar">
+    <a class="trust__home" href="/">Universal Agents</a>
+  </header>
+
+  <main id="main" class="trust">
+<!-- @trust -->
+  </main>
+
+  <footer class="trust__footer">
+    <p>Also as markdown: <a href="/trust.md">/trust.md</a>. &copy; 2026 Universal Agents</p>
+  </footer>
+</body>
+</html>

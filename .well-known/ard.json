@@ -1,0 +1,53 @@
+{
+  "entries": [
+    {
+      "identifier": "urn:air:universalagents.ai:mcp:universal-agents",
+      "displayName": "Universal Agents",
+      "type": "application/mcp-server-card+json",
+      "url": "https://universalagents.ai/.well-known/mcp/server-card.json",
+      "description": "Ask Universal Agents what we sell, our pricing, and common questions; draft an intro email. Read-only.",
+      "capabilities": [
+        "about_universal_agents",
+        "get_pricing",
+        "answer_faq",
+        "request_intro"
+      ],
+      "representativeQueries": [
+        "what does Universal Agents sell",
+        "how much does an Interplay pilot cost",
+        "how does Universal Agents keep agency data safe",
+        "draft an intro email to Universal Agents for my agency"
+      ],
+      "trustManifest": {
+        "identity": "universalagents.ai",
+        "accountable": {
+          "name": "Stu Amos",
+          "title": "Founder, CEO",
+          "contact": "hello@universalagents.ai"
+        },
+        "codeAuthors": [
+          {
+            "name": "Stu Amos",
+            "title": "Founder, CEO"
+          },
+          {
+            "name": "Mathew Wendell",
+            "title": "Co-founder, COO"
+          },
+          {
+            "name": "Ingo Eichhorst",
+            "title": "CTO"
+          },
+          {
+            "name": "Mario Jembrih",
+            "title": "Systems Architect"
+          }
+        ],
+        "attestations": [],
+        "statement": "No attestation or signature is held. None held: no SOC 2, ISO 27001 or similar certification or audit. Nothing is signed: not the server card, the ARD manifest or the replies.",
+        "provenanceSchema": 1,
+        "documentationUrl": "https://universalagents.ai/trust"
+      }
+    }
+  ]
+}

@@ -31,6 +31,14 @@
     {
       "source": "/interplay",
       "destination": "/interplay.html"
+    },
+    {
+      "source": "/trust",
+      "destination": "/trust.html"
+    },
+    {
+      "source": "/.well-known/mcp/server-card.json",
+      "destination": "/.well-known/mcp.json"
     }
   ],
   "headers": [
@@ -54,6 +62,32 @@
     },
     {
       "source": "/.well-known/mcp.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/.well-known/mcp/server-card.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/.well-known/ard.json",
       "headers": [
         {
           "key": "Content-Type",

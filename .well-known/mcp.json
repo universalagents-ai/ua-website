@@ -56,6 +56,27 @@
     "attestations": {
       "held": [],
       "statement": "None held: no SOC 2, ISO 27001 or similar certification or audit."
-    }
+    },
+    "signed": "Nothing is signed: not the server card, the ARD manifest or the replies.",
+    "provenance_schema": 1,
+    "fields": {
+      "provenance": "answer_type (code, pricing or product); authors, each with name and title; the one accountable person, with name, title and contact; for pricing and product answers, the ua-brain source (repo, path) and the date it took effect. answer_faq carries it on the reply and on each answer.",
+      "agent_may": "What an agent may do with the answer unsupervised: level, label and note, a level on the Delegation Map Trust Scale, 1 Tell to 7 Hands Off.",
+      "levels": {
+        "1": {
+          "label": "Tell",
+          "means": "The agent may pass the answer on as stated, without asking anyone."
+        },
+        "3": {
+          "label": "Consult",
+          "means": "The agent may propose; the person decides and acts."
+        },
+        "7": {
+          "label": "Hands Off",
+          "means": "The agent does not act: the matter goes to the accountable person via the contact."
+        }
+      }
+    },
+    "page": "https://universalagents.ai/trust"
   }
 }
