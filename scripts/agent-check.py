@@ -35,6 +35,19 @@ MIN_WORDS = 150
 PASS, FAIL, GREY = "pass", "fail", "couldnt-check"
 
 
+class _FollowAll(urllib.request.HTTPRedirectHandler):
+    """Follow 308 like 307 — agents do, and Python before 3.11 does not."""
+    def http_error_308(self, req, fp, code, msg, headers):
+        return self.http_error_307(req, fp, code, msg, headers)
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if code == 308:
+            code = 307
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+urllib.request.install_opener(urllib.request.build_opener(_FollowAll))
+
 def fetch(url, agent="ClaudeBot", accept="*/*"):
     """Return (status, content_type, body) or (None, None, error-text)."""
     req = urllib.request.Request(url, headers={"User-Agent": AGENTS[agent], "Accept": accept})
