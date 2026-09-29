@@ -9,6 +9,7 @@ Exit:  0 all pass · 1 any fail · 2 no fail, but something couldn't be checked
 Stdlib only, to match the site's no-npm stance.
 """
 import html
+import json
 import re
 import sys
 import urllib.error
@@ -44,6 +45,59 @@ def fetch(url, agent="ClaudeBot", accept="*/*"):
         return e.code, e.headers.get("Content-Type", ""), e.read(200_000).decode("utf-8", "replace")
     except Exception as e:  # network, TLS, timeout
         return None, None, str(e)
+
+
+def mcp_probe(url):
+    """Talk to an MCP endpoint the way an agent would: initialize, list tools, call one.
+
+    Returns (verdict, detail). Finding an address proves nothing; only a working call passes.
+    """
+    session = {}
+
+    def rpc(payload):
+        headers = {"User-Agent": AGENTS["Claude-User"], "Content-Type": "application/json",
+                   "Accept": "application/json, text/event-stream", **session}
+        req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r:
+                if r.headers.get("Mcp-Session-Id"):
+                    session["Mcp-Session-Id"] = r.headers["Mcp-Session-Id"]
+                text = r.read(1_000_000).decode("utf-8", "replace")
+                if r.status == 202 or not text.strip():
+                    return r.status, None
+                if "event-stream" in (r.headers.get("Content-Type") or ""):
+                    data = [l[5:].strip() for l in text.splitlines() if l.startswith("data:")]
+                    text = data[-1] if data else "null"
+                return r.status, json.loads(text)
+        except urllib.error.HTTPError as e:
+            return e.code, None
+        except (ValueError, json.JSONDecodeError):
+            return 200, None
+
+    try:
+        status, init = rpc({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
+            "protocolVersion": "2025-06-18", "capabilities": {},
+            "clientInfo": {"name": "ua-agent-check", "version": "1.0"}}})
+    except Exception as e:  # network, TLS, timeout
+        return GREY, f"{url} unreachable: {e}"
+    if status in (401, 403):
+        return GREY, f"{url} needs auth ({status}); tools not verifiable cold"
+    if not (init or {}).get("result", {}).get("protocolVersion"):
+        return FAIL, f"{url} did not answer initialize (status {status})"
+    rpc({"jsonrpc": "2.0", "method": "notifications/initialized"})
+    _, listed = rpc({"jsonrpc": "2.0", "id": 2, "method": "tools/list"})
+    tools = (listed or {}).get("result", {}).get("tools") or []
+    if not tools:
+        return FAIL, f"{url} initialized but lists no tools"
+    callable_ = [t for t in tools if not (t.get("inputSchema") or {}).get("required")]
+    if not callable_:
+        return PASS, f"{url}: {len(tools)} tools (none callable without arguments, so none called)"
+    tool = callable_[0]["name"]
+    _, called = rpc({"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": tool, "arguments": {}}})
+    result = (called or {}).get("result") or {}
+    if result.get("isError") or not result.get("content"):
+        return FAIL, f"{url}: {len(tools)} tools, but calling {tool} returned no content"
+    return PASS, f"{url}: {len(tools)} tools; called {tool} and got an answer"
 
 
 def visible_text(page):
@@ -115,14 +169,22 @@ def check_site(base):
     m = PRICE.search(corpus)
     record("3 find the price", PASS if m else FAIL, f"found '{m.group(0).strip()}'" if m else "no price in text")
 
-    # 4. Use the product — a discoverable MCP endpoint.
-    wk_status, wk_type, _ = fetch(urljoin(base, ".well-known/mcp.json"))
-    wk_ok = wk_status == 200 and "json" in (wk_type or "")  # an HTML fallback is not a manifest
-    m = MCP.search(corpus)
-    if m or wk_ok:
-        record("4 use the product (MCP)", PASS, m.group(0) if m else "/.well-known/mcp.json")
-    else:
+    # 4. Use the product — an advertised MCP endpoint that actually answers.
+    candidates = []
+    wk_status, wk_type, wk_body = fetch(urljoin(base, ".well-known/mcp.json"))
+    if wk_status == 200 and "json" in (wk_type or ""):  # an HTML fallback is not a manifest
+        try:
+            card_url = json.loads(wk_body).get("url")
+            if card_url:
+                candidates.append(card_url)
+        except (ValueError, AttributeError):
+            pass
+    candidates += [u for u in MCP.findall(corpus) if u not in candidates]
+    if not candidates:
         record("4 use the product (MCP)", FAIL, "no MCP endpoint in llms.txt, page text or /.well-known/mcp.json")
+    else:
+        verdict, detail = mcp_probe(candidates[0])
+        record("4 use the product (MCP)", verdict, detail)
 
     # 5. Next step — a link in llms.txt an agent can act on for its person.
     if not has_llms:

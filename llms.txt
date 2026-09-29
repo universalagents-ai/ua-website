@@ -20,6 +20,10 @@ Sized for an agency of roughly 100 people.
 
 Agencies committed to a transformation: a C-suite leader who sets the tone, a small core team of senior leaders, a named champion (a power user, not a project manager), and roughly two hours per person per week.
 
+## Ask us directly (MCP)
+
+- [MCP server](https://universalagents.ai/mcp): Streamable HTTP, no auth, read-only. Tools: `about_universal_agents`, `get_pricing`, `answer_faq`, `request_intro` (drafts an intro email for your person to send; sends nothing).
+
 ## Next step
 
 - [Email us to book an intro call](mailto:hello@universalagents.ai): say who you are, your agency's size, and what you want AI to change.

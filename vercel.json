@@ -21,6 +21,10 @@
   ],
   "rewrites": [
     {
+      "source": "/mcp",
+      "destination": "/api/mcp"
+    },
+    {
       "source": "/",
       "has": [
         {
@@ -63,6 +67,19 @@
         {
           "key": "Content-Type",
           "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/.well-known/mcp.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         }
       ]
     }
