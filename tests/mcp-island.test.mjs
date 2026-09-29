@@ -154,13 +154,13 @@ test('one audit line per tools/call carries the tool name and client name, never
   const args = { name: 'Sam Secretname', agency: 'Hushhush Ltd', size: 'forty-two', goal: 'secret-goal@example.com' };
   const { logs } = await rpc('tools/call', { name: 'request_intro', arguments: args }, { 'mcp-session-id': session });
   assert.equal(logs.length, 1, 'exactly one line per tools/call');
+  for (const value of Object.values(args)) assert.ok(!logs[0].includes(value), `argument leaked into the log: ${value}`);
   const line = JSON.parse(logs[0]);
   assert.equal(line.evt, 'mcp-call');
   assert.equal(line.tool, 'request_intro');
   assert.deepEqual(line.client, { name: 'audit-test-client', version: '9.9' });
   assert.equal(line.outcome, 'ok');
   assert.ok(!Number.isNaN(Date.parse(line.ts)), 'carries a timestamp');
-  for (const value of Object.values(args)) assert.ok(!logs[0].includes(value), `argument leaked into the log: ${value}`);
 });
 
 test('.well-known/security.txt exists with Contact and a future Expires', () => {
