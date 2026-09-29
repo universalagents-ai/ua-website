@@ -6,6 +6,8 @@
     "build": "node build.mjs"
   },
   "dependencies": {
+    "@vercel/blob": "^2.8.0",
+    "@vercel/functions": "^3.9.9",
     "sharp": "^0.34.5"
   }
 }

@@ -25,6 +25,10 @@
       "destination": "/api/mcp"
     },
     {
+      "source": "/.well-known/agent-traffic.json",
+      "destination": "/api/agent-traffic"
+    },
+    {
       "source": "/interplay",
       "destination": "/interplay.html"
     }
@@ -75,5 +79,11 @@
     "api/mcp.mjs": {
       "includeFiles": "llms.txt"
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron-agent-traffic",
+      "schedule": "15 6 * * *"
+    }
+  ]
 }
