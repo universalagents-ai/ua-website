@@ -1,0 +1,14 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.universalagents/universal-agents",
+  "title": "Universal Agents",
+  "description": "Ask Universal Agents what we sell (Interplay), pricing, and FAQs; draft an intro email.",
+  "version": "1.1.0",
+  "websiteUrl": "https://universalagents.ai",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://universalagents.ai/mcp"
+    }
+  ]
+}

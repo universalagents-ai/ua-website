@@ -4,6 +4,9 @@
 Fetches a site the way AI agents do and reports each check as
 pass, fail, or couldnt-check. An unrunnable check never passes.
 
+Checks 1-5: can an agent use the site cold. Checks 6-8 (numbered 8-10 in the
+roadmap): structured data, a published agent-traffic report, an MCP registry listing.
+
 Usage: python3 scripts/agent-check.py [https://universalagents.ai ...]
 Exit:  0 all pass · 1 any fail · 2 no fail, but something couldn't be checked
 Stdlib only, to match the site's no-npm stance.
@@ -122,6 +125,52 @@ def mcp_probe(url):
     return PASS, f"{url}: {len(tools)} tools; called {tool} and got an answer"
 
 
+REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers"
+LD_JSON = re.compile(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.S | re.I)
+MONEY = re.compile(r"\$\s?(\d[\d,.]*)\s?([kK])?(?:\s?[–-]\s?\$?(\d[\d,.]*)\s?([kK])?)?")
+
+
+def money_values(text):
+    """Every dollar amount in text, with ranges expanded ('$24–28K' -> 24000, 28000)."""
+    out = set()
+    for lo, lo_k, hi, hi_k in MONEY.findall(text):
+        k = 1000 if (lo_k or hi_k) else 1
+        out.add(round(float(lo.replace(",", "")) * (1000 if lo_k else k)))
+        if hi:
+            out.add(round(float(hi.replace(",", "")) * (1000 if hi_k else 1)))
+    return out
+
+
+def ld_nodes(page):
+    """All JSON-LD nodes on a page, flattened out of @graph."""
+    nodes = []
+    for block in LD_JSON.findall(page):
+        try:
+            data = json.loads(block)
+        except ValueError:
+            continue
+        for item in data if isinstance(data, list) else [data]:
+            nodes += item.get("@graph", [item]) if isinstance(item, dict) else []
+    return nodes
+
+
+def ld_prices(node, found=None):
+    found = set() if found is None else found
+    if isinstance(node, dict):
+        for key in ("price", "minPrice", "maxPrice"):
+            if isinstance(node.get(key), (int, float)) or str(node.get(key, "")).replace(".", "").isdigit():
+                found.add(round(float(node[key])))
+        for v in node.values():
+            ld_prices(v, found)
+    elif isinstance(node, list):
+        for v in node:
+            ld_prices(v, found)
+    return found
+
+
+def reverse_dns(host):
+    return ".".join(reversed(host.removeprefix("www.").split(".")))
+
 def visible_text(page):
     page = re.sub(r"(?is)<(script|style|noscript|template|svg)[^>]*>.*?</\1>", " ", page)
     return html.unescape(re.sub(r"<[^>]+>", " ", page))
@@ -217,6 +266,73 @@ def check_site(base):
     else:
         m = NEXT_STEP.search(llms)
         record("5 next step", PASS if m else FAIL, m.group(1) if m else "no contact / book / trial link in llms.txt")
+
+
+    # 8. Structured data — schema.org JSON-LD names the organization, and any price in it
+    #    matches llms.txt (prices have drifted between copies here before).
+    pages = [home or ""]
+    links = set()
+    for href in re.findall(r'href="([^"#?]+)"', home or ""):
+        u = urljoin(base, href)
+        if urlparse(u).netloc == urlparse(base).netloc and not re.search(r"\.(css|js|png|svg|ico|jpg|mp4|xml|txt|md|json)$", u) \
+                and u.rstrip("/") != base.rstrip("/"):
+            links.add(u)
+    for u in sorted(links)[:5]:
+        _, _, body = fetch(u)
+        pages.append(body or "")
+    nodes = [n for p in pages for n in ld_nodes(p)]
+    orgs = [n for n in nodes if "Organization" in str(n.get("@type")) and n.get("name") and n.get("url")]
+    ld_money = ld_prices(nodes)
+    if home is None:
+        record("8 structured data", GREY, "no agent got the page")
+    elif not orgs:
+        record("8 structured data", FAIL, f"no schema.org Organization with name and url ({len(nodes)} JSON-LD nodes)")
+    elif ld_money and has_llms and not ld_money <= money_values(llms):
+        record("8 structured data", FAIL, f"JSON-LD prices {sorted(ld_money - money_values(llms))} are not in llms.txt")
+    else:
+        extra = f"; {len(ld_money)} prices, all match llms.txt" if ld_money and has_llms else ""
+        record("8 structured data", PASS, f"Organization '{orgs[0]['name']}' in {len(nodes)} JSON-LD nodes{extra}")
+
+    # 9. Agent traffic — the site publishes which AI platforms read it. Private logs can't be
+    #    seen from outside, so without a public report this is couldnt-check, never pass.
+    t_status, t_type, t_body = fetch(urljoin(base, ".well-known/agent-traffic.json"))
+    report = None
+    if t_status == 200 and "json" in (t_type or ""):
+        try:
+            report = json.loads(t_body)
+        except ValueError:
+            report = None
+    if report is None:
+        record("9 agent traffic", GREY, "no public /.well-known/agent-traffic.json; any logging is invisible from outside")
+    else:
+        from datetime import datetime, timezone
+        try:
+            age = (datetime.now(timezone.utc) - datetime.fromisoformat(str(report.get("updated")).replace("Z", "+00:00"))).days
+        except ValueError:
+            age = None
+        platforms = report.get("platforms") or {}
+        if age is None:
+            record("9 agent traffic", FAIL, "report has no valid 'updated' timestamp")
+        elif age > 7:
+            record("9 agent traffic", FAIL, f"report is {age} days old")
+        else:
+            record("9 agent traffic", PASS, f"report updated {age}d ago; platforms: {', '.join(sorted(platforms)) or 'none yet'}")
+
+    # 10. Registry — the advertised MCP endpoint is listed in the official MCP registry.
+    if not candidates:
+        record("10 MCP registry", GREY, "no MCP endpoint advertised (see 4)")
+    else:
+        ns = reverse_dns(urlparse(base).netloc)
+        r_status, _, r_body = fetch(f"{REGISTRY}?search={ns}&limit=100")
+        if r_status != 200:
+            record("10 MCP registry", GREY, f"registry unreachable (status {r_status})")
+        else:
+            entries = [e.get("server", e) for e in json.loads(r_body).get("servers", [])]
+            listed = [e["name"] for e in entries if any(r.get("url") == candidates[0] for r in e.get("remotes") or [])]
+            if listed:
+                record("10 MCP registry", PASS, f"{listed[0]} lists {candidates[0]}")
+            else:
+                record("10 MCP registry", FAIL, f"no registry entry under {ns} lists {candidates[0]}")
 
     return results
 
