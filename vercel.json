@@ -61,5 +61,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/mcp.mjs": {
+      "includeFiles": "llms.txt"
+    }
+  }
 }
