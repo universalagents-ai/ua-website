@@ -8,21 +8,21 @@ Contact: [hello@universalagents.ai](mailto:hello@universalagents.ai) · [LinkedI
 
 ### Our mission
 
-Help every business become an agent.
+Scale your agency's expertise from a few to everyone.
 
-Agent speed changes everything. Decisions and insights in minutes, not weeks. We've spent the last two years learning how to build agentic systems so we can help companies harness their intelligence.
+Agent speed changes everything. Decisions and insights in minutes, not weeks. We've spent the last two years learning how to build agentic systems so we can help agencies harness their intelligence.
 
 We've learned what works. And what doesn't.
 
-## Introducing Agent Sprint
+## Introducing the paid pilot
 
-Your intelligence, in one agentic brain.
+A pilot, not a platform bet.
 
-A structured sprint to encode your expertise. The output is not a strategy deck — it's an agentic brain that understands how your business operates. A single source of intelligence to power every system you run.
+One quarter, measured, then expand. Every engagement starts as a paid pilot of 8 to 10 weeks. The output is an agentic brain that understands how your business operates. A single source of truth to power every system you run.
 
-- **Shape.** We learn how your team is organized and how they work. Your identity, methods, and domain knowledge. We shape a roadmap and define the architecture of your agentic brain.
-- **Share.** Your team shares their expertise to create the skills that power your AI. We call these Living Blocks. Each one built on the structure we shaped together, each one tethered to the person who knows the work best.
-- **Scale.** Your agents are live. Every client engagement now carries the quality your reputation was built on. Agent speed. Human agency. And every engagement makes them smarter.
+- **Sprint.** The Agent Sprint sets up your brain. We learn how your agency works and write down your playbook: your brand system and your plays. We set a baseline, so December is a number and not a feeling.
+- **Build.** We build Living Blocks with the people who know the work. A Living Block is your skill, packaged so a coworker can do it the way you do: your pro moves, credited to you.
+- **Roll out.** Your team works with it on live jobs. The universal agent runs requests through your playbook: your best strategist's method in the hands of a junior on a Tuesday afternoon.
 
 ## Our stack
 
@@ -36,19 +36,19 @@ Agent readiness is a spectrum. Most businesses use AI for simple tasks like rese
 
 ### How do agents work with my team?
 
-Augmentation, not replacement. Think of agents like specialist teammates who do heavy lifting, provide thought starters or watch for market signals 24/7. Your team stays in control, agents simply multiply their output.
+Augmentation, not replacement. Your people are the one thing nobody can copy. Agents do the heavy lifting; the universal agent flags what needs a person and leaves the decision to them.
 
 ### What industries do you work with?
 
-Built for knowledge work. Our experience is building for creative teams that perform routine deep analysis, own client creative briefs, provide strategic market insights and reporting. Agencies, media companies, and in-house marketing teams. And because we've trained for this industry, we can easily support teams that execute in regulation-based industries.
+Built for agencies. Independent creative agencies. Shaped by an 80-person independent agency. Shaped with a 10-person boutique.
 
 ### How long does it take?
 
-A complete change within a quarter. We start with a four to six week engagement to assess the value we can create and start building. Following that, our engagement typically continues as we collaboratively execute against your AI roadmap. Then we support the transition to your team.
+A pilot, not a platform bet. A paid pilot of 8 to 10 weeks, inside one budget quarter. The Agent Sprint sets up your brain, then we build out and roll out with your team. After that, rollout continues and we support the transition to your team.
 
 ### What makes UA different?
 
-Agents designed with you. Most AI companies either build custom solutions or sell out-of-the-box products you adapt to. Instead we customize our systems to you. Through our Agent Sprint, we quickly understand the nuance of how you work and build agent systems that feel like a natural extension of your process.
+Your brain is owned. Models like Claude or ChatGPT are rented. Your brain is owned: your playbook and your Living Blocks live in your own repository, on open standards, portable to anything. Your independence is the thing we're amplifying, not something you trade away to get this.
 
 ### What happens to our proprietary thinking inside these systems?
 
@@ -60,7 +60,7 @@ Adoption is a change problem, not a technology problem. In the Agent Sprint, we 
 
 ## Interplay
 
-Our modular intelligence platform. Interplay gives your team an interface to centralize your expertise, custom to your company. It's where your Living Blocks live, grow, and connect. [Explore Interplay](https://universalagents.ai/interplay.md)
+Your agency in your pocket. Interplay is your agency's living library and playbook, with one universal agent that understands your business. [Explore Interplay](https://universalagents.ai/interplay.md)
 
 ## How we build
 

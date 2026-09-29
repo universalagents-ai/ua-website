@@ -1,6 +1,6 @@
-# Interplay — Own your intelligence
+# Interplay — Your agency in your pocket
 
-> A modular AI operating system built for how agencies actually work.
+> Your agency's living library and playbook, with one universal agent that understands your business.
 
 Contact: [hello@universalagents.ai](mailto:hello@universalagents.ai) · Summary for agents: [llms.txt](https://universalagents.ai/llms.txt) · [Home](https://universalagents.ai/index.md)
 
@@ -16,15 +16,15 @@ Holding companies have poured $12 billion+ into proprietary AI platforms. We bel
 
 ## Introducing Interplay
 
-A modular AI operating system built for how agencies actually work. Cross-model, cross-platform infrastructure designed for total human ownership. More customization, more flexibility, more differentiated outcomes.
+Interplay is your agency's living library and playbook. Its gatekeeper is one universal agent that understands your business. It runs requests through your playbook to put your people's best work in everyone's hands, actively updating your knowledge library which gets smarter through use.
 
-Interplay lets teams shape, share and scale their expertise through self-contained units of customized intelligence called **Living Blocks**. Think modular building blocks meets distributed AI agents.
+A **Living Block** is your skill, packaged so a coworker can do it the way you do. Your pro moves, credited to you, and it only learns when someone approves the lesson.
 
 ## Interplay is available to all indies
 
 Universal Agents and Laughlin Constable have spent a year building and pressure-testing Interplay on real agency work. Shaping the platform, learning what actually matters when you put a more connected AI system in the hands of all agency thinkers and makers. We built it for independents because independent thinking is what makes Interplay different.
 
-We're now looking for alpha-phase agency partners to push Interplay through new, more varied and more complex agency use cases. You bring the expertise. We bring the infrastructure and process. Your team's intelligence becomes the system.
+Start with a **paid pilot**: 8 to 10 weeks for $24–28K, inside one budget quarter. A pilot, not a platform bet. One quarter, measured, then expand.
 
 [Get in touch: hello@universalagents.ai](mailto:hello@universalagents.ai)
 

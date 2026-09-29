@@ -72,8 +72,8 @@ Adoption is a change problem, not a technology problem. The Agent Sprint plans h
 
 ## Pages
 
-- [Home](https://universalagents.ai/index.md): mission, the Agent Sprint, our stack, FAQ
-- [Interplay](https://universalagents.ai/interplay.md): the platform, and alpha-phase agency partners
+- [Home](https://universalagents.ai/index.md): mission, the paid pilot, our stack, FAQ
+- [Interplay](https://universalagents.ai/interplay.md): the platform, Living Blocks, and how to start
 
 ## Optional
 
