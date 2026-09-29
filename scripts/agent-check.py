@@ -25,7 +25,8 @@ AGENTS = {
     "plain-http": "Python-urllib/3",
 }
 CHALLENGE = re.compile(r"Attention Required|Just a moment\.\.\.|cf-chl|challenge-platform|captcha", re.I)
-PRICE = re.compile(r"[$€£]\s?\d[\d,.]*\s?(k|K)?")
+# A price is an amount per something; a bare figure ("$490 million invested") is not a price.
+PRICE = re.compile(r"[$€£]\s?\d[\d,.]*\s?[kK]?\s*(?:/|per|a|an|each)\s*(?:month|mo|year|yr|seat|user|call|credit)\b", re.I)
 MCP = re.compile(r"https?://(?:mcp\.[^\s)\"'<>]+|[^\s)\"'<>]+/mcp/?)(?=[\s)\"'<>]|$)", re.I)
 NEXT_STEP = re.compile(r"\]\((mailto:[^)]+|https?://[^)]*(book|demo|contact|trial|sign-?up|get-started|calendly|cal\.com)[^)]*)\)", re.I)
 MIN_WORDS = 150
