@@ -77,4 +77,5 @@ Adoption is a change problem, not a technology problem. The Agent Sprint plans h
 
 ## Optional
 
+- [Which AI platforms read this site](https://universalagents.ai/.well-known/agent-traffic.json): rebuilt daily, days seen per platform and content type
 - [LinkedIn](https://www.linkedin.com/company/universal-agents)

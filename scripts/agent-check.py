@@ -34,6 +34,8 @@ PRICE = re.compile(r"[$€£]\s?\d[\d,.]*\s?[kK]?(?:\s?[–-]\s?[$€£]?\d[\d,.
 MCP = re.compile(r"https?://(?:mcp\.[^\s)\"'<>]+|[^\s)\"'<>]+/mcp/?)(?=[\s)\"'<>]|$)", re.I)
 NEXT_STEP = re.compile(r"\]\((mailto:[^)]+|https?://[^)]*(book|demo|contact|trial|sign-?up|get-started|calendly|cal\.com)[^)]*)\)", re.I)
 MIN_WORDS = 150
+# Announce ourselves so the site's agent-traffic log can leave our fake agents out.
+SELF = {"X-Agent-Check": "ua-agent-check"}
 
 PASS, FAIL, GREY = "pass", "fail", "couldnt-check"
 
@@ -53,7 +55,7 @@ urllib.request.install_opener(urllib.request.build_opener(_FollowAll))
 
 def fetch(url, agent="ClaudeBot", accept="*/*"):
     """Return (status, content_type, body) or (None, None, error-text)."""
-    req = urllib.request.Request(url, headers={"User-Agent": AGENTS[agent], "Accept": accept})
+    req = urllib.request.Request(url, headers={"User-Agent": AGENTS[agent], "Accept": accept, **SELF})
     try:
         with urllib.request.urlopen(req, timeout=20) as r:
             return r.status, r.headers.get("Content-Type", ""), r.read(2_000_000).decode("utf-8", "replace")
@@ -65,7 +67,7 @@ def fetch(url, agent="ClaudeBot", accept="*/*"):
 
 def final_url(url, agent):
     """Where a fetch actually lands after redirects, or None if it failed."""
-    req = urllib.request.Request(url, headers={"User-Agent": AGENTS[agent]})
+    req = urllib.request.Request(url, headers={"User-Agent": AGENTS[agent], **SELF})
     try:
         with urllib.request.urlopen(req, timeout=20) as r:
             return r.geturl()
@@ -81,7 +83,7 @@ def mcp_probe(url):
 
     def rpc(payload):
         headers = {"User-Agent": AGENTS["Claude-User"], "Content-Type": "application/json",
-                   "Accept": "application/json, text/event-stream", **session}
+                   "Accept": "application/json, text/event-stream", **SELF, **session}
         req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers, method="POST")
         try:
             with urllib.request.urlopen(req, timeout=20) as r:
