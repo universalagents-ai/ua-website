@@ -9,14 +9,14 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## Project Overview
 
-Universal Agents marketing website. Single-page static site with GSAP-powered animations.
+Universal Agents marketing website: two static pages with GSAP-powered animations, plus an agent layer (llms.txt, markdown mirrors, an MCP server, an AI-crawler log).
 
 ## Tech Stack
-- Plain HTML (single `index.html`)
+- Plain HTML pages built from `src/pages/` + `src/partials/` by `node build.mjs` into the root `index.html` / `interplay.html` (edit `src/`, never the built files)
 - GSAP 3.14.1 (CDN: gsap, ScrollTrigger, CustomEase, SplitText)
 - Lenis 1.18 (smooth scroll, CDN)
-- No framework, no bundler, no npm
-- Deployed via Vercel (static)
+- No framework or bundler. npm only for the two Vercel functions' dependencies (`@vercel/blob`, `@vercel/functions`)
+- Deployed by Vercel from GitHub: a merge to `main` deploys production; every PR gets a preview
 
 ## Brand Tokens
 ```css
@@ -57,11 +57,23 @@ Universal Agents marketing website. Single-page static site with GSAP-powered an
 
 ## File Structure
 ```
-index.html          # Everything — markup, styles, scripts
-assets/fonts/       # GeistMono TTF files
-assets/svg/         # SVG assets
-.vercel/            # Vercel project config (gitignored)
+src/pages/          # Page sources: markup, styles, scripts (edit these)
+src/partials/       # Nav, footer, wordmark, spliced in by build.mjs
+index.html, interplay.html  # Built output (committed; Vercel serves the repo root)
+llms.txt            # The agent summary, and the single source the MCP server reads
+index.md, interplay.md      # Markdown mirrors of the pages (served on Accept: text/markdown)
+api/mcp.mjs         # MCP server at /mcp (answers read from llms.txt)
+api/agent-traffic.mjs, api/cron-agent-traffic.mjs, lib/agent-traffic.mjs  # AI-crawler log + daily report
+middleware.js       # Markdown negotiation + AI-crawler sightings
+.well-known/        # mcp.json server card, mcp-registry-auth key
+server.json         # The official MCP registry entry
+scripts/agent-check.py      # Agent-readiness check: python3 scripts/agent-check.py https://universalagents.ai
+assets/fonts/, assets/svg/, assets/video/
 ```
+
+## Agents read this site too
+- Prices and product wording come from ua-brain (the price card in `governance/pricing-rules.md`, the Interplay lexicon). When they change, update `llms.txt` (the MCP server follows) and the JSON-LD offers on `/interplay`; `agent-check` check 8 fails if JSON-LD prices disagree with `llms.txt`.
+- Run `agent-check` after any deploy: 10/10 is the bar.
 
 ## Conventions
 - All styles are in `<style>` in `<head>` — no external CSS files
