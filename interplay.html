@@ -835,6 +835,93 @@
     }
 
   </style>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://universalagents.ai/#org",
+        "name": "Universal Agents",
+        "url": "https://universalagents.ai/",
+        "logo": "https://universalagents.ai/android-chrome-512x512.png",
+        "email": "hello@universalagents.ai",
+        "description": "Universal Agents builds Interplay for independent creative agencies: your agency's living library and playbook, with one universal agent that understands your business.",
+        "sameAs": [
+          "https://www.linkedin.com/company/universal-agents"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "sales",
+          "email": "hello@universalagents.ai"
+        }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://universalagents.ai/interplay#service",
+        "name": "Interplay",
+        "url": "https://universalagents.ai/interplay",
+        "serviceType": "AI operating system for independent creative agencies",
+        "description": "Interplay is your agency's living library and playbook. Its gatekeeper is one universal agent that understands your business.",
+        "provider": {
+          "@id": "https://universalagents.ai/#org"
+        },
+        "audience": {
+          "@type": "BusinessAudience",
+          "name": "Independent creative agencies"
+        },
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Paid pilot",
+            "description": "8 to 10 weeks inside one budget quarter; 50% at pilot start, the rest trailed monthly.",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "priceCurrency": "USD",
+              "minPrice": 24000,
+              "maxPrice": 28000
+            },
+            "seller": {
+              "@id": "https://universalagents.ai/#org"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "After the pilot",
+            "description": "Continued rollout, typically another quarter of work.",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "priceCurrency": "USD",
+              "minPrice": 12000,
+              "maxPrice": 18000,
+              "unitText": "month",
+              "unitCode": "MON"
+            },
+            "seller": {
+              "@id": "https://universalagents.ai/#org"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "Licensing and support",
+            "description": "Depends on team size, token costs and infrastructure requirements.",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "priceCurrency": "USD",
+              "minPrice": 4000,
+              "maxPrice": 7000,
+              "unitText": "month",
+              "unitCode": "MON"
+            },
+            "seller": {
+              "@id": "https://universalagents.ai/#org"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
