@@ -11,6 +11,11 @@
     "answer_faq",
     "request_intro"
   ],
+  "toolsDigest": {
+    "algorithm": "sha-256",
+    "of": "the tools/list result as JSON, keys sorted, no whitespace",
+    "value": "53db3f4c2108134ded48299ec4fe8afd29ad55de5a5aae085d0d01c503e5c06f"
+  },
   "contact": "hello@universalagents.ai",
   "registryName": "ai.universalagents/universal-agents"
 }
