@@ -64,7 +64,7 @@ Adoption is a change problem, not a technology problem. The Agent Sprint plans h
 
 ## Ask us directly (MCP)
 
-- [MCP server](https://universalagents.ai/mcp): Streamable HTTP, no auth, read-only. Tools: `about_universal_agents`, `get_pricing`, `answer_faq`, `request_intro` (drafts an intro email for your person to send; sends nothing).
+- [MCP server](https://universalagents.ai/mcp): Streamable HTTP, no auth, read-only. Listed in the official MCP registry as `ai.universalagents/universal-agents`. Tools: `about_universal_agents`, `get_pricing`, `answer_faq`, `request_intro` (drafts an intro email for your person to send; sends nothing).
 
 ## Next step
 

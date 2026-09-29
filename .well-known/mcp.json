@@ -5,6 +5,12 @@
   "url": "https://universalagents.ai/mcp",
   "transport": "streamable-http",
   "authentication": "none",
-  "tools": ["about_universal_agents", "get_pricing", "answer_faq", "request_intro"],
-  "contact": "hello@universalagents.ai"
+  "tools": [
+    "about_universal_agents",
+    "get_pricing",
+    "answer_faq",
+    "request_intro"
+  ],
+  "contact": "hello@universalagents.ai",
+  "registryName": "ai.universalagents/universal-agents"
 }
