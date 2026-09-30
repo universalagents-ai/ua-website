@@ -130,11 +130,16 @@ test('the scan rules catch what they are for', () => {
   assert.deepEqual(scan({ ok: 'Plain text,\nwith a tab\tand a newline.' }), []);
 });
 
-test('no tool name, description, schema, result or the instructions carries hidden instructions, invisible Unicode or terminal controls', async () => {
+test('no tool name, description, schema, result, UI resource or the instructions carries hidden instructions, invisible Unicode or terminal controls', async () => {
   const { reply } = await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 't', version: '0' } });
   assert.deepEqual(scan(reply.result.instructions, 'instructions'), []);
   assert.deepEqual(scan(await listed(), 'tools'), []);
   for (const [name, args] of CALLS) assert.deepEqual(scan(await call(name, args), name), []);
+  // The MCP Apps views (U7): their listing and each one's HTML.
+  const { resources } = (await rpc('resources/list')).reply.result;
+  assert.ok(resources.length, 'there are UI resources to scan');
+  assert.deepEqual(scan(resources, 'resources'), []);
+  for (const { uri } of resources) assert.deepEqual(scan((await rpc('resources/read', { uri })).reply.result, uri), []);
 });
 
 test('the tools/list digest published in .well-known/mcp.json equals the live one', async () => {

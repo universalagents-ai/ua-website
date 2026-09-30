@@ -3,7 +3,7 @@
   "name": "ai.universalagents/universal-agents",
   "title": "Universal Agents",
   "description": "Ask Universal Agents what we sell (Interplay), pricing, and FAQs; draft an intro email.",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "websiteUrl": "https://universalagents.ai",
   "remotes": [
     {

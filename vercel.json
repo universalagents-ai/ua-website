@@ -124,7 +124,7 @@
   ],
   "functions": {
     "api/mcp.mjs": {
-      "includeFiles": "llms.txt"
+      "includeFiles": "{llms.txt,views/card.html}"
     }
   },
   "crons": [

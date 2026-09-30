@@ -63,6 +63,7 @@ index.html, interplay.html  # Built output (committed; Vercel serves the repo ro
 llms.txt            # The agent summary, and the single source the MCP server reads
 index.md, interplay.md      # Markdown mirrors of the pages (served on Accept: text/markdown)
 api/mcp.mjs         # MCP server at /mcp (answers read from llms.txt)
+views/card.html     # The MCP Apps view get_pricing and request_intro render in (served as two ui:// resources)
 api/agent-traffic.mjs, api/cron-agent-traffic.mjs, lib/agent-traffic.mjs  # AI-crawler log + daily report
 middleware.js       # Markdown negotiation + AI-crawler sightings
 .well-known/        # mcp.json server card, mcp-registry-auth key

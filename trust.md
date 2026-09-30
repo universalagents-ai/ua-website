@@ -8,6 +8,7 @@
 - Operator: Universal Agents, https://universalagents.ai. The legal entity name is not stated here.
 - Accountable: Stu Amos (Founder, CEO), hello@universalagents.ai
 - Code authors: Stu Amos (Founder, CEO), Mathew Wendell (Co-founder, COO), Ingo Eichhorst (CTO), Mario Jembrih (Systems Architect)
+- Views: the `get_pricing` and `request_intro` answers also render as MCP Apps views (`ui://universal-agents/pricing`, `ui://universal-agents/intro`) in hosts that support them, with the same `provenance` and `agent_may`. Other clients get the same answers as text.
 
 ## The people
 
