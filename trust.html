@@ -138,6 +138,7 @@
   <li>Auth: none — public information only, by design</li>
   <li>Attestations: None held: no SOC 2, ISO 27001 or similar certification or audit.</li>
   <li>Signatures: Nothing is signed: not the server card, the ARD manifest or the replies.</li>
+  <li>Identity: <code>did:web:universalagents.ai</code>, with its DID document at <a href="https://universalagents.ai/.well-known/did.json">https://universalagents.ai/.well-known/did.json</a>. did:web ties this identity to control of the domain: resolving it fetches the DID document from the domain over HTTPS. It proves nothing more: nothing is signed with its key yet.</li>
   <li>Reads: Public marketing information only: <a href="https://universalagents.ai/llms.txt">https://universalagents.ai/llms.txt</a>.</li>
   <li>Stores: Nothing a caller sends is stored, except one line per tools/call in the runtime log: the tool name, the client name and version given at initialize, the outcome and the time.</li>
   <li><code>request_intro</code>: Its arguments are never logged. The server drafts the email and sends nothing.</li>
@@ -146,6 +147,7 @@
 <ul>
   <li>Server card: <a href="https://universalagents.ai/.well-known/mcp.json">https://universalagents.ai/.well-known/mcp.json</a>, also at <a href="https://universalagents.ai/.well-known/mcp/server-card.json">https://universalagents.ai/.well-known/mcp/server-card.json</a>. Its <code>trust</code> block carries the server, the fields and what is held; each reply carries its own <code>provenance</code> and <code>agent_may</code>.</li>
   <li>ARD manifest: <a href="https://universalagents.ai/.well-known/ard.json">https://universalagents.ai/.well-known/ard.json</a></li>
+  <li>DID document: <a href="https://universalagents.ai/.well-known/did.json">https://universalagents.ai/.well-known/did.json</a></li>
   <li>Contact: <a href="mailto:hello@universalagents.ai">hello@universalagents.ai</a></li>
 </ul>
   </main>

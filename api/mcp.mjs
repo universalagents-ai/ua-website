@@ -75,6 +75,11 @@ export const TRUST = {
   auth: PROVENANCE.server.auth,
   attestations: PROVENANCE.server.attestations,
   signed: PROVENANCE.server.signed,
+  identity: {
+    did: `did:web:${new URL(PROVENANCE.server.operator.website).hostname}`,
+    document: `${PROVENANCE.server.operator.website}/.well-known/did.json`,
+    statement: PROVENANCE.server.identity.statement,
+  },
   // The provenance and agent_may fields every reply carries, as a versioned field set: a change to
   // their shape is a new provenance_schema number.
   provenance_schema: 1,

@@ -8,7 +8,8 @@ Checks 1-5: can an agent use the site cold. Checks 6-8 (numbered 8-10 in the
 roadmap): structured data, a published agent-traffic report, an MCP registry listing.
 Check 11: the MCP server's instructions, tools and replies carry no hidden instructions,
 invisible Unicode or terminal controls. Check 12: /.well-known/ard.json passes the official
-ARD conformance tester (vendored in scripts/vendor/ard-conformance/) with no errors or warnings.
+ARD conformance tester (vendored in scripts/vendor/ard-conformance/) with no errors or warnings,
+and /.well-known/did.json has the manifest's identity as its id.
 
 Usage: python3 scripts/agent-check.py [https://universalagents.ai ...]
 Exit:  0 all pass · 1 any fail · 2 no fail, but something couldn't be checked
@@ -219,8 +220,27 @@ ARD_TESTER = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 ARD_SUMMARY = re.compile(r"Validated with (\d+) critical specification errors and (\d+) warnings")
 
 
+def did_check(base, manifest):
+    """Fetch /.well-known/did.json: its id must be the identity every manifest entry names (did:web)."""
+    identities = {(e.get("trustManifest") or {}).get("identity") for e in json.loads(manifest)["entries"]}
+    url = urljoin(base.rstrip("/") + "/", ".well-known/did.json")
+    status, _, body = fetch(url)
+    if status is None:
+        return GREY, f"{url} unreachable: {body}"
+    if status != 200:
+        return FAIL, f"{url}: status {status}"
+    try:
+        did = json.loads(body).get("id")
+    except (ValueError, AttributeError):
+        return FAIL, f"{url}: not a JSON object"
+    if {did} != identities:
+        return FAIL, f"{url}: id {did!r} is not the manifest's identity {sorted(map(str, identities))}"
+    return PASS, f"{url}: id {did} is the manifest's identity"
+
+
 def ard_check(base, tester=ARD_TESTER):
-    """Fetch /.well-known/ard.json and run the vendored ARD tester on it in manifest mode.
+    """Fetch /.well-known/ard.json and run the vendored ARD tester on it in manifest mode, then
+    check /.well-known/did.json against the manifest's identity.
     Returns (verdict, detail). No tester, or no network, is couldnt-check, never pass."""
     if not os.path.isfile(tester):
         return GREY, f"ARD conformance tester not found at {tester}"
@@ -240,7 +260,8 @@ def ard_check(base, tester=ARD_TESTER):
         os.unlink(f.name)
     summary = ARD_SUMMARY.search(run.stdout)
     if run.returncode == 0 and summary and summary.group(2) == "0":
-        return PASS, f"{url}: 0 errors, 0 warnings (ARD tester, spec v0.91)"
+        verdict, detail = did_check(base, body)
+        return verdict, f"{url}: 0 errors, 0 warnings (ARD tester, spec v0.91); {detail}"
     if run.returncode == 0 and summary:
         return FAIL, f"{url}: conformant, but {summary.group(2)} warnings"
     errors = re.search(r"Found (\d+) critical specification errors", run.stdout)

@@ -61,6 +61,7 @@ agent_may is a level on the Delegation Map Trust Scale (ua-brain governance/dele
 - Auth: none — public information only, by design
 - Attestations: None held: no SOC 2, ISO 27001 or similar certification or audit.
 - Signatures: Nothing is signed: not the server card, the ARD manifest or the replies.
+- Identity: `did:web:universalagents.ai`, with its DID document at https://universalagents.ai/.well-known/did.json. did:web ties this identity to control of the domain: resolving it fetches the DID document from the domain over HTTPS. It proves nothing more: nothing is signed with its key yet.
 - Reads: Public marketing information only: https://universalagents.ai/llms.txt.
 - Stores: Nothing a caller sends is stored, except one line per tools/call in the runtime log: the tool name, the client name and version given at initialize, the outcome and the time.
 - `request_intro`: Its arguments are never logged. The server drafts the email and sends nothing.
@@ -69,4 +70,5 @@ agent_may is a level on the Delegation Map Trust Scale (ua-brain governance/dele
 
 - Server card: https://universalagents.ai/.well-known/mcp.json, also at https://universalagents.ai/.well-known/mcp/server-card.json. Its `trust` block carries the server, the fields and what is held; each reply carries its own `provenance` and `agent_may`.
 - ARD manifest: https://universalagents.ai/.well-known/ard.json
+- DID document: https://universalagents.ai/.well-known/did.json
 - Contact: hello@universalagents.ai
