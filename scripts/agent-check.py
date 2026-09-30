@@ -207,11 +207,19 @@ def mcp_scan(url):
             _, reply = mcp_rpc(url, session, {"jsonrpc": "2.0", "id": 3 + i, "method": "tools/call",
                                               "params": {"name": name, "arguments": {}}})
             found += scan_findings((reply or {}).get("result"), str(name))
+        # The MCP Apps views the tools name (_meta.ui.resourceUri): each is read and scanned too.
+        views = sorted({((t.get("_meta") or {}).get("ui") or {}).get("resourceUri") for t in tools} - {None})
+        for i, uri in enumerate(views):
+            _, reply = mcp_rpc(url, session, {"jsonrpc": "2.0", "id": 100 + i, "method": "resources/read",
+                                              "params": {"uri": uri}})
+            if not (reply or {}).get("result"):
+                return FAIL, f"{uri} is named by a tool but resources/read did not return it"
+            found += scan_findings(reply["result"], str(uri))
     except Exception as e:  # network, TLS, timeout
         return GREY, f"{url} unreachable: {e}"
     if found:
         return FAIL, f"{len(found)} hits: " + "; ".join(found[:5])
-    return PASS, f"{len(tools)} tools and {len(called)} calls scanned: no hidden instructions, invisible Unicode or terminal controls"
+    return PASS, f"{len(tools)} tools, {len(called)} calls and {len(views)} views scanned: no hidden instructions, invisible Unicode or terminal controls"
 
 
 ARD_TESTER = os.path.join(os.path.dirname(os.path.abspath(__file__)),
