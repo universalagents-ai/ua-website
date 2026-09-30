@@ -6,7 +6,7 @@
 import { waitUntil } from '@vercel/functions';
 import { matchAgent, contentGroup, recordSighting } from './lib/agent-traffic.mjs';
 
-const MARKDOWN = { '/': '/index.md', '/interplay': '/interplay.md', '/trust': '/trust.md' };
+const MARKDOWN = { '/': '/index.md', '/interplay': '/interplay.md', '/trust': '/trust.md', '/privacy': '/privacy.md' };
 
 export const config = {
   matcher: ['/((?!assets/|favicon|android-chrome|apple-touch-icon|og-image).*)'],

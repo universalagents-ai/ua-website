@@ -70,8 +70,10 @@ function check(text, pkg) {
   assert.match(withOf('actions/setup-python')['python-version'] ?? '', /^3(\.\d+)?$/, 'python: Python 3');
   assert.match(runs[0] ?? '', /^python -m pip install jsonschema(==[\d.]+)?$/,
     'jsonschema: installed first, so the vendored ARD tester runs its strict schema pass');
-  assert.ok(jobs.length === 1 && runs.length === 2 && ['node --test tests/*.test.mjs', 'npm test'].includes(runs[1]),
-    `gate: node --test tests/*.test.mjs is the only gate, got ${JSON.stringify(runs.slice(1))} in ${jobs.length} job(s)`);
+  assert.equal(runs[1], 'npm ci',
+    'deps: the site\'s packages are installed from the lockfile before the tests, as production has them');
+  assert.ok(jobs.length === 1 && runs.length === 3 && ['node --test tests/*.test.mjs', 'npm test'].includes(runs[2]),
+    `gate: node --test tests/*.test.mjs is the only gate, got ${JSON.stringify(runs.slice(2))} in ${jobs.length} job(s)`);
   assert.doesNotMatch(text, /\bsecrets\s*[.[]/, 'secrets: the workflow references no secret');
   assert.equal(pkg.scripts?.test, 'node --test tests/*.test.mjs', 'package: npm test runs node --test tests/*.test.mjs');
 }
@@ -95,6 +97,8 @@ test('each property check catches a deliberate break of it', () => {
     ['node', 'node-version: 22', 'node-version: 22.4.1'],
     ['python', "python-version: '3.12'", "python-version: '2.7'"],
     ['jsonschema', '      - run: python -m pip install jsonschema==4.23.0\n', ''],
+    ['deps', '      - run: npm ci\n', ''],
+    ['deps', '      - run: npm ci\n', '      - run: npm install\n'],
     ['gate', 'run: node --test tests/*.test.mjs', 'run: node --test tests/*.test.mjs || true'],
     ['gate', '      - run: node --test tests/*.test.mjs\n', '      - run: node --test tests/*.test.mjs\n      - run: npx vercel deploy --prod\n'],
     ['secrets', '      - run: node --test tests/*.test.mjs\n', '      - run: node --test tests/*.test.mjs\n        env:\n          TOKEN: ${{ secrets.VERCEL_TOKEN }}\n'],
