@@ -26,4 +26,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install jsonschema==4.23.0
-      - run: node --test tests/
+      - run: node --test tests/*.test.mjs

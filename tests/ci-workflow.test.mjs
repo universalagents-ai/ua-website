@@ -1,5 +1,5 @@
 // U5: the tests run on every change. Reads .github/workflows/test.yml and holds it to that.
-// Run: node --test tests/
+// Run: node --test tests/*.test.mjs
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -70,13 +70,13 @@ function check(text, pkg) {
   assert.match(withOf('actions/setup-python')['python-version'] ?? '', /^3(\.\d+)?$/, 'python: Python 3');
   assert.match(runs[0] ?? '', /^python -m pip install jsonschema(==[\d.]+)?$/,
     'jsonschema: installed first, so the vendored ARD tester runs its strict schema pass');
-  assert.ok(jobs.length === 1 && runs.length === 2 && ['node --test tests/', 'npm test'].includes(runs[1]),
-    `gate: node --test tests/ is the only gate, got ${JSON.stringify(runs.slice(1))} in ${jobs.length} job(s)`);
+  assert.ok(jobs.length === 1 && runs.length === 2 && ['node --test tests/*.test.mjs', 'npm test'].includes(runs[1]),
+    `gate: node --test tests/*.test.mjs is the only gate, got ${JSON.stringify(runs.slice(1))} in ${jobs.length} job(s)`);
   assert.doesNotMatch(text, /\bsecrets\s*[.[]/, 'secrets: the workflow references no secret');
-  assert.equal(pkg.scripts?.test, 'node --test tests/', 'package: npm test runs node --test tests/');
+  assert.equal(pkg.scripts?.test, 'node --test tests/*.test.mjs', 'package: npm test runs node --test tests/*.test.mjs');
 }
 
-test('.github/workflows/test.yml runs node --test tests/ on every PR and push to main: Node 22, Python 3 with jsonschema, pinned actions, read-only, no secrets', () => {
+test('.github/workflows/test.yml runs node --test tests/*.test.mjs on every PR and push to main: Node 22, Python 3 with jsonschema, pinned actions, read-only, no secrets', () => {
   check(WORKFLOW, PKG);
 });
 
@@ -87,7 +87,7 @@ test('each property check catches a deliberate break of it', () => {
     ['permissions', 'contents: read', 'contents: write'],
     ['permissions', '    runs-on: ubuntu-latest\n', '    runs-on: ubuntu-latest\n    permissions: write-all\n'],
     ['steps', '      - uses: actions/checkout@v5.0.0\n        with:\n          persist-credentials: false\n', ''],
-    ['steps', '      - run: node --test tests/\n', '      - uses: amondnet/vercel-action@v25.2.0\n      - run: node --test tests/\n'],
+    ['steps', '      - run: node --test tests/*.test.mjs\n', '      - uses: amondnet/vercel-action@v25.2.0\n      - run: node --test tests/*.test.mjs\n'],
     ['pinned', 'actions/checkout@v5.0.0', 'actions/checkout@main'],
     ['pinned', 'actions/setup-node@v5.0.0', 'actions/setup-node@v5'],
     ['credentials', 'persist-credentials: false', 'persist-credentials: true'],
@@ -95,10 +95,10 @@ test('each property check catches a deliberate break of it', () => {
     ['node', 'node-version: 22', 'node-version: 22.4.1'],
     ['python', "python-version: '3.12'", "python-version: '2.7'"],
     ['jsonschema', '      - run: python -m pip install jsonschema==4.23.0\n', ''],
-    ['gate', 'run: node --test tests/', 'run: node --test tests/ || true'],
-    ['gate', '      - run: node --test tests/\n', '      - run: node --test tests/\n      - run: npx vercel deploy --prod\n'],
-    ['secrets', '      - run: node --test tests/\n', '      - run: node --test tests/\n        env:\n          TOKEN: ${{ secrets.VERCEL_TOKEN }}\n'],
-    ['reader', '- run: node --test tests/', '- run: |\n          node --test tests/'],
+    ['gate', 'run: node --test tests/*.test.mjs', 'run: node --test tests/*.test.mjs || true'],
+    ['gate', '      - run: node --test tests/*.test.mjs\n', '      - run: node --test tests/*.test.mjs\n      - run: npx vercel deploy --prod\n'],
+    ['secrets', '      - run: node --test tests/*.test.mjs\n', '      - run: node --test tests/*.test.mjs\n        env:\n          TOKEN: ${{ secrets.VERCEL_TOKEN }}\n'],
+    ['reader', '- run: node --test tests/*.test.mjs', '- run: |\n          node --test tests/*.test.mjs'],
   ];
   for (const [name, from, to] of BREAKS) {
     assert.ok(WORKFLOW.includes(from), `the ${name} break no longer applies: ${JSON.stringify(from)}`);
