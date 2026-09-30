@@ -134,15 +134,21 @@
   }
 
   let size = '';
+  // Measured the way the SDK measures it (ext-apps v2.0.3 src/app.ts, setupSizeChangedNotifications): inside an
+  // iframe the document is as tall as the iframe, so its content height is read with html at max-content.
   function sizeChanged() {
-    const params = { width: Math.ceil(window.innerWidth), height: Math.ceil(root.getBoundingClientRect().height) };
+    const kept = root.style.height;
+    root.style.height = 'max-content';
+    const height = Math.ceil(root.getBoundingClientRect().height);
+    root.style.height = kept;
+    const params = { width: Math.ceil(window.innerWidth), height };
     if (`${params.width}x${params.height}` === size) return;
     size = `${params.width}x${params.height}`;
     send({ method: 'ui/notifications/size-changed', params });
   }
 
   const HANDLERS = {
-    'ui/notifications/tool-result': result => { if (result.structuredContent) render(result.structuredContent); },
+    'ui/notifications/tool-result': result => { if (result.structuredContent) { render(result.structuredContent); sizeChanged(); } },
     'ui/notifications/host-context-changed': applyContext,
     'ui/resource-teardown': () => ({}),
     ping: () => ({}),
@@ -173,7 +179,11 @@
     applyContext(result.hostContext || {});
     send({ method: 'ui/notifications/initialized' });
     sizeChanged();
-    if (typeof ResizeObserver === 'function') new ResizeObserver(sizeChanged).observe(document.body);
+    if (typeof ResizeObserver === 'function') {
+      const observer = new ResizeObserver(sizeChanged);
+      observer.observe(root);
+      observer.observe(document.body);
+    }
   });
 })();
 </script>
