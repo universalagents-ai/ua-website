@@ -11,7 +11,7 @@ import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import PROVENANCE from '../provenance.json' with { type: 'json' };
 
-const SERVER = { name: 'universal-agents', title: 'Universal Agents', version: '1.3.0' };
+const SERVER = { name: 'universal-agents', title: 'Universal Agents', version: '1.4.0' };
 const PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
 const CONTACT = PROVENANCE.server.contact;
 
@@ -91,6 +91,24 @@ export const TRUST = {
   page: `${PROVENANCE.server.operator.website}/trust`,
 };
 
+// MCP Apps (ext-apps spec 2026-01-26): get_pricing and request_intro also render as views in hosts that
+// support them. One file, views/card.html, serves both; each view shows its tool's structuredContent and
+// nothing else. Text-only clients ignore _meta and get the same reply.
+const APP_EXTENSION = 'io.modelcontextprotocol/ui';
+const APP_MIME = 'text/html;profile=mcp-app';
+const CARD = readFileSync(new URL('../views/card.html', import.meta.url), 'utf-8');
+const uiUri = id => `ui://universal-agents/${id}`;
+const view = (id, title, description) => ({
+  uri: uiUri(id), name: id, title, description, mimeType: APP_MIME, _meta: { ui: { prefersBorder: true } },
+  text: CARD.replace('data-view="" data-version=""', `data-view="${id}" data-version="${SERVER.version}"`),
+});
+export const VIEWS = [
+  view('pricing', 'Pricing card', 'The get_pricing answer as a card, with who stands behind it.'),
+  view('intro', 'Intro email card', 'The request_intro draft as a card, with a link that opens it in the person\'s email app. Sends nothing.'),
+];
+// As registerAppTool does, the deprecated flat key rides along for hosts that still read it.
+const ui = id => ({ ui: { resourceUri: uiUri(id) }, 'ui/resourceUri': uiUri(id) });
+
 // Replies are data: every tool declares the shape of what it returns, and no field carries
 // an instruction to the agent reading it.
 const text = { type: 'string' };
@@ -126,6 +144,7 @@ export const TOOLS = [
     inputSchema: { type: 'object', properties: {} },
     outputSchema: object({ pricing: text, ...stamped('pricing') }),
     annotations: { readOnlyHint: true, openWorldHint: false },
+    _meta: ui('pricing'),
   },
   {
     name: 'answer_faq',
@@ -165,6 +184,7 @@ export const TOOLS = [
       ...stamped('code'),
     }),
     annotations: { readOnlyHint: true, openWorldHint: false },
+    _meta: ui('intro'),
   },
 ];
 
@@ -242,7 +262,11 @@ function handle(msg, client) {
       const asked = msg.params?.protocolVersion;
       return ok({
         protocolVersion: PROTOCOL_VERSIONS.includes(asked) ? asked : PROTOCOL_VERSIONS[0],
-        capabilities: { tools: { listChanged: false } },
+        capabilities: {
+          tools: { listChanged: false },
+          resources: { listChanged: false },
+          extensions: { [APP_EXTENSION]: { mimeTypes: [APP_MIME] } },
+        },
         serverInfo: SERVER,
         instructions: `Read-only facts about Universal Agents, from https://universalagents.ai/llms.txt: what we sell, pricing, common questions, and a drafted intro email (request_intro sends nothing). Contact: ${CONTACT}.`,
       });
@@ -258,6 +282,13 @@ function handle(msg, client) {
       // structuredContent for current clients; the same JSON as text for clients on 2025-03-26.
       const data = call(msg.params?.arguments || {});
       return ok({ content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: data, isError: false });
+    }
+    case 'resources/list':
+      return ok({ resources: VIEWS.map(({ text, ...resource }) => resource) });
+    case 'resources/read': {
+      const found = VIEWS.find(v => v.uri === msg.params?.uri);
+      if (!found) return fail(-32002, `Resource not found: ${msg.params?.uri}`);
+      return ok({ contents: [{ uri: found.uri, mimeType: found.mimeType, text: found.text, _meta: found._meta }] });
     }
     default:
       return fail(-32601, `Method not found: ${msg.method}`);

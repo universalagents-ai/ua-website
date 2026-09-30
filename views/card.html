@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" data-view="" data-version="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Universal Agents</title>
+<!--
+  The MCP Apps view (ext-apps spec 2026-01-26) for get_pricing and request_intro. api/mcp.mjs serves this one file
+  as two ui:// resources, filling in data-view and data-version. It renders the tool's structuredContent and
+  nothing else: every word of the answer and every name comes from the result. It makes no network request.
+-->
+<style>
+  /* The host's style variables override these (set inline on :root); these are the fallbacks. */
+  :root {
+    color-scheme: light dark;
+    --color-background-primary: light-dark(#ffffff, #171717);
+    --color-text-primary: light-dark(#171717, #fafafa);
+    --color-text-secondary: light-dark(#5c5c5c, #a3a3a3);
+    --color-border-primary: light-dark(#e5e5e5, #333333);
+    --font-sans: system-ui, sans-serif;
+    --font-text-sm-size: 0.875rem;
+    --font-text-xs-size: 0.75rem;
+    --font-text-sm-line-height: 1.5;
+    --font-weight-bold: 700;
+    --border-radius-md: 8px;
+    --ua-mint: #3FFF8C;
+  }
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  body {
+    margin: 0;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font: var(--font-text-sm-size) / var(--font-text-sm-line-height) var(--font-sans);
+  }
+  .card { padding: 12px 16px; border-left: 3px solid var(--ua-mint); }
+  .card p { margin: 0 0 8px; }
+  .card__label { color: var(--color-text-secondary); font-size: var(--font-text-xs-size); }
+  .card__answer { white-space: pre-wrap; }
+  .card__meta b { font-weight: var(--font-weight-bold); }
+  .card__action {
+    color: inherit;
+    text-decoration: underline 2px var(--ua-mint);
+    text-underline-offset: 3px;
+  }
+  .card__who {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border-primary);
+    color: var(--color-text-secondary);
+    font-size: var(--font-text-xs-size);
+  }
+</style>
+</head>
+<body>
+<main class="card" id="card" aria-live="polite"></main>
+<script>
+(() => {
+  // The view side of MCP Apps, written against the spec's message shapes (JSON-RPC 2.0 over postMessage).
+  const root = document.documentElement;
+  const card = document.getElementById('card');
+  const host = window.parent;
+  const VIEW = root.getAttribute('data-view');
+  let hostCapabilities = {};
+  let nextId = 1;
+  const pending = new Map();
+
+  const send = message => host.postMessage({ jsonrpc: '2.0', ...message }, '*');
+  const request = (method, params) => new Promise((resolve, reject) => {
+    const id = nextId++;
+    pending.set(id, { resolve, reject });
+    send({ id, method, params });
+  });
+
+  const el = (tag, className, ...children) => {
+    const node = document.createElement(tag);
+    if (className) node.setAttribute('class', className);
+    node.append(...children);
+    return node;
+  };
+
+  // Who stands behind the answer, in the result's own words: its provenance and agent_may.
+  function who({ provenance: p, agent_may: may }) {
+    const person = x => `${x.name} (${x.title})`;
+    const source = p.source ? `Source: ${p.source.repo}, ${p.source.path}, effective ${p.effective}.` : 'Source: the server\'s own code.';
+    return el('footer', 'card__who',
+      el('p', 'card__label', 'Who stands behind this answer'),
+      el('p', null, `Written by ${p.authors.map(person).join(', ')}. Accountable: ${person(p.accountable)}, ${p.accountable.contact}. ${source}`),
+      el('p', null, `An agent may: level ${may.level}, ${may.label}. ${may.note}`));
+  }
+
+  const VIEWS = {
+    pricing: data => [
+      el('p', 'card__label', 'Pricing'),
+      el('p', 'card__answer', data.pricing),
+    ],
+    intro: data => {
+      const action = el('a', 'card__action', 'Open this email to send it');
+      action.setAttribute('href', data.mailto);
+      action.setAttribute('target', '_blank');
+      action.setAttribute('rel', 'noopener');
+      // The host opens the mailto link for the person; the view itself sends nothing.
+      action.addEventListener('click', event => {
+        if (!hostCapabilities.openLinks) return;
+        event.preventDefault();
+        request('ui/open-link', { url: data.mailto }).catch(() => {});
+      });
+      return [
+        el('p', 'card__label', 'Intro email, drafted: nothing has been sent'),
+        el('p', 'card__meta', el('b', null, 'To: '), data.to),
+        el('p', 'card__meta', el('b', null, 'Subject: '), data.subject),
+        el('p', 'card__answer', data.body),
+        el('p', null, action),
+      ];
+    },
+  };
+
+  function render(data) {
+    card.replaceChildren(...VIEWS[VIEW](data), who(data));
+  }
+
+  function applyContext(context) {
+    if (context.theme) {
+      root.setAttribute('data-theme', context.theme);
+      root.style.colorScheme = context.theme;
+    }
+    for (const [key, value] of Object.entries(context.styles?.variables || {})) {
+      if (key.startsWith('--') && typeof value === 'string') root.style.setProperty(key, value);
+    }
+    if (context.safeAreaInsets) {
+      const { top, right, bottom, left } = context.safeAreaInsets;
+      document.body.style.padding = `${top}px ${right}px ${bottom}px ${left}px`;
+    }
+  }
+
+  let size = '';
+  function sizeChanged() {
+    const params = { width: Math.ceil(window.innerWidth), height: Math.ceil(root.getBoundingClientRect().height) };
+    if (`${params.width}x${params.height}` === size) return;
+    size = `${params.width}x${params.height}`;
+    send({ method: 'ui/notifications/size-changed', params });
+  }
+
+  const HANDLERS = {
+    'ui/notifications/tool-result': result => { if (result.structuredContent) render(result.structuredContent); },
+    'ui/notifications/host-context-changed': applyContext,
+    'ui/resource-teardown': () => ({}),
+    ping: () => ({}),
+  };
+
+  window.addEventListener('message', event => {
+    const message = event.data;
+    if (event.source !== host || message?.jsonrpc !== '2.0') return;
+    if (message.method === undefined) {
+      const call = pending.get(message.id);
+      pending.delete(message.id);
+      if (call) message.error ? call.reject(message.error) : call.resolve(message.result);
+      return;
+    }
+    const handler = HANDLERS[message.method];
+    const result = handler?.(message.params || {});
+    if (message.id === undefined) return;
+    send(handler ? { id: message.id, result: result || {} }
+      : { id: message.id, error: { code: -32601, message: `Method not found: ${message.method}` } });
+  });
+
+  request('ui/initialize', {
+    appCapabilities: { availableDisplayModes: ['inline'] },
+    appInfo: { name: `universal-agents-${VIEW}`, version: root.getAttribute('data-version') },
+    protocolVersion: '2026-01-26',
+  }).then(result => {
+    hostCapabilities = result.hostCapabilities || {};
+    applyContext(result.hostContext || {});
+    send({ method: 'ui/notifications/initialized' });
+    sizeChanged();
+    if (typeof ResizeObserver === 'function') new ResizeObserver(sizeChanged).observe(document.body);
+  });
+})();
+</script>
+</body>
+</html>

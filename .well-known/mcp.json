@@ -14,7 +14,7 @@
   "toolsDigest": {
     "algorithm": "sha-256",
     "of": "the tools/list result as JSON, keys sorted, no whitespace",
-    "value": "44be8278388af89ad52765fab04653bf96b2c6c0bc01357273aaf0ade12844bc"
+    "value": "d1668929485a8460f4b7657df9d6ed8151cebe62057150d49641d804e7580259"
   },
   "contact": "hello@universalagents.ai",
   "registryName": "ai.universalagents/universal-agents",
