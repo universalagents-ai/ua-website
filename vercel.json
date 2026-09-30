@@ -37,6 +37,10 @@
       "destination": "/trust.html"
     },
     {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
       "source": "/.well-known/mcp/server-card.json",
       "destination": "/.well-known/mcp.json"
     }

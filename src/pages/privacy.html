@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="What universalagents.ai collects, why, for how long, who processes it, and how to reach us.">
+  <meta name="theme-color" content="#f8f8f8">
+  <meta name="color-scheme" content="light">
+  <title>Privacy — Universal Agents</title>
+
+  <link rel="canonical" href="https://universalagents.ai/privacy">
+  <link rel="ard" href="/.well-known/ard.json">
+  <link rel="alternate" type="text/markdown" href="/privacy.md">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+
+  <style>
+    @font-face {
+      font-family: 'GeistMono';
+      src: url('assets/fonts/GeistMono-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'GeistMono';
+      src: url('assets/fonts/GeistMono-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --ua-mint: #3FFF8C;
+      --ua-black: #0a0a0a;
+      --ua-gray: #787878;
+      --ip-dark: #1a1a1a;
+      --ip-border: rgba(0, 0, 0, 0.08);
+      --ip-bg: #f8f8f8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--ip-bg);
+      color: var(--ip-dark);
+      font-family: 'GeistMono', monospace;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    .skip-link { position: absolute; left: -9999px; }
+    .skip-link:focus { left: 1rem; top: 1rem; background: var(--ua-mint); color: var(--ua-black); padding: 0.5rem; }
+
+    .privacy__bar, .privacy, .privacy__footer { max-width: 46rem; margin: 0 auto; padding: 0 1.5rem; }
+    .privacy__bar { padding-block: 1.5rem; }
+    .privacy__home { color: var(--ua-black); font-weight: 700; text-decoration: none; }
+
+    .privacy h1 { font-size: 1.75rem; line-height: 1.2; margin: 2rem 0 1rem; }
+    .privacy h2 { font-size: 1.125rem; margin: 2.5rem 0 0.75rem; padding-top: 1.5rem; border-top: 1px solid var(--ip-border); }
+    .privacy__lede { color: var(--ua-gray); }
+    .privacy ul { padding-left: 1.25rem; }
+    .privacy li { margin-bottom: 0.4rem; }
+    .privacy a { color: inherit; text-underline-offset: 0.2em; }
+    .privacy code { background: rgba(63, 255, 140, 0.25); padding: 0 0.2em; }
+
+    .privacy__footer { color: var(--ua-gray); padding-block: 3rem; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="privacy__bar">
+    <a class="privacy__home" href="/">Universal Agents</a>
+  </header>
+
+  <main id="main" class="privacy">
+<h1>Privacy</h1>
+<p class="privacy__lede">What universalagents.ai collects, why, for how long, who processes it, and how to reach us.</p>
+<p>Last updated: 2026-09-29.</p>
+
+<h2>Who we are</h2>
+<p>Universal Agents, <a href="https://universalagents.ai">https://universalagents.ai</a>. Contact: <a href="mailto:hello@universalagents.ai">hello@universalagents.ai</a>.</p>
+
+<h2>Cookies</h2>
+<p>The site sets no cookies. No page script writes one.</p>
+
+<h2>Page views: Vercel Web Analytics</h2>
+<p>We use Vercel Web Analytics to see which pages people read. It collects aggregate page-view data only.</p>
+<p>For each page view it records the event timestamp, the URL, the dynamic path, the referrer, filtered query parameters, the geolocation (country, region, city), the device OS and version, the browser and version, the device type and the script version.</p>
+<p>It identifies a visitor by a hash created from the incoming request, not by a cookie. Vercel discards that hash after 24 hours.</p>
+<p>Vercel's policy for this data: <a href="https://vercel.com/docs/analytics/privacy-policy">https://vercel.com/docs/analytics/privacy-policy</a></p>
+
+<h2>AI-agent sightings: the crawler log</h2>
+<p>We record which AI platforms read the site. A request counts only when its user agent carries the token of a known AI agent, such as GPTBot or ClaudeBot. Requests from other user agents are not recorded.</p>
+<p>For a sighting we store the user-agent token, the platform, the content group (pages, markdown, llms.txt, mcp or other), the UTC day and the time of the first sighting. We store it once per UTC day for each platform and content group, in Vercel Blob. No IP address is stored.</p>
+<p>A daily job deletes sightings older than 35 days. It also publishes a summary of the last 30 days: for each platform, the days it was seen and the kinds of content it read. The summary is public at <a href="https://universalagents.ai/.well-known/agent-traffic.json">https://universalagents.ai/.well-known/agent-traffic.json</a></p>
+<p>Each such request also writes one line to the runtime log: the user-agent token, the platform, the content group, the path and the time.</p>
+
+<h2>Calls to our MCP server</h2>
+<p>Our MCP server at <a href="https://universalagents.ai/mcp">https://universalagents.ai/mcp</a> answers questions about Universal Agents. Nothing a caller sends is stored, except one line per tools/call in the runtime log: the tool name, the client name and version given at initialize, the outcome and the time. The arguments of a call are never logged. We keep the line to see which tools are called, by which clients, and whether they work.</p>
+<p><code>request_intro</code> drafts an intro email, with a mailto link, for the person to send themselves. It sends nothing and stores nothing.</p>
+
+<h2>Runtime logs</h2>
+<p>Vercel keeps runtime logs for 1 hour on our plan.</p>
+
+<h2>Email</h2>
+<p>Email to <a href="mailto:hello@universalagents.ai">hello@universalagents.ai</a> is handled by Google Workspace. We keep your email to answer it. Ask us, and we delete it.</p>
+
+<h2>Who processes it</h2>
+<ul>
+  <li>Vercel: hosting, analytics, runtime logs and Blob storage. Every request to the site passes through Vercel.</li>
+  <li>Google: email, through Google Workspace.</li>
+  <li>jsDelivr: the scripts our pages load (GSAP, Lenis, three.js). Your browser fetches them from jsDelivr directly. Our fonts are served from this site.</li>
+</ul>
+
+<h2>Ask us</h2>
+<p>To ask what we hold about you, or to ask us to delete it, write to <a href="mailto:hello@universalagents.ai">hello@universalagents.ai</a>.</p>
+
+<h2>Changes</h2>
+<p>When what we collect changes, we update this page and its date.</p>
+  </main>
+
+  <footer class="privacy__footer">
+    <p>Also as markdown: <a href="/privacy.md">/privacy.md</a>. <a href="/privacy">Privacy</a>. &copy; 2026 Universal Agents</p>
+  </footer>
+
+  <!-- Vercel Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
