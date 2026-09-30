@@ -19,7 +19,8 @@
         "draft an intro email to Universal Agents for my agency"
       ],
       "trustManifest": {
-        "identity": "universalagents.ai",
+        "identity": "did:web:universalagents.ai",
+        "identityType": "did",
         "accountable": {
           "name": "Stu Amos",
           "title": "Founder, CEO",
@@ -44,7 +45,7 @@
           }
         ],
         "attestations": [],
-        "statement": "No attestation or signature is held. None held: no SOC 2, ISO 27001 or similar certification or audit. Nothing is signed: not the server card, the ARD manifest or the replies.",
+        "statement": "No attestation or signature is held. None held: no SOC 2, ISO 27001 or similar certification or audit. Nothing is signed: not the server card, the ARD manifest or the replies. Identity: did:web:universalagents.ai. did:web ties this identity to control of the domain: resolving it fetches the DID document from the domain over HTTPS. It proves nothing more: nothing is signed with its key yet.",
         "provenanceSchema": 1,
         "documentationUrl": "https://universalagents.ai/trust"
       }

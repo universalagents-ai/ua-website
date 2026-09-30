@@ -7,10 +7,12 @@ import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import handler, { TRUST } from '../api/mcp.mjs';
-import { ARD, trustHtml, trustMarkdown } from '../lib/trust.mjs';
+import { ARD, DID_DOCUMENT, trustHtml, trustMarkdown } from '../lib/trust.mjs';
 
 const root = new URL('../', import.meta.url);
 const path = file => fileURLToPath(new URL(file, root));
@@ -18,6 +20,10 @@ const read = file => readFileSync(new URL(file, root), 'utf-8');
 const json = file => JSON.parse(read(file));
 const P = json('provenance.json');
 const SITE = 'https://universalagents.ai';
+const DID = 'did:web:universalagents.ai';
+// The public key the orchestrator generated on 2026-09-29, as pinned in the slice. Its private key is not in this repo.
+const PINNED_JWK_FILE = join(homedir(), 'Deliverables/2026-09/mcp-trust/did-web-public-jwk.json');
+const PINNED_JWK = { kty: 'OKP', crv: 'Ed25519', x: 'LdOi-0D-MxMrGfb7Lzlp-rd5wD4Ndiaplwuklh4I13k' };
 const VENDOR = 'scripts/vendor/ard-conformance/';
 const TESTER = path(`${VENDOR}conformance/bin/conformance-test`);
 
@@ -73,9 +79,13 @@ test('the manifest\'s entry for the MCP server: URN, type, card url, 2-5 queries
   assert.deepEqual(entry.capabilities, await liveToolNames(), 'capabilities are the live tools/list names');
 });
 
-test('the entry\'s trustManifest: the domain, the accountable person and the code authors from provenance.json, and nothing held', () => {
-  const { trustManifest: trust } = json('.well-known/ard.json').entries[0];
-  assert.equal(trust.identity, 'universalagents.ai', 'identity is the URN\'s publisher domain (ARD §4.5.1)');
+test('the entry\'s trustManifest: did:web on the URN\'s domain, the accountable person and the code authors from provenance.json, and nothing held', () => {
+  const [{ identifier, trustManifest: trust }] = json('.well-known/ard.json').entries;
+  assert.equal(trust.identity, DID, 'identity is the did:web DID');
+  assert.equal(trust.identityType, 'did');
+  // ARD §4.5.1: the identity's trust domain is the URN's publisher domain.
+  assert.equal(trust.identity.replace(/^did:web:/, ''), identifier.split(':')[2], 'the DID\'s host is the URN\'s publisher domain');
+  assert.ok(trust.statement.includes(`Identity: ${DID}. ${P.server.identity.statement}`), 'the statement says what did:web does and does not prove');
   assert.deepEqual(trust.accountable, { ...people([P.server.accountable])[0], contact: P.server.contact });
   assert.deepEqual(trust.codeAuthors, people(P.answers.code.authors));
   assert.deepEqual(trust.attestations, [], 'no attestation is held');
@@ -90,11 +100,12 @@ test('the entry\'s trustManifest: the domain, the accountable person and the cod
 
 test('node build.mjs writes ard.json, the card\'s trust block and /trust; each is stale-checked against its generator', () => {
   assert.deepEqual(json('.well-known/ard.json'), ARD, '.well-known/ard.json is stale: run node build.mjs');
+  assert.deepEqual(json('.well-known/did.json'), DID_DOCUMENT, '.well-known/did.json is stale: run node build.mjs');
   assert.deepEqual(json('.well-known/mcp.json').trust, TRUST, 'the card\'s trust block is stale: run node build.mjs');
   assert.equal(read('trust.md'), trustMarkdown(), 'trust.md is stale: run node build.mjs');
   assert.ok(read('trust.html').includes(trustHtml()), 'trust.html is stale: run node build.mjs');
   const build = read('build.mjs');
-  for (const out of ['.well-known/ard.json', 'trust.md', '.well-known/mcp.json']) assert.ok(build.includes(`'${out}'`), `build.mjs does not write ${out}`);
+  for (const out of ['.well-known/ard.json', '.well-known/did.json', 'trust.md', '.well-known/mcp.json']) assert.ok(build.includes(`'${out}'`), `build.mjs does not write ${out}`);
 });
 
 test('/.well-known/mcp/server-card.json serves the same JSON as /.well-known/mcp.json', () => {
@@ -140,6 +151,9 @@ test('/trust explains, from provenance.json, who stands behind the server and ea
     has(P.server.signed, 'signatures');
     has(P.server.data_reach.stores, 'what is stored');
     has(`${SITE}/.well-known/ard.json`, 'the ARD manifest');
+    has(DID, 'the DID');
+    has(`${SITE}/.well-known/did.json`, 'where the DID document is');
+    has(P.server.identity.statement, 'what did:web does and does not prove');
   }
   // Every level an answer uses is explained, and the scale runs Tell to Hands Off.
   for (const a of Object.values(P.answers)) assert.equal(P.delegation_map.levels[a.agent_may.level]?.label, a.agent_may.label);
@@ -179,10 +193,65 @@ test('no name is typed anywhere but provenance.json: every other file that carri
   for (const file of GENERATED) assert.ok(Object.values(P.people).some(who => read(file).includes(who.name)), `${file} names no one`);
 });
 
+test('/.well-known/did.json is the W3C DID document for did:web:universalagents.ai, carrying the pinned public key', () => {
+  const doc = json('.well-known/did.json');
+  assert.ok(doc['@context'].includes('https://www.w3.org/ns/did/v1'), 'the DID v1 context');
+  assert.equal(doc.id, DID);
+  assert.equal(new URL(SITE).hostname, DID.replace(/^did:web:/, ''), 'did:web resolves to this site\'s /.well-known/did.json');
+  assert.deepEqual(doc.verificationMethod.map(m => [m.id, m.type, m.controller]), [[`${DID}#key-1`, 'JsonWebKey2020', DID]], 'one verification method');
+  assert.deepEqual(doc.verificationMethod[0].publicKeyJwk, PINNED_JWK, 'publicKeyJwk is the pinned key, nothing more');
+  if (existsSync(PINNED_JWK_FILE)) assert.deepEqual(JSON.parse(readFileSync(PINNED_JWK_FILE, 'utf-8')), PINNED_JWK, `${PINNED_JWK_FILE} differs from the key pinned here`);
+  assert.deepEqual(doc.authentication, [`${DID}#key-1`]);
+  assert.deepEqual(doc.assertionMethod, [`${DID}#key-1`]);
+  assert.deepEqual(json('.well-known/mcp.json').trust.identity, { did: DID, document: `${SITE}/.well-known/did.json`, statement: P.server.identity.statement }, 'the card names the DID');
+  const headers = json('vercel.json').headers.find(h => h.source === '/.well-known/did.json')?.headers;
+  assert.ok(headers?.some(h => h.key === 'Content-Type' && /^application\/json/.test(h.value)), 'did.json is served as JSON');
+});
+
+test('no private key material: no JSON in the repo has a "d" member', () => {
+  const found = [];
+  const members = (value, at) => {
+    if (Array.isArray(value)) value.forEach((v, i) => members(v, `${at}[${i}]`));
+    else if (value && typeof value === 'object') for (const [key, v] of Object.entries(value)) {
+      if (key === 'd') found.push(at);
+      members(v, `${at}.${key}`);
+    }
+  };
+  const files = [];
+  const walk = dir => readdirSync(path(dir || '.')).forEach(name => {
+    const file = dir + name;
+    if (['node_modules', '.git', '.vercel'].includes(file)) return;
+    if (statSync(path(file)).isDirectory()) walk(`${file}/`);
+    else if (file.endsWith('.json')) files.push(file);
+  });
+  walk('');
+  assert.ok(files.includes('.well-known/did.json') && files.includes('provenance.json'));
+  for (const file of files) members(json(file), file);
+  assert.deepEqual(found, [], 'a "d" member is a private key');
+});
+
+test('the identity wording says what did:web proves and what it does not, and never claims a signature', () => {
+  const { statement } = P.server.identity;
+  assert.match(statement, /ties this identity to control of the domain/);
+  assert.match(statement, /nothing is signed with its key yet/);
+  assert.match(P.server.signed, /^Nothing is signed: not the server card, the ARD manifest or the replies\./);
+  for (const text of [statement, P.server.signed, ARD.entries[0].trustManifest.statement]) {
+    assert.doesNotMatch(text, /\b(verified|certified)\b/i);
+    assert.doesNotMatch(text.replace(/\b[Nn]othing is signed\b/g, ''), /\bsigned\b/i, 'signed appears only as "nothing is signed"');
+  }
+});
+
+test('sitemap.xml lists /trust', () => {
+  assert.ok(read('sitemap.xml').includes(`<loc>${SITE}/trust</loc>`));
+});
+
 // Check 12, run against a local server so neither the network nor the live site decides the result.
-async function check12(body, tester) {
+// `did` is the body served at /.well-known/did.json: null is a 404, 'drop' closes the connection unanswered.
+async function check12(body, tester, did = read('.well-known/did.json')) {
   const server = createServer((req, res) => {
     if (req.url === '/.well-known/ard.json' && body) res.writeHead(200, { 'Content-Type': 'application/json' }).end(body);
+    else if (req.url === '/.well-known/did.json' && did === 'drop') req.socket.destroy();
+    else if (req.url === '/.well-known/did.json' && did) res.writeHead(200, { 'Content-Type': 'application/json' }).end(did);
     else res.writeHead(404).end();
   });
   await new Promise(done => server.listen(0, '127.0.0.1', done));
@@ -202,6 +271,20 @@ async function check12(body, tester) {
     server.close();
   }
 }
+
+test('agent-check check 12 also fetches /.well-known/did.json: its id must be the manifest\'s identity, and no answer is couldnt-check', async () => {
+  const [ok, okDetail] = await check12(read('.well-known/ard.json'));
+  assert.equal(ok, 'pass', okDetail);
+  assert.match(okDetail, /did\.json: id did:web:universalagents\.ai is the manifest's identity/);
+  const other = JSON.stringify({ ...DID_DOCUMENT, id: 'did:web:example.com' });
+  assert.equal((await check12(read('.well-known/ard.json'), undefined, other))[0], 'fail', 'a DID document for another id fails');
+  const plain = JSON.stringify({ entries: [{ ...ARD.entries[0], trustManifest: { ...ARD.entries[0].trustManifest, identity: 'universalagents.ai' } }] });
+  assert.equal((await check12(plain))[0], 'fail', 'a manifest identity that is not the DID fails');
+  assert.equal((await check12(read('.well-known/ard.json'), undefined, null))[0], 'fail', 'no DID document fails');
+  assert.equal((await check12(read('.well-known/ard.json'), undefined, 'not json'))[0], 'fail', 'a DID document that is not JSON fails');
+  const [dropped, droppedDetail] = await check12(read('.well-known/ard.json'), undefined, 'drop');
+  assert.equal(dropped, 'couldnt-check', droppedDetail);
+});
 
 test('agent-check check 12 fetches /.well-known/ard.json and runs the vendored tester: pass, fail, and couldnt-check (never pass) without the tester or the network', async () => {
   assert.match(read('scripts/agent-check.py'), /record\("12 ARD manifest", verdict, detail\)/, 'check 12 is part of the run');

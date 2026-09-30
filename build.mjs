@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { TRUST } from './api/mcp.mjs';
-import { ARD, trustHtml, trustMarkdown } from './lib/trust.mjs';
+import { ARD, DID_DOCUMENT, trustHtml, trustMarkdown } from './lib/trust.mjs';
 
 const SRC = 'src/pages';
 const PARTIALS = 'src/partials';
@@ -65,8 +65,10 @@ const CARD = '.well-known/mcp.json';
 writeFileSync(CARD, JSON.stringify({ ...JSON.parse(readFileSync(CARD, 'utf-8')), trust: TRUST }, null, 2) + '\n');
 console.log(`  ✓ ${CARD} trust block`);
 
-// For agents that look for us: the ARD manifest, and the markdown mirror of /trust.
+// For agents that look for us: the ARD manifest, the did:web document, and the markdown mirror of /trust.
 writeFileSync('.well-known/ard.json', JSON.stringify(ARD, null, 2) + '\n');
 console.log('  ✓ .well-known/ard.json');
+writeFileSync('.well-known/did.json', JSON.stringify(DID_DOCUMENT, null, 2) + '\n');
+console.log('  ✓ .well-known/did.json');
 writeFileSync('trust.md', trustMarkdown());
 console.log('  ✓ trust.md');
