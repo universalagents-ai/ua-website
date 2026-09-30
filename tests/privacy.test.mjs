@@ -130,9 +130,9 @@ function check(files, mcp) {
     for (const phrase of ['Vercel: hosting, analytics, runtime logs and Blob storage.', 'Google: email, through Google Workspace.', 'jsDelivr: the scripts our pages load']) {
       assert.ok(text.includes('Who processes it') && processors.includes(phrase), `processors: ${label} does not name "${phrase}" under Who processes it`);
     }
-    says('contact', `${P.server.operator.name}, ${SITE}. Contact: ${P.server.contact}.`);
+    says('contact', `${P.server.operator.name} (${P.server.operator.legal_entity}), ${SITE}. Contact: ${P.server.contact}.`);
     assert.ok(/Last updated: \d{4}-\d{2}-\d{2}\./.test(text), `updated: ${label} carries no "Last updated" date`);
-    assert.ok(!/\b(GDPR|CCPA|compliant|compliance|certified|Ltd|LLC|Inc\.|GmbH)\b/.test(text), `claims: ${label} makes a compliance claim or names a legal entity`);
+    assert.ok(!/\b(GDPR|CCPA|compliant|compliance|certified|Ltd|LLC|Inc\.|GmbH)\b/.test(text.split(P.server.operator.legal_entity).join('')), `claims: ${label} makes a compliance claim or names a legal entity other than ${P.server.operator.legal_entity}`);
   }
 }
 

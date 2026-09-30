@@ -6,7 +6,7 @@ Last updated: 2026-09-29.
 
 ## Who we are
 
-Universal Agents, https://universalagents.ai. Contact: hello@universalagents.ai.
+Universal Agents (Universal Agents Inc.), https://universalagents.ai. Contact: hello@universalagents.ai.
 
 ## Cookies
 

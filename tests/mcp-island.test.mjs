@@ -236,7 +236,7 @@ test('the server card carries a trust block built from provenance.json', () => {
   const { trust } = JSON.parse(read('.well-known/mcp.json'));
   assert.deepEqual(trust, TRUST, 'the trust block is stale: run node build.mjs');
   assert.equal(trust.operator.name, 'Universal Agents');
-  assert.match(trust.operator.legal_entity, /not stated here/);
+  assert.equal(trust.operator.legal_entity, 'Universal Agents Inc.', 'the legal entity is the one Stu named, 2026-09-29');
   assert.deepEqual(trust.accountable, { ...STU, contact: CONTACT });
   assert.deepEqual(trust.code_authors, [STU, MATHEW, INGO, MARIO]);
   assert.match(trust.data_reach.reads, /public marketing information only/i);
